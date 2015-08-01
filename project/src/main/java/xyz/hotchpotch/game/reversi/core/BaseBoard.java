@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
 
+// このクラスを Serializable にしてみようかとも思ったが、
+// 自分の現状の理解では無理なので、今回は止める。
 abstract class BaseBoard implements Board {
     
     // ++++++++++++++++ static members ++++++++++++++++
