@@ -61,6 +61,25 @@ public class Rule {
         return Direction.stream().anyMatch(d -> 0 < countReversibles(board, color, point, d));
     }
     
+    /**
+     * リバーシ盤の指定した位置に指定した手を適用できるかを返します。<br>
+     * 
+     * @param board リバーシ盤
+     * @param move 手
+     * @return 手を適用できる場合は true
+     * @NullPointerException board, move のいずれかが null の場合
+     */
+    public static boolean canApply(Board board, Move move) {
+        Objects.requireNonNull(board);
+        Objects.requireNonNull(move);
+        
+        if (move.point == null) {
+            return !canPut(board, move.color);
+        } else {
+            return canPutAt(board, move.color, move.point);
+        }
+    }
+    
     private static int countReversibles(Board board, Color color, Point point, Direction direction) {
         assert board != null;
         assert color != null;
@@ -83,26 +102,27 @@ public class Rule {
     }
     
     /**
-     * リバーシ盤上の指定した位置に指定した色の駒を置いた場合に、
+     * リバーシ盤上に指定された手を適用した場合に、
      * それぞれの方向に相手の駒を何枚ひっくり返せるかを返します。<br>
-     * 置くことのできない位置が指定された場合は、0 のみが格納されたマップを返します。<br>
+     * 置くことのできない手が指定された場合は、0 のみが格納されたマップを返します。<br>
      * 
      * @param board リバーシ盤
-     * @param color 置く駒の色
-     * @param point 駒を置く位置
+     * @param move 手
      * @return 方向ごとにひっくり返せる枚数を格納した Map
-     * @NullPointerException board, color, point のいずれかが null の場合
+     * @NullPointerException board, move のいずれかが null の場合
      */
-    public static Map<Direction, Integer> counts(Board board, Color color, Point point) {
+    public static Map<Direction, Integer> counts(Board board, Move move) {
         Objects.requireNonNull(board);
-        Objects.requireNonNull(color);
-        Objects.requireNonNull(point);
+        Objects.requireNonNull(move);
         
         Map<Direction, Integer> counts = new EnumMap<>(Direction.class);
+        
         // Direction#stream() が並列ストリームを生成する可能性を考慮して、Collections#synchronizedMap でラップする。
         // （この考え方で正しいんやろか...？）
         Map<Direction, Integer> wrappedCounts = Collections.synchronizedMap(counts);
-        Direction.stream().forEach(d -> wrappedCounts.put(d, countReversibles(board, color, point, d)));
+        Direction.stream().forEach(
+                d -> wrappedCounts.put(d, countReversibles(board, move.color, move.point, d)));
+        
         // ラップしたまま返すのもなんなので、中身だけを返す。
         // （この考え方で正しいんやろか...？）
         return counts;
