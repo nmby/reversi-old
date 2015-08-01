@@ -1,5 +1,6 @@
 package xyz.hotchpotch.game.reversi.core;
 
+import java.io.IOException;
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
@@ -16,24 +17,6 @@ public class Move implements Serializable {
     // ++++++++++++++++ static members ++++++++++++++++
     
     private static final long serialVersionUID = 1L;
-    
-    // 「常に color != null である」というオブジェクト制約を守るためにシリアライズプロキシパターンを採用する。
-    // ちょっとやり過ぎな気がしなくもないが。
-    private static class SerializationProxy implements Serializable {
-        private static final long serialVersionUID = 1L;
-        
-        private final Color color;
-        private final Point point;
-        
-        private SerializationProxy(Move move) {
-            color = move.color;
-            point = move.point;
-        }
-        
-        private Object readResolve() {
-            return of(color, point);
-        }
-    }
     
     /**
      * 指定された手を表す Move オブジェクトを返します。<br>
@@ -70,10 +53,10 @@ public class Move implements Serializable {
     // http://www.ibm.com/developerworks/jp/java/library/j-ft4/
     
     /** 駒の色 */
-    public final transient Color color;
+    public final Color color;
     
     /** 駒の位置（パスの場合は null） */
-    public final transient Point point;
+    public final Point point;
     
     private Move(Color color, Point point) {
         this.color = color;
@@ -112,11 +95,16 @@ public class Move implements Serializable {
         return String.format("%s : %s", color, point == null ? "PASS" : point);
     }
     
-    private Object writeReplace() {
-        return new SerializationProxy(this);
-    }
-    
-    private void readObject(ObjectInputStream stream) throws InvalidObjectException {
-        throw new InvalidObjectException("Proxy required");
+    // Color も Point も不変であり、かつそれぞれきちんとシリアライゼーションの制御をしているので、
+    // きっとこれだけで Move オブジェクトの正当性（常に color != null）を守れるはず...
+    // シリアライゼーションは難しい...
+    private void readObject(ObjectInputStream stream) throws ClassNotFoundException, IOException {
+        stream.defaultReadObject();
+        
+        // Move オブジェクトは、常に color != null でなければならない。
+        // バイトストリームが不正に改変されている場合はデシリアル化を防止する。
+        if (color == null) {
+            throw new InvalidObjectException("color cannot be null.");
+        }
     }
 }
