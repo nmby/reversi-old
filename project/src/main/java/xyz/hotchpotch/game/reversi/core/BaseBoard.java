@@ -75,8 +75,7 @@ abstract class BaseBoard implements Board {
      * 
      * @return このリバーシ盤の文字列表現
      */
-    @Override
-    public String toString() {
+    public String toStringKindly() {
         StringBuilder str = new StringBuilder();
         str.append("  ");
         
@@ -102,7 +101,8 @@ abstract class BaseBoard implements Board {
      * 
      * @return このリバーシ盤の文字列表現
      */
-    public String toStringInLine() {
+    @Override
+    public String toString() {
         return String.join("",
                 Stream.of(Point.values())
                 .map(p -> Color.toString(map.get(p)))
