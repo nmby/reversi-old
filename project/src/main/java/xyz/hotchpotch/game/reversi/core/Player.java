@@ -1,8 +1,4 @@
-package xyz.hotchpotch.game.reversi;
-
-import xyz.hotchpotch.game.reversi.core.Board;
-import xyz.hotchpotch.game.reversi.core.Color;
-import xyz.hotchpotch.game.reversi.core.Move;
+package xyz.hotchpotch.game.reversi.core;
 
 /**
  * リバーシゲームのプレーヤーを表します。<br>
