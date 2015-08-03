@@ -21,10 +21,23 @@ public class RandomAIPlayer implements Player {
     
     // ++++++++++++++++ instance members ++++++++++++++++
     
-    private final Random random = new Random();
+    private final Random random;
     
-    @Override
-    public void init(Color color, GameCondition gameCondition) {
+    public RandomAIPlayer(Color color, GameCondition condition) {
+        String seedStr = condition.getProperty("random.seed");
+        Long seed;
+        try {
+            seed = Long.valueOf(seedStr);
+        } catch (NumberFormatException e) {
+            // seedStr == null の場合も NumberFormatException が投げられる。
+            // ちょっと横着だけれど、まぁええやろ。
+            seed = null;
+        }
+        if (seed != null) {
+            random = new Random(seed);
+        } else {
+            random = new Random();
+        }
     }
     
     @Override

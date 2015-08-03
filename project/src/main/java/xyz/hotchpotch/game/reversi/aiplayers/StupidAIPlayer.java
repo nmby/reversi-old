@@ -2,7 +2,6 @@ package xyz.hotchpotch.game.reversi.aiplayers;
 
 import xyz.hotchpotch.game.reversi.core.Board;
 import xyz.hotchpotch.game.reversi.core.Color;
-import xyz.hotchpotch.game.reversi.core.GameCondition;
 import xyz.hotchpotch.game.reversi.core.Move;
 import xyz.hotchpotch.game.reversi.core.Player;
 import xyz.hotchpotch.game.reversi.core.Point;
@@ -18,10 +17,6 @@ public class StupidAIPlayer implements Player {
     // ++++++++++++++++ static members ++++++++++++++++
     
     // ++++++++++++++++ instance members ++++++++++++++++
-    
-    @Override
-    public void init(Color color, GameCondition gameCondition) {
-    }
     
     @Override
     public Move move(Board board, Color color, long givenMillisPerTurn, long remainingMillisInGame) {

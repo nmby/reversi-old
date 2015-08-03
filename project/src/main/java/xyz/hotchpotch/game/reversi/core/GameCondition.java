@@ -6,4 +6,5 @@ public interface GameCondition {
     
     // ++++++++++++++++ instance members ++++++++++++++++
     
+    String getProperty(String key);
 }
