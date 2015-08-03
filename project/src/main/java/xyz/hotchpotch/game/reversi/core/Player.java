@@ -1,13 +1,16 @@
 package xyz.hotchpotch.game.reversi.core;
 
+import java.lang.reflect.Constructor;
+import java.util.Objects;
+
 /**
  * リバーシゲームのプレーヤーを表します。<br>
  * <br>
  * Player 実装クラスは次のいずれかのコンストラクタを持つ必要があります。<br>
  *     A. Color と GameCondition を引数にとるコンストラクタ<br>
  *     B. 引数なしのコンストラクタ<br>
- * ゲーム実行フレームワークは、A のコンストラクタがあれば A を、なければ B を利用して、
- * ゲーム開始時に Player 実装クラスのインスタンスを生成します。<br>
+ * ゲーム実行フレームワークは、ゲーム開始時に Player#getPlayerInstance(Class, Color, GameCondition) を使用して
+ * Player 実装クラスのインスタンスを生成します。<br>
  * A のコンストラクタでは、そのプレーヤーの駒の色と、一手当たりの制限時間やゲーム全体での持ち時間、相手の Player クラスなどの
  * ゲームの条件が伝えられます。
  * Player 実装クラスはこれらの情報を自身の戦略に役立ててもよいですし、無視しても構いません。<br>
@@ -26,6 +29,50 @@ package xyz.hotchpotch.game.reversi.core;
 public interface Player {
     
     // ++++++++++++++++ static members ++++++++++++++++
+    
+    /**
+     * Player 実装クラスのインスタンスを返します。<br>
+     * <br>
+     * まず、(Color, GameCondition) を引数にとるコンストラクタでのインスタンス化を試みます。<br>
+     * 次に、引数なしのコンストラクタでのインスタンス化を試みます。<br>
+     * インスタンス化できた場合はそのインスタンスを返し、できなかった場合は例外をスローします。<br>
+     * 
+     * @param playerClass インスタンス化する Player 実装クラス
+     * @param color インスタンス化するプレーヤーの駒の色
+     * @param gameCondition ゲーム条件
+     * @return Player 実装クラスのインスタンス
+     * @throws NullPointerException playerClass, color, gameCondition のいずれかが null の場合
+     * @throws ReflectiveOperationException Player 実装クラスのインスタンス化に失敗した場合
+     */
+    public static Player getPlayerInstance(
+            Class<? extends Player> playerClass, Color color, GameCondition gameCondition)
+                    throws ReflectiveOperationException {
+            
+        Objects.requireNonNull(playerClass);
+        Objects.requireNonNull(color);
+        Objects.requireNonNull(gameCondition);
+        
+        ReflectiveOperationException e1;
+        
+        // まずは、(Color, GameCondition) をとるコンストラクタでのインスタンス化を試みる。
+        try {
+            Constructor<? extends Player> constructor =
+                    playerClass.getConstructor(Color.class, GameCondition.class);
+            return constructor.newInstance(color, gameCondition);
+        } catch (ReflectiveOperationException e) {
+            e1 = e;
+        }
+        
+        // 次に、引数なしのコンストラクタでのインスタンス化を試みる。
+        // どちらでもダメだったら例外を投げる。
+        try {
+            Constructor<? extends Player> constructor = playerClass.getConstructor();
+            return constructor.newInstance();
+        } catch (ReflectiveOperationException e) {
+            e.addSuppressed(e1);
+            throw e;
+        }
+    }
     
     // ++++++++++++++++ instance members ++++++++++++++++
     
