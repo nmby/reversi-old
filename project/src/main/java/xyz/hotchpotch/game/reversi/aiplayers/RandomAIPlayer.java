@@ -4,11 +4,11 @@ import java.util.Random;
 
 import xyz.hotchpotch.game.reversi.core.Board;
 import xyz.hotchpotch.game.reversi.core.Color;
-import xyz.hotchpotch.game.reversi.core.GameCondition;
 import xyz.hotchpotch.game.reversi.core.Move;
-import xyz.hotchpotch.game.reversi.core.Player;
 import xyz.hotchpotch.game.reversi.core.Point;
 import xyz.hotchpotch.game.reversi.core.Rule;
+import xyz.hotchpotch.game.reversi.framework.GameCondition;
+import xyz.hotchpotch.game.reversi.framework.Player;
 
 /**
  * ランダムに手を選ぶ Plyer の実装です。<br>

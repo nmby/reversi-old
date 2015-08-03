@@ -1,7 +1,11 @@
-package xyz.hotchpotch.game.reversi.core;
+package xyz.hotchpotch.game.reversi.framework;
 
 import java.lang.reflect.Constructor;
 import java.util.Objects;
+
+import xyz.hotchpotch.game.reversi.core.Board;
+import xyz.hotchpotch.game.reversi.core.Color;
+import xyz.hotchpotch.game.reversi.core.Move;
 
 /**
  * リバーシゲームのプレーヤーを表します。<br>

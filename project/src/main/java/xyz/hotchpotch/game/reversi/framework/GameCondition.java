@@ -1,4 +1,4 @@
-package xyz.hotchpotch.game.reversi.core;
+package xyz.hotchpotch.game.reversi.framework;
 
 public interface GameCondition {
     
