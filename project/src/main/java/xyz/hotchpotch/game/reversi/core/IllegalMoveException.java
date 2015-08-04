@@ -21,11 +21,12 @@ public class IllegalMoveException extends RuleViolationException {
      * 例外を生成します。<br>
      * 
      * @param message 詳細メッセージ
+     * @param violator ルールに違反したプレーヤーの色
      * @param move ルール違反の手
      * @param board そのときのリバーシ盤
      */
-    public IllegalMoveException(String message, Move move, Board board) {
-        super(String.format("%s move=%s, board=%s", message, move, board));
+    public IllegalMoveException(String message, Color violator, Move move, Board board) {
+        super(String.format("%s move=%s board=%s", message, move, board), violator);
         this.move = move;
         this.board = BoardSnapshot.of(board);
     }
@@ -33,10 +34,11 @@ public class IllegalMoveException extends RuleViolationException {
     /**
      * 例外を生成します。<br>
      * 
+     * @param violator ルールに違反したプレーヤーの色
      * @param move ルール違反の手
      * @param board そのときのリバーシ盤
      */
-    public IllegalMoveException(Move move, Board board) {
-        this("不正な手が指定されました。", move, board);
+    public IllegalMoveException(Color violator, Move move, Board board) {
+        this("不正な手が指されました。", violator, move, board);
     }
 }

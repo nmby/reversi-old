@@ -46,7 +46,8 @@ public class StrictBoard extends BaseBoard implements Serializable {
     public synchronized void apply(Move move) {
         Objects.requireNonNull(move);
         if (move.color != next) {
-            throw new IllegalTurnException(next, move, this);
+            // ルールに違反したのがどちらのプレーヤーかは分からないので、violator=null として投げる。
+            throw new IllegalTurnException(null, next, move, this);
         }
         if (!Rule.canApply(this, move)) {
             if (move.point == null) {
