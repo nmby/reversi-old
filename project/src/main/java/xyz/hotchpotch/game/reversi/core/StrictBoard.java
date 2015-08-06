@@ -11,6 +11,8 @@ import java.util.Objects;
 
 /**
  * リバーシのルールを忠実に守るリバーシ盤の実装です。<br>
+ * このリバーシ盤に対してルールに反する手が指定された場合は例外がスローされます。<br>
+ * <br>
  * この実装はスレッドセーフです。<br>
  * 
  * @author nmby
@@ -69,21 +71,16 @@ public class StrictBoard extends BaseBoard implements Serializable {
      * 
      * @param move 適用する手
      * @throws NullPointerException move が null の場合
-     * @throws IllegalMoveException 許可されない手が指定された場合
+     * @throws IllegalArgumentException 許可されない手が指定された場合
      */
     @Override
     public synchronized void apply(Move move) {
         Objects.requireNonNull(move);
         if (move.color != next) {
-            // ルールに違反したのがどちらのプレーヤーかは分からないので、violator=null として投げる。
-            throw new IllegalTurnException(null, next, move, this);
+            throw new IllegalArgumentException("本来の手番とは異なる色が指定されました。");
         }
         if (!Rule.canApply(this, move)) {
-            if (move.point == null) {
-                throw new IllegalPassException(move, this);
-            } else {
-                throw new IllegalPointException(move, this);
-            }
+            throw new IllegalArgumentException("許可されない手が指定されました。");
         }
         
         if (move.point != null) {
