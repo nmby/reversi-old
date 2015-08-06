@@ -1,5 +1,7 @@
 package xyz.hotchpotch.game.reversi.core;
 
+import java.io.InvalidObjectException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,10 +21,37 @@ public class StrictBoard extends BaseBoard implements Serializable {
     
     private static final long serialVersionUID = 1L;
     
+    private static class SerializationProxy implements Serializable {
+        private static final long serialVersionUID = 1L;
+        
+        private final List<Move> moves;
+        
+        private SerializationProxy(StrictBoard board) {
+            moves = board.moves;
+        }
+        
+        private Object readResolve() {
+            Board board = initializedBoard();
+            for (Move move : moves) {
+                board.apply(move);
+            }
+            return board;
+        }
+    }
+    
+    /**
+     * ゲーム開始時の状態に初期化されたリバーシ盤を返します。<br>
+     * 
+     * @return ゲーム開始時の状態に初期化されたリバーシ盤
+     */
+    public static Board initializedBoard() {
+        return new StrictBoard();
+    }
+    
     // ++++++++++++++++ instance members ++++++++++++++++
     
-    private Color next;
-    private final List<Move> moves;
+    private transient Color next;
+    private transient final List<Move> moves;
     
     private StrictBoard() {
         map.put(Point.of(3, 4), Color.BLACK);
@@ -105,5 +134,13 @@ public class StrictBoard extends BaseBoard implements Serializable {
     @Override
     public synchronized String toString() {
         return super.toString();
+    }
+    
+    private synchronized Object writeReplace() {
+        return new SerializationProxy(this);
+    }
+    
+    private void readObject(ObjectInputStream stream) throws InvalidObjectException {
+        throw new InvalidObjectException("Proxy required");
     }
 }
