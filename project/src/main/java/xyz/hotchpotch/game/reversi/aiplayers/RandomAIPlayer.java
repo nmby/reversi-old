@@ -24,20 +24,15 @@ public class RandomAIPlayer implements Player {
     private final Random random;
     
     public RandomAIPlayer(Color color, GameCondition condition) {
+        // デバッグ用にシード値を受け取れるようにしておく。
         String seedStr = condition.getProperty("random.seed");
         Long seed;
         try {
             seed = Long.valueOf(seedStr);
         } catch (NumberFormatException e) {
-            // seedStr == null の場合も NumberFormatException が投げられる。
-            // ちょっと横着だけれど、まぁええやろ。
             seed = null;
         }
-        if (seed != null) {
-            random = new Random(seed);
-        } else {
-            random = new Random();
-        }
+        random = seed != null ? new Random(seed) : new Random();
     }
     
     @Override
@@ -45,7 +40,7 @@ public class RandomAIPlayer implements Player {
         Point[] availables = Point.stream()
                 .filter(p -> Rule.canPutAt(board, color, p))
                 .toArray(Point[]::new);
-        
+                
         if (availables.length == 0) {
             return Move.of(color, null);
         } else {
