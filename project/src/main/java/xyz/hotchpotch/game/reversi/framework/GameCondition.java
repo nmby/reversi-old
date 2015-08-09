@@ -3,6 +3,7 @@ package xyz.hotchpotch.game.reversi.framework;
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Objects;
@@ -35,17 +36,28 @@ public class GameCondition implements Serializable {
         }
     }
     
+    /**
+     * 個々のパラメータを指定してゲーム条件を生成します。<br>
+     * 
+     * @param playerBlack 黒のプレーヤーのクラス
+     * @param playerWhite 白のプレーヤーのクラス
+     * @param givenMillisPerTurn 一手あたりの制限時間（ミリ秒）
+     * @param givenMillisInGame ゲーム全体での持ち時間（ミリ秒）
+     * @return ゲーム条件
+     * @throws NullPointerException playerBlack または playerWhite が null の場合
+     * @throwsIllegalArgumentException givenMillisPerTurn または givenMillisInGame が正の整数でない場合
+     */
     public static GameCondition of(
             Class<? extends Player> playerBlack,
             Class<? extends Player> playerWhite,
             long givenMillisPerTurn,
             long givenMillisInGame) {
-        
+            
         Objects.requireNonNull(playerBlack);
         Objects.requireNonNull(playerWhite);
         if (givenMillisPerTurn <= 0 || givenMillisInGame <= 0) {
             throw new IllegalArgumentException(
-                    String.format("正の整数値が必要です。givenMillisPerTurn=%d, givenMillisInGame=%d", 
+                    String.format("正の整数値が必要です。givenMillisPerTurn=%d, givenMillisInGame=%d",
                             givenMillisPerTurn, givenMillisInGame));
         }
         
@@ -63,6 +75,20 @@ public class GameCondition implements Serializable {
                 properties);
     }
     
+    /**
+     * パラメータを一括指定してゲーム条件を生成します。<br>
+     * properties は以下のプロパティを含む必要があります。<br>
+     *     ・player.black<br>
+     *     ・player.white<br>
+     *     ・givenMillisPerTurn<br>
+     *     ・givenMillisInGame<br>
+     * 
+     * @param properties ゲーム条件が設定されたプロパティセット
+     * @return ゲーム条件
+     * @throws NullPointerException properties が null の場合
+     * @throws IllegalArgumentException 各条件の設定内容が不正の場合
+     */
+    @SuppressWarnings("unchecked")
     public static GameCondition of(Properties properties) {
         Objects.requireNonNull(properties);
         Properties copy = new Properties(properties);
@@ -107,12 +133,12 @@ public class GameCondition implements Serializable {
             givenMillisInGame = Long.valueOf(strGivenMillisInGame);
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException(
-                    String.format("整数値が必要です。givenMillisPerTurn=%s, givenMillisInGame=%s", 
+                    String.format("整数値が必要です。givenMillisPerTurn=%s, givenMillisInGame=%s",
                             strGivenMillisPerTurn, strGivenMillisInGame));
         }
         if (givenMillisPerTurn <= 0 || givenMillisInGame <= 0) {
             throw new IllegalArgumentException(
-                    String.format("正の整数値が必要です。givenMillisPerTurn=%d, givenMillisInGame=%d", 
+                    String.format("正の整数値が必要です。givenMillisPerTurn=%d, givenMillisInGame=%d",
                             givenMillisPerTurn, givenMillisInGame));
         }
         
@@ -126,9 +152,9 @@ public class GameCondition implements Serializable {
     
     // ++++++++++++++++ instance members ++++++++++++++++
     
-    private transient final Map<Color, Class<? extends Player>> playerClasses;
-    private transient final long givenMillisPerTurn;
-    private transient final long givenMillisInGame;
+    public transient final Map<Color, Class<? extends Player>> playerClasses;
+    public transient final long givenMillisPerTurn;
+    public transient final long givenMillisInGame;
     private transient final Properties properties;
     
     private GameCondition(
@@ -137,26 +163,14 @@ public class GameCondition implements Serializable {
             long givenMillisPerTurn,
             long givenMillisInGame,
             Properties properties) {
-        
-        playerClasses = new EnumMap<>(Color.class);
-        playerClasses.put(Color.BLACK, playerClassBlack);
-        playerClasses.put(Color.WHITE, playerClassWhite);
+            
+        Map<Color, Class<? extends Player>> tmp = new EnumMap<>(Color.class);
+        tmp.put(Color.BLACK, playerClassBlack);
+        tmp.put(Color.WHITE, playerClassWhite);
+        playerClasses = Collections.unmodifiableMap(tmp);
         this.givenMillisPerTurn = givenMillisPerTurn;
         this.givenMillisInGame = givenMillisInGame;
         this.properties = properties;
-    }
-    
-    public Class<? extends Player> playerClass(Color color) {
-        Objects.requireNonNull(color);
-        return playerClasses.get(color);
-    }
-    
-    public long givenMillisPerTurn() {
-        return givenMillisPerTurn;
-    }
-    
-    public long givenMillisInGame() {
-        return givenMillisInGame;
     }
     
     public String getProperty(String key) {
