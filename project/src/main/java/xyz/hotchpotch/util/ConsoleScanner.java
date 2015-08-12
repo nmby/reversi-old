@@ -74,8 +74,8 @@ public class ConsoleScanner<T> implements Supplier<T> {
         Predicate<String> judge = s -> {
             // ちょっと乱暴だけど楽チンなので許して...
             try {
-                Integer.valueOf(s);
-                return true;
+                int n = Integer.parseInt(s);
+                return lower <= n && n <= upper;
             } catch (NumberFormatException e) {
                 return false;
             }
@@ -83,24 +83,6 @@ public class ConsoleScanner<T> implements Supplier<T> {
         Function<String, Integer> converter = Integer::valueOf;
         String prompt = String.format("%d～%dの範囲で指定してください > ", lower, upper);
         return new Builder<Integer>(judge, converter, prompt, prompt);
-    }
-    
-    public static Builder<Long> longBuilder(long lower, long upper) {
-        if (upper < lower) {
-            throw new IllegalArgumentException(String.format("lower=%d, upper=%d", lower, upper));
-        }
-        Predicate<String> judge = s -> {
-            // ちょっと乱暴だけど楽チンなので許して...
-            try {
-                Long.valueOf(s);
-                return true;
-            } catch (NumberFormatException e) {
-                return false;
-            }
-        };
-        Function<String, Long> converter = Long::valueOf;
-        String prompt = String.format("%d～%dの範囲で指定してください > ", lower, upper);
-        return new Builder<Long>(judge, converter, prompt, prompt);
     }
     
     public static <T> Builder<T> listBuilder(List<T> list) {
