@@ -60,21 +60,9 @@ abstract class BaseBoard implements Board {
     }
     
     /**
-     * このリバーシ盤の文字列表現を返します。<br>
-     * 文字列は、人間にとって分かり易い、改行を含む次の形式です。<br>
-     * <br>
-     *   a b c d e f g h <br>
-     * 1 ・・・・・・・・<br>
-     * 2 ・・・・・・・・<br>
-     * 3 ・・・・・・・・<br>
-     * 4 ・・・○●・・・<br>
-     * 5 ・・・●○・・・<br>
-     * 6 ・・・・・・・・<br>
-     * 7 ・・・・・・・・<br>
-     * 8 ・・・・・・・・<br>
-     * 
-     * @return このリバーシ盤の文字列表現
+     * {@inheritDoc}
      */
+    @Override
     public String toStringKindly() {
         StringBuilder str = new StringBuilder();
         str.append("  ");
@@ -96,10 +84,7 @@ abstract class BaseBoard implements Board {
     }
     
     /**
-     * このリバーシ盤の文字列表現を返します。<br>
-     * 文字列は、ログファイルへの出力等に便利な、改行を含まない単一行形式です。<br>
-     * 
-     * @return このリバーシ盤の文字列表現
+     * {@inheritDoc}
      */
     @Override
     public String toString() {
