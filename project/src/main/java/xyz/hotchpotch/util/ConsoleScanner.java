@@ -33,14 +33,22 @@ public class ConsoleScanner<T> implements Supplier<T> {
             this.rePrompt = rePrompt;
         }
         
-        public Builder<T> prompt(String prompt) {
+        private Builder(
+                Predicate<String> judge,
+                Function<String, T> converter,
+                String prompt) {
+                
+            this(judge, converter, prompt, prompt);
+        }
+        
+        public Builder<T> prompt(String prompt, String rePrompt) {
             this.prompt = Objects.requireNonNull(prompt);
+            this.rePrompt = Objects.requireNonNull(rePrompt);
             return this;
         }
         
-        public Builder<T> rePrompt(String rePrompt) {
-            this.rePrompt = Objects.requireNonNull(rePrompt);
-            return this;
+        public Builder<T> prompt(String prompt) {
+            return prompt(prompt, prompt);
         }
         
         public ConsoleScanner<T> build() {
@@ -54,7 +62,7 @@ public class ConsoleScanner<T> implements Supplier<T> {
                 judge,
                 Function.identity(),
                 "> ",
-                "入力形式が不正です > ");
+                "入力形式が不正です。再入力してください > ");
     }
     
     public static Builder<String> stringBuilder(Pattern pattern) {
@@ -72,7 +80,6 @@ public class ConsoleScanner<T> implements Supplier<T> {
             throw new IllegalArgumentException(String.format("lower=%d, upper=%d", lower, upper));
         }
         Predicate<String> judge = s -> {
-            // ちょっと乱暴だけど楽チンなので許して...
             try {
                 int n = Integer.parseInt(s);
                 return lower <= n && n <= upper;
@@ -82,13 +89,12 @@ public class ConsoleScanner<T> implements Supplier<T> {
         };
         Function<String, Integer> converter = Integer::valueOf;
         String prompt = String.format("%d～%dの範囲で指定してください > ", lower, upper);
-        return new Builder<Integer>(judge, converter, prompt, prompt);
+        return new Builder<Integer>(judge, converter, prompt);
     }
     
     public static <T> Builder<T> listBuilder(List<T> list) {
         Objects.requireNonNull(list);
         Predicate<String> judge = s -> {
-            // ちょっと乱暴だけど楽チンなので許して...
             try {
                 int idx = Integer.parseInt(s);
                 return 0 <= idx && idx < list.size();
@@ -107,7 +113,7 @@ public class ConsoleScanner<T> implements Supplier<T> {
         }
         tmp.append("> ");
         String prompt = tmp.toString();
-        return new Builder<T>(judge, converter, prompt, prompt);
+        return new Builder<T>(judge, converter, prompt);
     }
     
     public static <E extends Enum<E>> Builder<E> enumBuilder(Class<E> type) {
