@@ -96,20 +96,20 @@ public class ConsoleScanner<T> implements Supplier<T> {
         Objects.requireNonNull(list);
         Predicate<String> judge = s -> {
             try {
-                int idx = Integer.parseInt(s);
+                int idx = Integer.parseInt(s) - 1;
                 return 0 <= idx && idx < list.size();
             } catch (NumberFormatException e) {
                 return false;
             }
         };
         Function<String, T> converter = s -> {
-            int idx = Integer.parseInt(s);
+            int idx = Integer.parseInt(s) - 1;
             return list.get(idx);
         };
         StringBuilder tmp = new StringBuilder();
         tmp.append("次の中から番号で指定してください。").append(BR);
         for (int i = 0; i < list.size(); i++) {
-            tmp.append(String.format("\t%d : %s", i, list.get(i))).append(BR);
+            tmp.append(String.format("\t%d : %s", i + 1, list.get(i))).append(BR);
         }
         tmp.append("> ");
         String prompt = tmp.toString();
