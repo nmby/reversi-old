@@ -81,7 +81,7 @@ public class GameResult implements Result<Game> {
         board = null;
         winner = violation.violator.opposite();
         description = String.format(
-                "%s:$s の反則負けです。%s",
+                "%s:%s の反則負けです。%s",
                 violation.violator,
                 gameCondition.playerClasses.get(violation.violator).getName(),
                 violation.getMessage());
