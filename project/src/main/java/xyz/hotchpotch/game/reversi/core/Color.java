@@ -30,10 +30,11 @@ public enum Color {
     }
     
     /**
-     * color の文字列表現を返します。<br>
+     * {@code color} の文字列表現を返します。<br>
      * 
      * @param color 色
-     * @return color の文字列表現（"●" または "○"）。null の場合は "・"
+     * @return {@code color} の文字列表現（{@code "●"} または {@code "○"}）。
+     *         {@code color} が {@code null} の場合は {@code "・"}
      */
     public static String toString(Color color) {
         return color == null ? "・" : color.toString();
