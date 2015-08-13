@@ -67,20 +67,22 @@ public class StrictBoard extends BaseBoard implements Serializable {
     /**
      * このリバーシ盤に指定された手を適用します。<br>
      * この実装は、リバーシのルールに忠実に従います。ルール上許可されない手が指定された場合は、例外がスローされます。<br>
-     * 次の手番がパスの場合は、パスを表す Move で本メソッドを実行する必要があります。<br>
+     * 次の手番がパスの場合は、パスを表す {@link Move} オブジェクトを指定して本メソッドを実行する必要があります。<br>
      * 
      * @param move 適用する手
-     * @throws NullPointerException move が null の場合
+     * @throws NullPointerException {@code move} が {@code null} の場合
      * @throws IllegalArgumentException 許可されない手が指定された場合
      */
     @Override
     public synchronized void apply(Move move) {
         Objects.requireNonNull(move);
         if (move.color != next) {
-            throw new IllegalArgumentException("本来の手番とは異なる色が指定されました。");
+            throw new IllegalArgumentException(String.format(
+                    "本来の手番とは異なる色が指定されました。期待=%s, 実際=%s", next, move.color));
         }
         if (!Rule.canApply(this, move)) {
-            throw new IllegalArgumentException("許可されない手が指定されました。");
+            throw new IllegalArgumentException(String.format(
+                    "許可されない手が指定されました。move=%s, board=%s", move, this.toStringInLine()));
         }
         
         if (move.point != null) {
@@ -123,6 +125,14 @@ public class StrictBoard extends BaseBoard implements Serializable {
     @Override
     public synchronized String toStringKindly() {
         return super.toStringKindly();
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public synchronized String toStringInLine() {
+        return super.toStringInLine();
     }
     
     /**
