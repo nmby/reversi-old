@@ -68,8 +68,10 @@ public class GameResult implements Result<Game> {
             winner = null;
         }
         
-        description = String.format("%s%s:%d, %s:%d",
-                winner == null ? "引き分けです。" : winner + "の勝ちです。",
+        description = String.format("%s %s:%d, %s:%d",
+                winner == null ?
+                        "引き分けです。" : String.format(
+                        "%s:%s の勝ちです。", winner, gameCondition.playerClasses.get(winner).getName()),
                 Color.BLACK, black, Color.WHITE, white);
     }
     
@@ -78,7 +80,11 @@ public class GameResult implements Result<Game> {
         this.violation = violation;
         board = null;
         winner = violation.violator.opposite();
-        description = String.format("%sの反則負けです。%s", violation.violator, violation.getMessage());
+        description = String.format(
+                "%s:$s の反則負けです。%s",
+                violation.violator,
+                gameCondition.playerClasses.get(violation.violator).getName(),
+                violation.getMessage());
     }
     
     /**
