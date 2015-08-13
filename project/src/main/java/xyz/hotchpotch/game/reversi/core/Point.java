@@ -11,13 +11,12 @@ import java.util.stream.Stream;
 
 /**
  * 盤上の位置を表す不変クラスです。<br>
- * 同じ位置を表す Point インスタンスは同一であることが保証されます。<br>
+ * 同じ位置を表す {@code Point} インスタンスは同一であることが保証されます。<br>
  * 
  * @author nmby
  */
-// [実装メモ]
 // Point は本質的には列挙なので、64 個の要素を持つ enum としてもよいのだが、
-// お勉強のためフツーのクラスとして実装した。
+// お勉強のため普通のクラスとして実装した。
 public class Point implements Serializable {
     
     // ++++++++++++++++ static members ++++++++++++++++
@@ -59,13 +58,13 @@ public class Point implements Serializable {
     }
     
     /**
-     * 指定された位置を表す Point インスタンスを返します。<br>
+     * 指定された位置を表す {@code Point} インスタンスを返します。<br>
      * 同じ座標には、常に同じインスタンスを返します。<br>
      * 
      * @param i 縦座標
      * @param j 横座標
-     * @return 座標 (i, j) を表す Point インスタンス
-     * @throws IndexOutOfBoundsException (i, j) が範囲外の場合
+     * @return 座標 {@code (i, j)} を表す {@code Point} インスタンス
+     * @throws IndexOutOfBoundsException {@code (i, j)} が範囲外の場合
      */
     public static Point of(int i, int j) {
         if (!isValidIndex(i, j)) {
@@ -75,16 +74,16 @@ public class Point implements Serializable {
     }
     
     /**
-     * すべての Point インスタンスを含む配列を返します。<br>
+     * すべての {@code Point} インスタンスを含む配列を返します。<br>
      * 
-     * @return すべての Point インスタンスを含む配列
+     * @return すべての {@code Point} インスタンスを含む配列
      */
     public static Point[] values() {
         return Arrays.copyOf(points, points.length);
     }
     
     /**
-     * すべての Point インスタンスをソースとする並列ストリームを返します。<br>
+     * すべての {@code Point} インスタンスをソースとする並列ストリームを返します。<br>
      * 
      * @return 新しいストリーム
      */
@@ -109,7 +108,7 @@ public class Point implements Serializable {
     // ++++++++++++++++ instance members ++++++++++++++++
     
     // メンバ変数を public で公開するのに抵抗を感じるかもしれないが、
-    // その変数やクラス自体が不変である場合、デメリットは少ない。
+    // その変数参照や変数インスタンス自体が不変である場合、デメリットは少ない。
     // むしろ積極的に public にすべきだという主張もある。
     // http://www.ibm.com/developerworks/jp/java/library/j-ft4/
     
@@ -125,11 +124,11 @@ public class Point implements Serializable {
     }
     
     /**
-     * 指定された方向に次の Point があるか（盤上か）を返します。<br>
+     * 指定された方向に次の {@code Point} があるか（盤上か）を返します。<br>
      * 
-     * @param direction 次の Point の方向
-     * @return 指定された方向に次の Point がある場合（盤上である場合）は true
-     * @throws NullPointerException direction が null の場合
+     * @param direction 次の {@code Point} の方向
+     * @return 指定された方向に次の {@code Point} がある場合（盤上である場合）は {@code true}
+     * @throws NullPointerException {@code direction} が {@code null} の場合
      */
     public boolean hasNext(Direction direction) {
         Objects.requireNonNull(direction);
@@ -137,12 +136,12 @@ public class Point implements Serializable {
     }
     
     /**
-     * 指定された方向の次の Point を返します。<br>
+     * 指定された方向の次の {@code Point} を返します。<br>
      * 
-     * @param direction 次の Point の方向
-     * @return 指定された方向の次の Point
-     * @throws NullPointerException direction が null の場合
-     * @throws NoSuchElementException 指定された方向の次の Point がない（盤上からはみ出る）場合
+     * @param direction 次の {@code Point} の方向
+     * @return 指定された方向の次の {@code Point}
+     * @throws NullPointerException {@code direction} が {@code null} の場合
+     * @throws NoSuchElementException 指定された方向の次の {@code Point} がない（盤上からはみ出る）場合
      */
     public Point next(Direction direction) {
         Objects.requireNonNull(direction);
