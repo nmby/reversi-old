@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.TreeSet;
 
 import xyz.hotchpotch.game.reversi.framework.Match.Entrant;
 
@@ -71,7 +72,7 @@ public class MatchCondition implements Condition<Match>, Serializable {
      * @param times 対戦回数
      * @param map 追加のパラメータが格納された {@code Map}
      * @return マッチ条件
-     * @throws NullPointerException {@code playerBlack}、{@code playerWhite}、{@code map}
+     * @throws NullPointerException {@code playerA}、{@code playerB}、{@code map}
      *                              のいずれかが {@code null} の場合
      * @throwsIllegalArgumentException {@code givenMillisPerTurn}、{@code givenMillisInGame}、{@code times}
      *                                 のいずれかが正の整数でない場合
@@ -276,7 +277,7 @@ public class MatchCondition implements Condition<Match>, Serializable {
     @Override
     public String toStringKindly() {
         StringBuilder str = new StringBuilder();
-        for (Map.Entry<?, ?> entry : properties.entrySet()) {
+        for (Map.Entry<?, ?> entry : new TreeSet<>(properties.entrySet())) {
             str.append(String.format("%s=%s", entry.getKey(), entry.getValue())).append(System.lineSeparator());
         }
         return str.toString();
