@@ -34,14 +34,17 @@ public class GameResult implements Result<Game> {
      * ルール違反によりゲームが終了した場合のゲーム結果を生成します。<br>
      * 
      * @param gameCondition ゲーム条件
+     * @param board ゲーム終了時のリバーシ盤
      * @param violation ルール違反
      * @return ゲーム結果
-     * @throws NullPointerException {@code gameCondition}、{@code violation} のいずれかが {@code null} の場合
+     * @throws NullPointerException {@code gameCondition}、{@code board}、{@code violation} のいずれかが
+     *                              {@code null} の場合
      */
-    public static GameResult of(GameCondition gameCondition, RuleViolationException violation) {
+    public static GameResult of(GameCondition gameCondition, Board board, RuleViolationException violation) {
         Objects.requireNonNull(gameCondition);
+        Objects.requireNonNull(board);
         Objects.requireNonNull(violation);
-        return new GameResult(gameCondition, violation);
+        return new GameResult(gameCondition, board, violation);
     }
     
     // ++++++++++++++++ instance members ++++++++++++++++
@@ -75,10 +78,10 @@ public class GameResult implements Result<Game> {
                 Color.BLACK, black, Color.WHITE, white);
     }
     
-    private GameResult(GameCondition gameCondition, RuleViolationException violation) {
+    private GameResult(GameCondition gameCondition, Board board, RuleViolationException violation) {
         this.gameCondition = gameCondition;
+        this.board = BoardSnapshot.of(board);
         this.violation = violation;
-        board = null;
         winner = violation.violator.opposite();
         description = String.format(
                 "%s:%s の反則負けです。%s",
