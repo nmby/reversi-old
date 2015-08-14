@@ -9,6 +9,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 import xyz.hotchpotch.game.reversi.aiplayers.CrazyAIPlayer;
+import xyz.hotchpotch.game.reversi.aiplayers.MonteCarloAIPlayer;
 import xyz.hotchpotch.game.reversi.aiplayers.RandomAIPlayer;
 import xyz.hotchpotch.game.reversi.aiplayers.SimplestAIPlayer;
 import xyz.hotchpotch.game.reversi.aiplayers.SlowpokeAIPlayer;
@@ -27,6 +28,7 @@ class CommonUtil {
                 ConsolePlayer.class,
                 SimplestAIPlayer.class,
                 RandomAIPlayer.class,
+                MonteCarloAIPlayer.class,
                 SlowpokeAIPlayer.class,
                 CrazyAIPlayer.class);
     }
