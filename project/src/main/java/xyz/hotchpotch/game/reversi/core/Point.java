@@ -161,11 +161,22 @@ public class Point implements Serializable {
     }
     
     /**
-     * {@inheritDoc}
+     * この {@code Point} の文字列表現を {@code (i, j)} 形式で返します。<br>
+     * 
+     * @return この {@code Point} の文字列表現（{@code (i, j)} 形式）
      */
     @Override
     public String toString() {
         return desc(i, j);
+    }
+    
+    /**
+     * この {@code Point} の文字列表現を {@code a1}～{@code h8} の形式で返します。<br>
+     * 
+     * @return この {@code Point} の文字列表現（{@code a1}～{@code h8} の形式）
+     */
+    public String toStringKindly() {
+        return String.format("%c%d", 'a' + j, i + 1);
     }
     
     private Object writeReplace() {

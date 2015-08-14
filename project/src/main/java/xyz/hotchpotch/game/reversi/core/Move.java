@@ -104,7 +104,7 @@ public class Move implements Serializable {
      */
     @Override
     public String toString() {
-        return String.format("[%s : %s]", color, point == null ? "PASS" : point);
+        return String.format("[%s : %s]", color, point == null ? "PASS" : point.toStringKindly());
     }
     
     // Move オブジェクトの恒等式（color != null）を保証するために readObject を実装する。
