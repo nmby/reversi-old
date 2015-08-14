@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
 
+import xyz.hotchpotch.game.reversi.framework.Match.Entrant;
+
 /**
  * マッチの実施条件を表す不変クラスです。<br>
  * 
@@ -33,13 +35,6 @@ public class MatchCondition implements Condition<Match>, Serializable {
         private Object readResolve() {
             return of(properties);
         }
-    }
-    
-    /**
-     * マッチの対戦者を表す列挙です。<br>
-     */
-    public static enum Entrant {
-        A, B;
     }
     
     /**

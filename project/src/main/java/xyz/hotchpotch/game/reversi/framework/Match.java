@@ -9,4 +9,16 @@ package xyz.hotchpotch.game.reversi.framework;
  * @author nmby
  */
 public interface Match extends Playable {
+    
+    // ++++++++++++++++ static members ++++++++++++++++
+    
+    /**
+     * マッチの対戦者を表す列挙型です。<br>
+     */
+    static enum Entrant {
+        A, B;
+    }
+    
+    // ++++++++++++++++ instance members ++++++++++++++++
+    
 }
