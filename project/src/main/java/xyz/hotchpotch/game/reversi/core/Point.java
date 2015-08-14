@@ -73,6 +73,26 @@ public class Point implements Serializable {
     }
     
     /**
+     * {@code "a1"}～{@code "h8"} 形式で指定された位置を表す {@code Point} インスタンスを返します。<br>
+     * 同じ座標には、常に同じインスタンスを返します。<br>
+     * 
+     * @param str {@code "a1"}～{@code "h8"} 形式の位置
+     * @return 指定された位置を表す {@code Point} インスタンス
+     * @throws NullPointerException {@code str} が {@code null} の場合
+     * @throws IllegalArgumentException {@code str} の形式が不正な場合
+     */
+    public static Point of(String str) {
+        Objects.requireNonNull(str);
+        if (!str.matches("[a-h][1-8]")) {
+            throw new IllegalArgumentException("str=" + str);
+        }
+        
+        int i = str.charAt(1) - '1';
+        int j = str.charAt(0) - 'a';
+        return points[ordinal(i, j)];
+    }
+    
+    /**
      * すべての {@code Point} インスタンスを含む配列を返します。<br>
      * 
      * @return すべての {@code Point} インスタンスを含む配列
