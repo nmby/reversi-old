@@ -30,7 +30,8 @@ public class RandomAIPlayer implements Player {
      */
     public RandomAIPlayer(Color color, GameCondition gameCondition) {
         // デバッグ用にシード値を受け取れるようにしておく。
-        String seedStr = gameCondition.getProperty("random.seed");
+        String key = getClass().getName() + ".seed";
+        String seedStr = gameCondition.getProperty(key);
         Long seed;
         try {
             seed = Long.valueOf(seedStr);
