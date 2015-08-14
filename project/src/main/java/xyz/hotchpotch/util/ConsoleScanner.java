@@ -66,14 +66,6 @@ public class ConsoleScanner<T> implements Supplier<T> {
             this.complaint = complaint;
         }
         
-//        private Builder(
-//                Predicate<String> judge,
-//                Function<String, T> converter,
-//                String prompt) {
-//                
-//            this(judge, converter, prompt, "");
-//        }
-        
         /**
          * 標準出力に表示するプロンプト文字列を指定します。<br>
          * 
@@ -253,7 +245,7 @@ public class ConsoleScanner<T> implements Supplier<T> {
         }
         prompt.append("> ");
         String complaint = "入力値が不正です。";
-        return new Builder<T>(judge, converter, prompt.toString(), complaint);
+        return new Builder<>(judge, converter, prompt.toString(), complaint);
     }
     
     /**
@@ -285,11 +277,38 @@ public class ConsoleScanner<T> implements Supplier<T> {
             String prompt,
             String complaint) {
             
-        return new Builder<T>(
+        return new Builder<>(
                 Objects.requireNonNull(judge),
                 Objects.requireNonNull(converter),
                 Objects.requireNonNull(prompt),
                 Objects.requireNonNull(complaint));
+    }
+    
+    /**
+     * ユーザが確認するまで待機するための {@code ConsoleScanner} を生成します。<br>
+     * 生成される {@code ConsoleScanner} の {@link #get()} メソッドは、
+     * 標準出力に「何かキーを入力してください > 」と表示し、
+     * ユーザが何らかのキー入力を行うとその入力値を返します。<br>
+     * 
+     * @return ユーザが確認するまで待機するための {@code ConsoleScanner}
+     */
+    public static ConsoleScanner<String> waiter() {
+        return waiter("何かキーを入力してください > ");
+    }
+    
+    /**
+     * ユーザが確認するまで待機するための {@code ConsoleScanner} を生成します。<br>
+     * 生成される {@code ConsoleScanner} の {@link #get()} メソッドは、
+     * 標準出力にプロンプト文字列を表示し、
+     * ユーザが何らかのキー入力を行うとその入力値を返します。<br>
+     * 
+     * @param prompt 標準出力に表示するプロンプト文字列
+     * @return ユーザが確認するまで待機するための {@code ConsoleScanner}
+     * @throws NullPointerException {@code prompt} が {@code null} の場合
+     */
+    public static ConsoleScanner<String> waiter(String prompt) {
+        Objects.requireNonNull(prompt);
+        return new Builder<String>(s -> true, Function.identity(), prompt, null).build();
     }
     
     // ++++++++++++++++ instance members ++++++++++++++++
