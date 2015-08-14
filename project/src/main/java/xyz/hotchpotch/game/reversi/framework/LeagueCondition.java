@@ -12,6 +12,8 @@ import java.util.Objects;
 import java.util.Properties;
 import java.util.TreeSet;
 
+import xyz.hotchpotch.game.reversi.framework.League.Pair;
+
 /**
  * リーグの実施条件を表す不変クラスです。<br>
  * 
@@ -209,8 +211,8 @@ public class LeagueCondition implements Condition<League>, Serializable {
     /** 対戦回数 */
     public transient final int times;
     
-    /** マッチ実行条件が格納された {@code List} */
-    public transient final List<MatchCondition> matchConditions;
+    /** マッチ条件が格納された {@code Map} */
+    public transient final Map<Pair, MatchCondition> matchConditions;
     
     private transient final Properties properties;
     
@@ -230,18 +232,22 @@ public class LeagueCondition implements Condition<League>, Serializable {
         @SuppressWarnings("unchecked")
         Map<String, String> matchProperties = new HashMap<>((Map<String, String>) properties.clone());
         matchProperties.put("print.level", "LEAGUE");
-        List<MatchCondition> matchConditions = new ArrayList<>();
-        for (int i = 0; i < playerClasses.size() - 1; i++) {
-            MatchCondition matchCondition = MatchCondition.of(
-                    playerClasses.get(i),
-                    playerClasses.get(i + 1),
+        
+        Map<Pair, MatchCondition> matchConditions = new HashMap<>();
+        for (int idx1 = 0; idx1 < playerClasses.size() - 1; idx1++) {
+            for (int idx2 = idx1 = 1; idx2 < playerClasses.size(); idx2++) {
+                MatchCondition matchCondition = MatchCondition.of(
+                    playerClasses.get(idx1),
+                    playerClasses.get(idx2),
                     givenMillisPerTurn,
                     givenMillisInGame,
                     times,
                     matchProperties);
-            matchConditions.add(matchCondition);
+                
+                matchConditions.put(new Pair(idx1, idx2), matchCondition);
+            }
         }
-        this.matchConditions = Collections.unmodifiableList(matchConditions);
+        this.matchConditions = Collections.unmodifiableMap(matchConditions);
     }
     
     /**
