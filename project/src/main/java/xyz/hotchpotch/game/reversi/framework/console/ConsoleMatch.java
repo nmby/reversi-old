@@ -97,7 +97,8 @@ public class ConsoleMatch implements ConsolePlayable<Match> {
         Entrant currEntrant = Entrant.A;
         for (int n = 0; n < matchCondition.times; n++) {
             
-            GameResult gameResult = games.get(currEntrant).play();
+            ConsoleGame game = games.get(currEntrant);
+            GameResult gameResult = game.play();
             gameResults.get(currEntrant).add(gameResult);
             
             currEntrant = currEntrant.opposite();

@@ -79,9 +79,10 @@ public class MatchResult implements Result<Match> {
         counts.put(null, draw);
         this.counts = Collections.unmodifiableMap(counts);
         
-        description = String.format("%s %sの勝ち:%d, %sの勝ち:%d, 引き分け:%d",
-                winner == null ? "引き分けです。" : String.format("%s:%s の勝ちです。",
-                        winner, matchCondition.playerClasses.get(winner).getSimpleName()),
+        description = String.format("%s:%s, %s:%s\t>> %s %sの勝ち:%d, %sの勝ち:%d, 引き分け:%d",
+                Entrant.A, matchCondition.playerClasses.get(Entrant.A).getSimpleName(),
+                Entrant.B, matchCondition.playerClasses.get(Entrant.B).getSimpleName(),
+                winner == null ? "引き分けです。" : winner + "の勝ちです。",
                 Entrant.A, winA, Entrant.B, winB, draw);
     }
     

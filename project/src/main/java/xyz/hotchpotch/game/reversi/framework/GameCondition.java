@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.Set;
+import java.util.SortedSet;
 import java.util.TreeSet;
 
 import xyz.hotchpotch.game.reversi.core.Color;
@@ -240,9 +242,15 @@ public class GameCondition implements Condition<Game>, Serializable {
      */
     @Override
     public String toStringKindly() {
+        // Properties ってナンでこんなに使いにくいンだ ?!
         StringBuilder str = new StringBuilder();
-        for (Map.Entry<?, ?> entry : new TreeSet<>(properties.entrySet())) {
-            str.append(String.format("%s=%s", entry.getKey(), entry.getValue())).append(System.lineSeparator());
+        
+        Set<?> keys = properties.keySet();
+        @SuppressWarnings("unchecked")
+        SortedSet<String> sortedKeys = new TreeSet<>((Set<String>) keys);
+        
+        for (String key : sortedKeys) {
+            str.append(String.format("%s=%s", key, properties.getProperty(key))).append(System.lineSeparator());
         }
         return str.toString();
     }

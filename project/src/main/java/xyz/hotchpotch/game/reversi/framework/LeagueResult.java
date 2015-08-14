@@ -49,13 +49,13 @@ public class LeagueResult implements Result<League> {
         int num = leagueCondition.playerClasses.size();
         for (int idx1 = 0; idx1 < num - 1; idx1++) {
             for (int idx2 = idx1 + 1; idx2 < num; idx2++) {
-                MatchResult matchResult = matchResults.get(new Pair(idx1, idx2));
+                MatchResult matchResult = matchResults.get(Pair.of(idx1, idx2));
                 for (Entrant entrant : Entrant.values()) {
                     Map<String, Integer> count = new HashMap<>();
                     count.put("win", matchResult.counts.get(entrant));
                     count.put("lose", matchResult.counts.get(entrant.opposite()));
                     count.put("draw", matchResult.counts.get(null));
-                    counts.put(entrant == Entrant.A ? new Pair(idx1, idx2) : new Pair(idx2, idx1), count);
+                    counts.put(entrant == Entrant.A ? Pair.of(idx1, idx2) : Pair.of(idx2, idx1), count);
                 }
             }
         }
@@ -67,31 +67,32 @@ public class LeagueResult implements Result<League> {
         }
         str.append(BR);
         str.append("＜対戦成績（勝/分/負）＞").append(BR);
+        str.append("     ");
         for (int i = 0; i < num; i++) {
-            str.append(String.format("\t対[%d]", i + 1));
+            str.append(String.format("   %-10s", "対 [" + (i + 1) + "]"));
         }
-        str.append("[total]").append(BR);
+        str.append("     [total]").append(BR);
         for (int idx1 = 0; idx1 < num; idx1++) {
-            str.append(String.format("[%d]", idx1 + 1));
+            str.append(String.format("%5s", "[" + (idx1 + 1) + "]"));
             int win = 0;
             int draw = 0;
             int lose = 0;
             
             for (int idx2 = 0; idx2 < num; idx2++) {
                 if (idx1 == idx2) {
-                    str.append(String.format("\t-/-/-"));
+                    str.append(String.format("     -/  -/  -"));
                 } else {
-                    Map<String, Integer> count = counts.get(new Pair(idx1, idx2));
+                    Map<String, Integer> count = counts.get(Pair.of(idx1, idx2));
                     int w = count.get("win");
                     int d = count.get("draw");
                     int l = count.get("lose");
-                    str.append(String.format("\t%d/%d/%d", w, d, l));
+                    str.append(String.format("   %3d/%3d/%3d", w, d, l));
                     win += w;
                     draw += d;
                     lose += l;
                 }
             }
-            str.append(String.format("\t%d/%d/%d", win, draw, lose)).append(BR);
+            str.append(String.format("     %4d/%4d/%4d", win, draw, lose)).append(BR);
         }
         
         description = str.toString();

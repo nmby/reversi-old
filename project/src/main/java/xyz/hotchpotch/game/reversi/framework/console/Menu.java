@@ -21,7 +21,7 @@ public enum Menu {
     MATCH("2プレーヤーで黒白交代しながら複数回対戦します。", ConsoleMatch::arrange),
     
     /** リーグ：複数プレーヤーでそれぞれ複数回、総当たり戦を行います。 */
-    LEAGUE("複数プレーヤーでそれぞれ複数回、総当たり戦を行います。", null),
+    LEAGUE("複数プレーヤーでそれぞれ複数回、総当たり戦を行います。", ConsoleLeague::arrange),
     
     /** 終了 */
     EXIT("終了します。", null) {

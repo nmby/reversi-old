@@ -1,7 +1,10 @@
 package xyz.hotchpotch.game.reversi.framework.console;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -28,20 +31,68 @@ class CommonUtil {
                 CrazyAIPlayer.class);
     }
     
-    static <E extends Enum<E>> Class<? extends Player> arrangePlayerClass(String str) {
-        List<Class<? extends Player>> playerClasses = playerClasses();
-        StringBuilder prompt1 = new StringBuilder();
-        prompt1.append(String.format("%sを番号で選択してください。", str)).append(BR);
-        int n = 0;
-        for (Class<? extends Player> playerClass : playerClasses) {
-            prompt1.append(String.format("\t%d : %s", ++n, playerClass.getName())).append(BR);
+    static List<Class<? extends Player>> arrangePlayerClassList() {
+        List<Class<? extends Player>> playerClasses = new ArrayList<>(playerClasses());
+        Set<Integer> selected = new TreeSet<>();
+        
+        while (true) {
+            StringBuilder prompt = new StringBuilder();
+            prompt.append("選択するプレーヤーを番号で指定してください。"
+                    + "選択済みのものを再度指定した場合は、選択を解除します。\n"
+                    + "選択を終了する場合は -1 を入力してください。")
+                    .append(BR);
+            
+            for (int i = 0; i < playerClasses.size(); i++) {
+                prompt.append(String.format("\t%s[%d] %s",
+                        selected.contains(i) ? "選択済み " : "",
+                        i + 1,
+                        playerClasses.get(i).getName()))
+                        .append(BR);
+            }
+            prompt.append(String.format("\t[0] その他（自作クラス）")).append(BR);
+            prompt.append("> ");
+            
+            ConsoleScanner<Integer> scIdx = ConsoleScanner
+                    .intBuilder(-1, playerClasses.size())
+                    .prompt(prompt.toString())
+                    .build();
+            int idx = scIdx.get();
+            
+            if (idx == -1) {
+                break;
+            } else if (idx == 0) {
+                Class<? extends Player> customPlayer = arrangeCustomPlayerClass();
+                playerClasses.add(customPlayer);
+                selected.add(playerClasses.size() - 1);
+            } else {
+                if (selected.contains(idx - 1)) {
+                    selected.remove(idx - 1);
+                } else {
+                    selected.add(idx - 1);
+                }
+            }
         }
-        prompt1.append(String.format("\t0 : その他（自作クラス）")).append(BR);
-        prompt1.append("> ");
+        
+        List<Class<? extends Player>> selectedPlayers = new ArrayList<>();
+        for (int idx : selected) {
+            selectedPlayers.add(playerClasses.get(idx));
+        }
+        return selectedPlayers;
+    }
+    
+    static Class<? extends Player> arrangePlayerClass(String str) {
+        List<Class<? extends Player>> playerClasses = playerClasses();
+        StringBuilder prompt = new StringBuilder();
+        prompt.append(String.format("%sを番号で選択してください。", str)).append(BR);
+        for (int i = 0; i < playerClasses.size(); i++) {
+            prompt.append(String.format("\t%d : %s", i + 1, playerClasses.get(i).getName())).append(BR);
+        }
+        prompt.append(String.format("\t0 : その他（自作クラス）")).append(BR);
+        prompt.append("> ");
         
         ConsoleScanner<Integer> scIdx = ConsoleScanner
                 .intBuilder(0, playerClasses.size())
-                .prompt(prompt1.toString())
+                .prompt(prompt.toString())
                 .build();
         int idx = scIdx.get();
         if (0 < idx) {
@@ -51,7 +102,7 @@ class CommonUtil {
         }
     }
     
-    private static <E extends Enum<E>> Class<? extends Player> arrangeCustomPlayerClass() {
+    private static Class<? extends Player> arrangeCustomPlayerClass() {
         Predicate<String> judge = s -> {
             try {
                 @SuppressWarnings({ "unchecked", "unused" })
@@ -96,8 +147,8 @@ class CommonUtil {
     
     static int arrangeTimes() {
         return ConsoleScanner
-                .intBuilder(1, 30)
-                .prompt("対戦回数を 1～30 の範囲で指定してください" + BR + "> ")
+                .intBuilder(1, 100)
+                .prompt("対戦回数を 1～100 の範囲で指定してください" + BR + "> ")
                 .build()
                 .get();
     }

@@ -18,10 +18,15 @@ public interface League extends Playable {
      * リーグにおける個々のマッチの組み合わせを表すための不変クラスです。<br>
      */
     static class Pair {
+        
+        public static Pair of(int idx1, int idx2) {
+            return new Pair(idx1, idx2);
+        }
+        
         final int idx1;
         final int idx2;
         
-        Pair(int idx1, int idx2) {
+        private Pair(int idx1, int idx2) {
             this.idx1 = idx1;
             this.idx2 = idx2;
         }

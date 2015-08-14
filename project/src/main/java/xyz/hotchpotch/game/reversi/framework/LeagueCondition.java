@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.Set;
+import java.util.SortedSet;
 import java.util.TreeSet;
 
 import xyz.hotchpotch.game.reversi.framework.League.Pair;
@@ -235,7 +237,7 @@ public class LeagueCondition implements Condition<League>, Serializable {
         
         Map<Pair, MatchCondition> matchConditions = new HashMap<>();
         for (int idx1 = 0; idx1 < playerClasses.size() - 1; idx1++) {
-            for (int idx2 = idx1 = 1; idx2 < playerClasses.size(); idx2++) {
+            for (int idx2 = idx1 + 1; idx2 < playerClasses.size(); idx2++) {
                 MatchCondition matchCondition = MatchCondition.of(
                     playerClasses.get(idx1),
                     playerClasses.get(idx2),
@@ -244,7 +246,7 @@ public class LeagueCondition implements Condition<League>, Serializable {
                     times,
                     matchProperties);
                 
-                matchConditions.put(new Pair(idx1, idx2), matchCondition);
+                matchConditions.put(Pair.of(idx1, idx2), matchCondition);
             }
         }
         this.matchConditions = Collections.unmodifiableMap(matchConditions);
@@ -275,9 +277,15 @@ public class LeagueCondition implements Condition<League>, Serializable {
      */
     @Override
     public String toStringKindly() {
+        // Properties ってナンでこんなに使いにくいンだ ?!
         StringBuilder str = new StringBuilder();
-        for (Map.Entry<?, ?> entry : new TreeSet<>(properties.entrySet())) {
-            str.append(String.format("%s=%s", entry.getKey(), entry.getValue())).append(System.lineSeparator());
+        
+        Set<?> keys = properties.keySet();
+        @SuppressWarnings("unchecked")
+        SortedSet<String> sortedKeys = new TreeSet<>((Set<String>) keys);
+        
+        for (String key : sortedKeys) {
+            str.append(String.format("%s=%s", key, properties.getProperty(key))).append(System.lineSeparator());
         }
         return str.toString();
     }
