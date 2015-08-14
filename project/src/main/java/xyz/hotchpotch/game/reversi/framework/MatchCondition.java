@@ -249,6 +249,7 @@ public class MatchCondition implements Condition<Match>, Serializable {
         } else {
             gameProperties.put("print.level", "MATCH");
         }
+        gameProperties.put("auto", "true");
         
         GameCondition gameConditionA = GameCondition.of(
                 playerClassA, playerClassB, givenMillisPerTurn, givenMillisInGame, gameProperties);
