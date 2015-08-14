@@ -4,7 +4,6 @@ import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -83,14 +82,16 @@ public class Point implements Serializable {
     }
     
     /**
-     * すべての {@code Point} インスタンスをソースとする並列ストリームを返します。<br>
+     * すべての {@code Point} インスタンスをソースとする順次ストリームを返します。<br>
      * 
      * @return 新しいストリーム
      */
     public static Stream<Point> stream() {
-        // MEMO: ホントに並列ストリームになり得るのか要お勉強
-        // MEMO: Spliterator について要お勉強
-        return new HashSet<>(Arrays.asList(points)).parallelStream();
+        // MEMO: コメントアウトした並列ストリームを返す実装にしたところ、実行が止まる事象が発生。
+        // MEMO: 已む無く順次ストリームを返す仕様に変更。
+        // MEMO: マルチスレッドプログラミングと Spliterator について要お勉強
+        // return new HashSet<>(Arrays.asList(points)).parallelStream();
+        return Arrays.stream(points);
     }
     
     private static boolean isValidIndex(int i, int j) {

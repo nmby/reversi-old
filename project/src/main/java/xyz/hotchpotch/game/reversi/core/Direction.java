@@ -1,6 +1,6 @@
 package xyz.hotchpotch.game.reversi.core;
 
-import java.util.EnumSet;
+import java.util.Arrays;
 import java.util.stream.Stream;
 
 /**
@@ -37,14 +37,16 @@ public enum Direction {
     UPPER_LEFT(-1, -1);
     
     /**
-     * この列挙型のすべての要素をソースとする並列ストリームを返します。<br>
+     * この列挙型のすべての要素をソースとする順次ストリームを返します。<br>
      * 
      * @return 新しいストリーム
      */
     public static Stream<Direction> stream() {
-        // MEMO: ホントに並列ストリームになり得るのか要お勉強
-        // MEMO: Spliterator について要お勉強
-        return EnumSet.allOf(Direction.class).parallelStream();
+        // MEMO: コメントアウトした並列ストリームを返す実装にしたところ、実行が止まる事象が発生。
+        // MEMO: 已む無く順次ストリームを返す仕様に変更。
+        // MEMO: マルチスレッドプログラミングと Spliterator について要お勉強
+        // return EnumSet.allOf(Direction.class).parallelStream();
+        return Arrays.stream(values());
     }
     
     // ++++++++++++++++ instance members ++++++++++++++++
