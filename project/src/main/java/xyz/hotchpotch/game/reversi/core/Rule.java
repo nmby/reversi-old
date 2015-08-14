@@ -91,7 +91,7 @@ public class Rule {
         Point p = point;
         while (p.hasNext(direction)) {
             p = p.next(direction);
-            if (board.colorAt(p) == color.opposite()) {
+            if (board.colorAt(p) == color) {
                 return n;
             } else if (board.colorAt(p) == null) {
                 return 0;
