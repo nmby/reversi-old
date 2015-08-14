@@ -25,9 +25,9 @@ public class GameResult implements Result<Game> {
      * @throws NullPointerException {@code gameCondition}、{@code board} のいずれかが {@code null} の場合
      */
     public static GameResult of(GameCondition gameCondition, Board board) {
-        Objects.requireNonNull(gameCondition);
-        Objects.requireNonNull(board);
-        return new GameResult(gameCondition, board);
+        return new GameResult(
+                Objects.requireNonNull(gameCondition),
+                Objects.requireNonNull(board));
     }
     
     /**
@@ -41,10 +41,10 @@ public class GameResult implements Result<Game> {
      *                              {@code null} の場合
      */
     public static GameResult of(GameCondition gameCondition, Board board, RuleViolationException violation) {
-        Objects.requireNonNull(gameCondition);
-        Objects.requireNonNull(board);
-        Objects.requireNonNull(violation);
-        return new GameResult(gameCondition, board, violation);
+        return new GameResult(
+                Objects.requireNonNull(gameCondition),
+                Objects.requireNonNull(board),
+                Objects.requireNonNull(violation));
     }
     
     // ++++++++++++++++ instance members ++++++++++++++++
@@ -72,9 +72,8 @@ public class GameResult implements Result<Game> {
         }
         
         description = String.format("%s %s:%d, %s:%d",
-                winner == null ?
-                        "引き分けです。" : String.format(
-                        "%s:%s の勝ちです。", winner, gameCondition.playerClasses.get(winner).getSimpleName()),
+                winner == null ? "引き分けです。" : String.format("%s:%s の勝ちです。",
+                        winner, gameCondition.playerClasses.get(winner).getSimpleName()),
                 Color.BLACK, black, Color.WHITE, white);
     }
     
