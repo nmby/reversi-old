@@ -2,7 +2,9 @@ package xyz.hotchpotch.game.reversi.framework.console;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.function.Function;
@@ -13,6 +15,7 @@ import xyz.hotchpotch.game.reversi.aiplayers.MonteCarloAIPlayer;
 import xyz.hotchpotch.game.reversi.aiplayers.RandomAIPlayer;
 import xyz.hotchpotch.game.reversi.aiplayers.SimplestAIPlayer;
 import xyz.hotchpotch.game.reversi.aiplayers.SlowpokeAIPlayer;
+import xyz.hotchpotch.game.reversi.framework.Condition;
 import xyz.hotchpotch.game.reversi.framework.Player;
 import xyz.hotchpotch.util.ConsoleScanner;
 
@@ -43,7 +46,7 @@ class CommonUtil {
                     + "選択済みのものを再度指定した場合は、選択を解除します。\n"
                     + "選択を終了する場合は -1 を入力してください。")
                     .append(BR);
-            
+                    
             for (int i = 0; i < playerClasses.size(); i++) {
                 prompt.append(String.format("\t%s[%d] %s",
                         selected.contains(i) ? "選択済み " : "",
@@ -153,6 +156,41 @@ class CommonUtil {
                 .prompt("対戦回数を 1～100 の範囲で指定してください" + BR + "> ")
                 .build()
                 .get();
+    }
+    
+    static Map<String, String> arrangeAdditionalParams() {
+        Map<String, String> params = new HashMap<>();
+        ConsoleScanner<String> sc = ConsoleScanner
+                .stringBuilder("[^=]+=.+|^$")
+                .prompt("追加のデバッグ用パラメータが必要な場合は key=value 形式で入力してください。" + BR
+                        + "必要ない場合は何も入力せず Enter を押してください" + BR
+                        + "> ")
+                .build();
+        
+        while (true) {
+            String str = sc.get();
+            if ("".equals(str)) {
+                break;
+            }
+            String[] keyValue = str.split("=", 2);
+            params.put(keyValue[0], keyValue[1]);
+        }
+        
+        return params;
+    }
+    
+    static <T> T getParameter(
+            Condition<?> condition,
+            String key,
+            Function<String, T> converter,
+            T defaultValue) {
+            
+        String str = condition.getProperty(key);
+        try {
+            return converter.apply(str);
+        } catch (RuntimeException e) {
+            return defaultValue;
+        }
     }
     
     // ++++++++++++++++ instance members ++++++++++++++++

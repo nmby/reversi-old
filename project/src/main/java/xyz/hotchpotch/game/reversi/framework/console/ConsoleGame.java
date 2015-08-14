@@ -64,8 +64,9 @@ public class ConsoleGame implements ConsolePlayable<Game> {
         Class<? extends Player> playerWhite = CommonUtil.arrangePlayerClass(Color.WHITE + "のプレーヤー");
         long givenMillisPerTurn = CommonUtil.arrangeGivenMillisPerTurn();
         long givenMillisInGame = CommonUtil.arrangeGivenMillisInGame();
+        Map<String, String> params = CommonUtil.arrangeAdditionalParams();
         
-        return GameCondition.of(playerBlack, playerWhite, givenMillisPerTurn, givenMillisInGame);
+        return GameCondition.of(playerBlack, playerWhite, givenMillisPerTurn, givenMillisInGame, params);
     }
     
     // ++++++++++++++++ instance members ++++++++++++++++
@@ -73,6 +74,7 @@ public class ConsoleGame implements ConsolePlayable<Game> {
     private final GameCondition gameCondition;
     private final ConsolePrinter printer;
     private final ConsoleScanner<String> waiter = ConsoleScanner.waiter();
+    private final boolean auto;
     
     private Map<Color, Player> players;
     private Board board;
@@ -82,14 +84,15 @@ public class ConsoleGame implements ConsolePlayable<Game> {
     private ConsoleGame(GameCondition gameCondition) {
         this.gameCondition = gameCondition;
         
-        String printLevel = gameCondition.getProperty("print.level");
-        Level level;
-        try {
-            level = Enum.valueOf(Level.class, printLevel);
-        } catch (IllegalArgumentException | NullPointerException e) {
-            level = Level.GAME;
-        }
+        Level level = CommonUtil.getParameter(
+                gameCondition,
+                "print.level",
+                s -> Enum.valueOf(Level.class, s),
+                Level.GAME);
+        
         printer = ConsolePrinter.of(level);
+        
+        auto = CommonUtil.getParameter(gameCondition, "auto", Boolean::valueOf, false);
     }
     
     /**
@@ -122,7 +125,7 @@ public class ConsoleGame implements ConsolePlayable<Game> {
                 printer.println(Level.GAME, String.format(
                         "%s が指定されました。（%d ミリ秒経過、残り持ち時間 %d ミリ秒）",
                         move, remainingBefore - remainingAfter, remainingAfter));
-                if (printer.level == Level.GAME) {
+                if (!auto) {
                     waiter.get();
                 }
                 
@@ -148,7 +151,7 @@ public class ConsoleGame implements ConsolePlayable<Game> {
         printer.println(Level.MATCH, gameResult.toString());
         printer.println(Level.GAME, "****************************************************************");
         printer.println(Level.GAME, "");
-        if (printer.level == Level.GAME) {
+        if (!auto) {
             waiter.get();
         }
         printer.println(Level.MATCH, "");

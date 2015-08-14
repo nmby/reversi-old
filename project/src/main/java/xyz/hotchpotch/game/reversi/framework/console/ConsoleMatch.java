@@ -50,8 +50,9 @@ public class ConsoleMatch implements ConsolePlayable<Match> {
         long givenMillisPerTurn = CommonUtil.arrangeGivenMillisPerTurn();
         long givenMillisInGame = CommonUtil.arrangeGivenMillisInGame();
         int times = CommonUtil.arrangeTimes();
+        Map<String, String> params = CommonUtil.arrangeAdditionalParams();
         
-        return MatchCondition.of(playerA, playerB, givenMillisPerTurn, givenMillisInGame, times);
+        return MatchCondition.of(playerA, playerB, givenMillisPerTurn, givenMillisInGame, times, params);
     }
     
     // ++++++++++++++++ instance members ++++++++++++++++
@@ -63,13 +64,12 @@ public class ConsoleMatch implements ConsolePlayable<Match> {
     private ConsoleMatch(MatchCondition matchCondition) {
         this.matchCondition = matchCondition;
         
-        String printLevel = matchCondition.getProperty("print.level");
-        Level level;
-        try {
-            level = Enum.valueOf(Level.class, printLevel);
-        } catch (IllegalArgumentException | NullPointerException e) {
-            level = Level.MATCH;
-        }
+        Level level = CommonUtil.getParameter(
+                matchCondition,
+                "print.level",
+                s -> Enum.valueOf(Level.class, s),
+                Level.MATCH);
+        
         printer = ConsolePrinter.of(level);
     }
     

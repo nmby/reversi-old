@@ -49,8 +49,9 @@ public class ConsoleLeague implements ConsolePlayable<League> {
         long givenMillisPerTurn = CommonUtil.arrangeGivenMillisPerTurn();
         long givenMillisInGame = CommonUtil.arrangeGivenMillisInGame();
         int times = CommonUtil.arrangeTimes();
+        Map<String, String> params = CommonUtil.arrangeAdditionalParams();
         
-        return LeagueCondition.of(players, givenMillisPerTurn, givenMillisInGame, times);
+        return LeagueCondition.of(players, givenMillisPerTurn, givenMillisInGame, times, params);
     }
     
     // ++++++++++++++++ instance members ++++++++++++++++
@@ -62,13 +63,12 @@ public class ConsoleLeague implements ConsolePlayable<League> {
     private ConsoleLeague(LeagueCondition leagueCondition) {
         this.leagueCondition = leagueCondition;
         
-        String printLevel = leagueCondition.getProperty("print.level");
-        Level level;
-        try {
-            level = Enum.valueOf(Level.class, printLevel);
-        } catch (IllegalArgumentException | NullPointerException e) {
-            level = Level.LEAGUE;
-        }
+        Level level = CommonUtil.getParameter(
+                leagueCondition,
+                "print.level",
+                s -> Enum.valueOf(Level.class, s),
+                Level.LEAGUE);
+        
         printer = ConsolePrinter.of(level);
     }
     
