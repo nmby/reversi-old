@@ -1,5 +1,7 @@
 package xyz.hotchpotch.game.reversi.framework;
 
+import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -25,9 +27,13 @@ public class MatchResult implements Result<Match> {
      * @throws NullPointerException {@code matchCondition}、{@code gameResults} のいずれかが {@code null} の場合
      */
     public static MatchResult of(MatchCondition matchCondition, Map<Entrant, List<GameResult>> gameResults) {
-        return new MatchResult(
-                Objects.requireNonNull(matchCondition),
-                Objects.requireNonNull(gameResults));
+        Objects.requireNonNull(matchCondition);
+        Objects.requireNonNull(gameResults);
+        
+        Map<Entrant, List<GameResult>> copy = new EnumMap<>(Entrant.class);
+        copy.put(Entrant.A, new ArrayList<>(gameResults.get(Entrant.A)));
+        copy.put(Entrant.B, new ArrayList<>(gameResults.get(Entrant.B)));
+        return new MatchResult(matchCondition, copy);
     }
     
     // ++++++++++++++++ instance members ++++++++++++++++

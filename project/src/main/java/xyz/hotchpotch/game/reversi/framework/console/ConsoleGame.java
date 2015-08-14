@@ -145,10 +145,9 @@ public class ConsoleGame implements ConsolePlayable<Game> {
     
     // ++++++++++++++++ instance members ++++++++++++++++
     
-    private final ConsoleScanner<String> waiter = ConsoleScanner.waiter();
-    
     private final GameCondition gameCondition;
     private final ConsolePrinter printer;
+    private final ConsoleScanner<String> waiter = ConsoleScanner.waiter();
     
     private Map<Color, Player> players;
     private Board board;
@@ -227,7 +226,7 @@ public class ConsoleGame implements ConsolePlayable<Game> {
         if (printer.level == Level.GAME) {
             waiter.get();
         }
-        printer.println(Level.GAME, "");
+        printer.println(Level.MATCH, "");
         
         return gameResult;
     }
