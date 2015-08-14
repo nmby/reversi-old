@@ -1,7 +1,9 @@
 package xyz.hotchpotch.game.reversi.framework;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -40,6 +42,7 @@ public class MatchResult implements Result<Match> {
     
     public final MatchCondition matchCondition;
     public final Entrant winner;
+    public final Map<Entrant, Integer> counts;
     private final String description;
     
     private MatchResult(MatchCondition matchCondition, Map<Entrant, List<GameResult>> gameResults) {
@@ -69,6 +72,12 @@ public class MatchResult implements Result<Match> {
         } else {
             winner = null;
         }
+        
+        Map<Entrant, Integer> counts = new HashMap<>();
+        counts.put(Entrant.A, winA);
+        counts.put(Entrant.B, winB);
+        counts.put(null, draw);
+        this.counts = Collections.unmodifiableMap(counts);
         
         description = String.format("%s %sの勝ち:%d, %sの勝ち:%d, 引き分け:%d",
                 winner == null ? "引き分けです。" : String.format("%s:%s の勝ちです。",
