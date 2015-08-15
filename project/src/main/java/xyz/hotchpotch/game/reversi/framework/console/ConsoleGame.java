@@ -127,7 +127,7 @@ public class ConsoleGame implements ConsolePlayable<Game> {
                 long remainingAfter = remainingMillisInGame.get(currColor);
                 
                 printer.println(Level.GAME, String.format(
-                        "%s が指定されました。（%d ミリ秒経過、残り持ち時間 %d ミリ秒）",
+                        "%s が選択されました。（%d ミリ秒経過、残り持ち時間 %d ミリ秒）",
                         move, remainingBefore - remainingAfter, remainingAfter));
                 if (!auto) {
                     waiter.get();
