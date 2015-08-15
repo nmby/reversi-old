@@ -244,9 +244,7 @@ public class MatchCondition implements Condition<Match>, Serializable {
         Map<String, String> gameProperties = new HashMap<>((Map<String, String>) properties.clone());
         
         String printLevel = properties.getProperty("print.level");
-        if (printLevel != null) {
-            gameProperties.put("print.level", printLevel);
-        } else {
+        if (printLevel == null) {
             gameProperties.put("print.level", "MATCH");
         }
         gameProperties.put("auto", "true");

@@ -49,7 +49,12 @@ public class ConsoleLeague implements ConsolePlayable<League> {
         long givenMillisPerTurn = CommonUtil.arrangeGivenMillisPerTurn();
         long givenMillisInGame = CommonUtil.arrangeGivenMillisInGame();
         int times = CommonUtil.arrangeTimes();
-        Map<String, String> params = CommonUtil.arrangeAdditionalParams();
+        Map<String, String> params = new HashMap<>();
+        boolean dispDetail = CommonUtil.arrangeDispDetail();
+        if (dispDetail) {
+            params.put("print.level", "GAME");
+        }
+        params = CommonUtil.arrangeAdditionalParams(params);
         
         return LeagueCondition.of(players, givenMillisPerTurn, givenMillisInGame, times, params);
     }

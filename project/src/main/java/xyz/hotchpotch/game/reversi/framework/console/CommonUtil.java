@@ -2,7 +2,6 @@ package xyz.hotchpotch.game.reversi.framework.console;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -167,6 +166,15 @@ class CommonUtil {
         return selected == 1;
     }
     
+    static boolean arrangeDispDetail() {
+        int selected = ConsoleScanner
+                .intBuilder(1, 2)
+                .prompt("表示の詳細度を番号で選んでください（1: サマリのみ, 2: 詳細表示あり）" + BR + "> ")
+                .build()
+                .get();
+        return selected == 2;
+    }
+    
     static Map<String, String> arrangeAdditionalParams(Map<String, String> params) {
         ConsoleScanner<String> sc = ConsoleScanner
                 .stringBuilder("[^=]+=.+|^$")
@@ -185,10 +193,6 @@ class CommonUtil {
         }
         
         return params;
-    }
-    
-    static Map<String, String> arrangeAdditionalParams() {
-        return arrangeAdditionalParams(new HashMap<>());
     }
     
     static <T> T getParameter(

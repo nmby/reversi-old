@@ -2,6 +2,7 @@ package xyz.hotchpotch.game.reversi.framework.console;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -50,7 +51,12 @@ public class ConsoleMatch implements ConsolePlayable<Match> {
         long givenMillisPerTurn = CommonUtil.arrangeGivenMillisPerTurn();
         long givenMillisInGame = CommonUtil.arrangeGivenMillisInGame();
         int times = CommonUtil.arrangeTimes();
-        Map<String, String> params = CommonUtil.arrangeAdditionalParams();
+        Map<String, String> params = new HashMap<>();
+        boolean dispDetail = CommonUtil.arrangeDispDetail();
+        if (dispDetail) {
+            params.put("print.level", "GAME");
+        }
+        params = CommonUtil.arrangeAdditionalParams(params);
         
         return MatchCondition.of(playerA, playerB, givenMillisPerTurn, givenMillisInGame, times, params);
     }

@@ -233,7 +233,11 @@ public class LeagueCondition implements Condition<League>, Serializable {
         
         @SuppressWarnings("unchecked")
         Map<String, String> matchProperties = new HashMap<>((Map<String, String>) properties.clone());
-        matchProperties.put("print.level", "LEAGUE");
+        
+        String printLevel = properties.getProperty("print.level");
+        if (printLevel == null) {
+            matchProperties.put("print.level", "LEAGUE");
+        }
         matchProperties.put("auto", "true");
         
         Map<Pair, MatchCondition> matchConditions = new HashMap<>();
