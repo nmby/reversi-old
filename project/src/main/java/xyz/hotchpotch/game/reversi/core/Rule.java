@@ -117,6 +117,8 @@ public class Rule {
         
         Map<Direction, Integer> counts = new EnumMap<>(Direction.class);
         Map<Direction, Integer> wrapped = Collections.synchronizedMap(counts);
+        // TODO: ストリーム操作の中で副作用を伴う処理をするのはよろしくない！
+        // wrapped.put をやめ、リダクション操作で置き換える。
         Direction.stream().forEach(d -> {
             int count = countReversibles(board, move.color, move.point, d);
             wrapped.put(d, count);

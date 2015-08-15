@@ -88,6 +88,8 @@ public class StrictBoard extends BaseBoard implements Serializable {
         if (move.point != null) {
             Map<Direction, Integer> reversibles = Rule.counts(this, move);
             Map<Point, Color> wrapped = Collections.synchronizedMap(map);
+            // TODO: ストリーム操作の中で副作用を伴う処理をするのはよろしくない！
+            // wrapped.put をやめ、リダクション操作で置き換える。
             Direction.stream().forEach(d -> {
                 int n = reversibles.get(d);
                 Point p = move.point;

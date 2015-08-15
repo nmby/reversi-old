@@ -28,6 +28,8 @@ abstract class BaseBoard implements Board {
         assert board != null;
         map = new HashMap<>();
         Map<Point, Color> wrapped = Collections.synchronizedMap(map);
+        // TODO: ストリーム操作の中で副作用を伴う処理をするのはよろしくない！
+        // wrapped.put をやめ、リダクション操作で置き換える。
         Point.stream().forEach(p -> wrapped.put(p, board.colorAt(p)));
     }
     
