@@ -158,15 +158,23 @@ class CommonUtil {
                 .get();
     }
     
-    static Map<String, String> arrangeAdditionalParams() {
-        Map<String, String> params = new HashMap<>();
+    static boolean arrangeAuto() {
+        int selected = ConsoleScanner
+                .intBuilder(1, 2)
+                .prompt("ゲームの進行方法を番号で選んでください（1: 自動進行, 2: 対話的逐次進行）" + BR + "> ")
+                .build()
+                .get();
+        return selected == 1;
+    }
+    
+    static Map<String, String> arrangeAdditionalParams(Map<String, String> params) {
         ConsoleScanner<String> sc = ConsoleScanner
                 .stringBuilder("[^=]+=.+|^$")
                 .prompt("追加のデバッグ用パラメータが必要な場合は key=value 形式で入力してください。" + BR
                         + "必要ない場合は何も入力せず Enter を押してください" + BR
                         + "> ")
                 .build();
-        
+                
         while (true) {
             String str = sc.get();
             if ("".equals(str)) {
@@ -177,6 +185,10 @@ class CommonUtil {
         }
         
         return params;
+    }
+    
+    static Map<String, String> arrangeAdditionalParams() {
+        return arrangeAdditionalParams(new HashMap<>());
     }
     
     static <T> T getParameter(

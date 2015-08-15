@@ -3,6 +3,7 @@ package xyz.hotchpotch.game.reversi.framework.console;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
@@ -64,7 +65,10 @@ public class ConsoleGame implements ConsolePlayable<Game> {
         Class<? extends Player> playerWhite = CommonUtil.arrangePlayerClass(Color.WHITE + "のプレーヤー");
         long givenMillisPerTurn = CommonUtil.arrangeGivenMillisPerTurn();
         long givenMillisInGame = CommonUtil.arrangeGivenMillisInGame();
-        Map<String, String> params = CommonUtil.arrangeAdditionalParams();
+        Map<String, String> params = new HashMap<>();
+        boolean auto = CommonUtil.arrangeAuto();
+        params.put("auto", Boolean.toString(auto));
+        params = CommonUtil.arrangeAdditionalParams(params);
         
         return GameCondition.of(playerBlack, playerWhite, givenMillisPerTurn, givenMillisInGame, params);
     }
