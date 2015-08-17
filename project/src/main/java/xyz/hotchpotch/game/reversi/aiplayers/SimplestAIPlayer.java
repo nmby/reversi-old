@@ -25,11 +25,6 @@ public class SimplestAIPlayer implements Player {
      */
     @Override
     public Point decide(Board board, Color color, long givenMillisPerTurn, long remainingMillisInGame) {
-        for (Point p : Point.values()) {
-            if (Rule.canPutAt(board, color, p)) {
-                return p;
-            }
-        }
-        return null;
+        return Point.stream().filter(p -> Rule.canPutAt(board, color, p)).findFirst().orElse(null);
     }
 }
