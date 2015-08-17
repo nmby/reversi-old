@@ -24,11 +24,16 @@ public enum Color {
      * @return 新しいストリーム
      */
     public static Stream<Color> stream() {
-        // MEMO: コメントアウトした並列ストリームを返す実装にしたところ、実行が止まる事象が発生。
-        // MEMO: 已む無く順次ストリームを返す仕様に変更。
-        // MEMO: マルチスレッドプログラミングと Spliterator について要お勉強
-        // return EnumSet.allOf(Color.class).parallelStream();
         return Arrays.stream(values());
+    }
+    
+    /**
+     * この列挙型のすべての要素をソースとする並列ストリームを返します。<br>
+     * 
+     * @return 新しいストリーム
+     */
+    public static Stream<Color> parallelStream() {
+        return Arrays.stream(values()).parallel();
     }
     
     /**

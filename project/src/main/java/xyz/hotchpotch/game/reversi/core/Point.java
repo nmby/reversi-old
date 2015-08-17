@@ -83,7 +83,7 @@ public class Point implements Serializable {
      */
     public static Point of(String str) {
         Objects.requireNonNull(str);
-        if (!str.matches("[a-h][1-8]")) {
+        if (!str.matches(String.format("[a-%c][1-%d]", 'a' + (WIDTH - 1), HEIGHT))) {
             throw new IllegalArgumentException("str=" + str);
         }
         
@@ -107,11 +107,16 @@ public class Point implements Serializable {
      * @return 新しいストリーム
      */
     public static Stream<Point> stream() {
-        // MEMO: コメントアウトした並列ストリームを返す実装にしたところ、実行が止まる事象が発生。
-        // MEMO: 已む無く順次ストリームを返す仕様に変更。
-        // MEMO: マルチスレッドプログラミングと Spliterator について要お勉強
-        // return new HashSet<>(Arrays.asList(points)).parallelStream();
         return Arrays.stream(points);
+    }
+    
+    /**
+     * すべての {@code Point} インスタンスをソースとする並列ストリームを返します。<br>
+     * 
+     * @return 新しいストリーム
+     */
+    public static Stream<Point> parallelStream() {
+        return Arrays.stream(points).parallel();
     }
     
     private static boolean isValidIndex(int i, int j) {
