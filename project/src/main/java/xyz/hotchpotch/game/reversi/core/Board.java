@@ -1,7 +1,7 @@
 package xyz.hotchpotch.game.reversi.core;
 
 import java.util.Map;
-import java.util.stream.Stream;
+import java.util.stream.Collectors;
 
 /**
  * リバーシ盤を表します。<br>
@@ -60,7 +60,7 @@ public interface Board {
         str.append("  ");
         
         for (int j = 0; j < Point.WIDTH; j++) {
-            str.append((char) ('a' + j)).append(" ");
+            str.append(String.format("%c ", 'a' + j));
         }
         str.append(System.lineSeparator());
         
@@ -82,9 +82,6 @@ public interface Board {
      * @return このリバーシ盤の文字列表現（単一行形式）
      */
     default String toStringInLine() {
-        return String.join("",
-                Stream.of(Point.values())
-                        .map(p -> Color.toString(colorAt(p)))
-                        .toArray(String[]::new));
+        return Point.stream().map(p -> Color.toString(colorAt(p))).collect(Collectors.joining());
     }
 }

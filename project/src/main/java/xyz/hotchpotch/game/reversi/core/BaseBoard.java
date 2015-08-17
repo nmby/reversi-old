@@ -1,6 +1,5 @@
 package xyz.hotchpotch.game.reversi.core;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -26,11 +25,11 @@ abstract class BaseBoard implements Board {
     
     BaseBoard(Board board) {
         assert board != null;
+        
         map = new HashMap<>();
-        Map<Point, Color> wrapped = Collections.synchronizedMap(map);
-        // TODO: ストリーム操作の中で副作用を伴う処理をするのはよろしくない！
-        // wrapped.put をやめ、リダクション操作で置き換える。
-        Point.stream().forEach(p -> wrapped.put(p, board.colorAt(p)));
+        for (Point p : Point.values()) {
+            map.put(p, board.colorAt(p));
+        }
     }
     
     /**
