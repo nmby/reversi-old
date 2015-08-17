@@ -90,8 +90,10 @@ public class Rule {
         
         Set<Point> reversibles = new HashSet<>();
         Point p = point;
+        
         while (p.hasNext(direction)) {
             p = p.next(direction);
+            
             if (board.colorAt(p) == color) {
                 return reversibles;
             } else if (board.colorAt(p) == null) {
@@ -99,6 +101,7 @@ public class Rule {
             }
             reversibles.add(p);
         }
+        
         return Collections.emptySet();
     }
     
