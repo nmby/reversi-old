@@ -2,8 +2,11 @@ package xyz.hotchpotch.game.reversi.core;
 
 import java.util.Collections;
 import java.util.EnumMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * リバーシのルールに基づく各種判定メソッドを提供するユーティリティクラスです。<br>
@@ -24,6 +27,25 @@ public class Rule {
     public static boolean isGameOngoing(Board board) {
         Objects.requireNonNull(board);
         return Color.stream().anyMatch(c -> canPut(board, c));
+    }
+    
+    /**
+     * リバーシ盤の指定した位置に指定した手を適用できるかを返します。<br>
+     * 
+     * @param board リバーシ盤
+     * @param move 手
+     * @return 手を適用できる場合は {@code true}
+     * @NullPointerException {@code board}, {@code move} のいずれかが {@code null} の場合
+     */
+    public static boolean canApply(Board board, Move move) {
+        Objects.requireNonNull(board);
+        Objects.requireNonNull(move);
+        
+        if (move.point == null) {
+            return !canPut(board, move.color);
+        } else {
+            return canPutAt(board, move.color, move.point);
+        }
     }
     
     /**
@@ -58,26 +80,53 @@ public class Rule {
         if (board.colorAt(point) != null) {
             return false;
         }
-        return Direction.stream().anyMatch(d -> 0 < countReversibles(board, color, point, d));
+        return Direction.stream().anyMatch(d -> !reversibles(board, color, point, d).isEmpty());
+    }
+    
+    private static Set<Point> reversibles(Board board, Color color, Point point, Direction direction) {
+        assert board != null;
+        assert color != null;
+        assert point != null;
+        assert direction != null;
+        assert board.colorAt(point) == null;
+        
+        Set<Point> reversibles = new HashSet<>();
+        Point p = point;
+        while (p.hasNext(direction)) {
+            p = p.next(direction);
+            if (board.colorAt(p) == color) {
+                return reversibles;
+            } else if (board.colorAt(p) == null) {
+                return Collections.emptySet();
+            }
+            reversibles.add(p);
+        }
+        return Collections.emptySet();
     }
     
     /**
-     * リバーシ盤の指定した位置に指定した手を適用できるかを返します。<br>
+     * リバーシ盤上に指定された手を適用した場合にひっくり返すことのできる駒の位置を返します。<br>
+     * 置くことのできない手が指定された場合や、パスの手が指定された場合は、空のセットを返します。<br>
      * 
      * @param board リバーシ盤
      * @param move 手
-     * @return 手を適用できる場合は {@code true}
+     * @return ひっくり返せる位置を格納した {@code Set}
      * @NullPointerException {@code board}, {@code move} のいずれかが {@code null} の場合
      */
-    public static boolean canApply(Board board, Move move) {
+    public static Set<Point> reversibles(Board board, Move move) {
         Objects.requireNonNull(board);
         Objects.requireNonNull(move);
         
         if (move.point == null) {
-            return !canPut(board, move.color);
-        } else {
-            return canPutAt(board, move.color, move.point);
+            return Collections.emptySet();
         }
+        if (board.colorAt(move.point) != null) {
+            return Collections.emptySet();
+        }
+        
+        return Direction.stream()
+                .flatMap(d -> reversibles(board, move.color, move.point, d).stream())
+                .collect(Collectors.toSet());
     }
     
     private static int countReversibles(Board board, Color color, Point point, Direction direction) {
