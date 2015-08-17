@@ -4,12 +4,13 @@ import java.util.Random;
 
 import xyz.hotchpotch.game.reversi.core.Board;
 import xyz.hotchpotch.game.reversi.core.Color;
+import xyz.hotchpotch.game.reversi.core.Direction;
 import xyz.hotchpotch.game.reversi.core.Point;
 import xyz.hotchpotch.game.reversi.framework.GameCondition;
 import xyz.hotchpotch.game.reversi.framework.Player;
 
 /**
- * その位置に自分の駒を置けるか否かも考えず、駒が置かれていない位置のなかからランダムに手を選ぶ
+ * その位置に自分の駒を置けるか否かも考えず、既存の駒に隣接する空きセルの中からランダムに手を選ぶ
  * {@link Player} の実装です。<br>
  * 早晩、ルール違反で敗退することでしょう。<br>
  * 
@@ -39,12 +40,16 @@ public class CrazyAIPlayer implements Player {
     /**
      * {@inheritDoc}
      * <br>
-     * この実装は、駒を置けるか否かを考慮せず、駒が置かれていない位置のなかからランダムに手を選びます。<br>
+     * この実装は、駒を置ける位置か否かを考慮せず、既存の駒に隣接する空きセルの中からランダムに手を選びます。<br>
      * 早晩、ルール違反で敗退することでしょう。<br>
      */
     @Override
     public Point decide(Board board, Color color, long givenMillisPerTurn, long remainingMillisInGame) {
-        Point[] blankPoints = Point.stream().filter(p -> board.colorAt(p) == null).toArray(Point[]::new);
-        return blankPoints[random.nextInt(blankPoints.length)];
+        Point[] neighborAndBlankPoints = Point.stream()
+                .filter(p -> board.colorAt(p) == null)
+                .filter(p -> Direction.stream().anyMatch(d -> p.hasNext(d) && board.colorAt(p.next(d)) != null))
+                .toArray(Point[]::new);
+                
+        return neighborAndBlankPoints[random.nextInt(neighborAndBlankPoints.length)];
     }
 }
