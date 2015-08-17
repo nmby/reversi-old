@@ -6,11 +6,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 
 import xyz.hotchpotch.game.reversi.core.Board;
 import xyz.hotchpotch.game.reversi.core.Color;
-import xyz.hotchpotch.game.reversi.core.Direction;
 import xyz.hotchpotch.game.reversi.core.Move;
 import xyz.hotchpotch.game.reversi.core.Point;
 import xyz.hotchpotch.game.reversi.core.Rule;
@@ -57,14 +57,9 @@ public class MonteCarloAIPlayer implements Player {
             assert move.point != null;
             assert Rule.canApply(this, move);
             
-            Map<Direction, Integer> reversibles = Rule.counts(this, move);
-            for (Direction d : Direction.values()) {
-                int n = reversibles.get(d);
-                Point p = move.point;
-                while (0 < n--) {
-                    p = p.next(d);
-                    map.put(p, move.color);
-                }
+            Set<Point> reversibles = Rule.reversibles(this, move);
+            for (Point p : reversibles) {
+                map.put(p, move.color);
             }
             map.put(move.point, move.color);
         }

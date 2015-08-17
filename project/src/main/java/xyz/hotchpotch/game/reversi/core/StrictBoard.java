@@ -4,10 +4,10 @@ import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * リバーシのルールを忠実に守るリバーシ盤の実装です。<br>
@@ -86,19 +86,11 @@ public class StrictBoard extends BaseBoard implements Serializable {
         }
         
         if (move.point != null) {
-            Map<Direction, Integer> reversibles = Rule.counts(this, move);
-            Map<Point, Color> wrapped = Collections.synchronizedMap(map);
-            // TODO: ストリーム操作の中で副作用を伴う処理をするのはよろしくない！
-            // wrapped.put をやめ、リダクション操作で置き換える。
-            Direction.stream().forEach(d -> {
-                int n = reversibles.get(d);
-                Point p = move.point;
-                while (0 < n--) {
-                    p = p.next(d);
-                    wrapped.put(p, move.color);
-                }
-            });
-            wrapped.put(move.point, move.color);
+            Set<Point> reversibles = Rule.reversibles(this, move);
+            for (Point p : reversibles) {
+                map.put(p, move.color);
+            }
+            map.put(move.point, move.color);
         }
         
         moves.add(move);

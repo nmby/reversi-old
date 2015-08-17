@@ -1,7 +1,6 @@
 package xyz.hotchpotch.game.reversi.core;
 
 import java.util.Collections;
-import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
@@ -127,53 +126,6 @@ public class Rule {
         return Direction.stream()
                 .flatMap(d -> reversibles(board, move.color, move.point, d).stream())
                 .collect(Collectors.toSet());
-    }
-    
-    private static int countReversibles(Board board, Color color, Point point, Direction direction) {
-        assert board != null;
-        assert color != null;
-        assert point != null;
-        assert direction != null;
-        assert board.colorAt(point) == null;
-        
-        int n = 0;
-        Point p = point;
-        while (p.hasNext(direction)) {
-            p = p.next(direction);
-            if (board.colorAt(p) == color) {
-                return n;
-            } else if (board.colorAt(p) == null) {
-                return 0;
-            }
-            n++;
-        }
-        return 0;
-    }
-    
-    /**
-     * リバーシ盤上に指定された手を適用した場合に、
-     * それぞれの方向に相手の駒を何枚ひっくり返せるかを返します。<br>
-     * 置くことのできない手が指定された場合は、{@code 0} のみが格納されたマップを返します。<br>
-     * 
-     * @param board リバーシ盤
-     * @param move 手
-     * @return 方向ごとにひっくり返せる枚数を格納した {@code Map}
-     * @NullPointerException {@code board}, {@code move} のいずれかが {@code null} の場合
-     */
-    public static Map<Direction, Integer> counts(Board board, Move move) {
-        Objects.requireNonNull(board);
-        Objects.requireNonNull(move);
-        
-        Map<Direction, Integer> counts = new EnumMap<>(Direction.class);
-        Map<Direction, Integer> wrapped = Collections.synchronizedMap(counts);
-        // TODO: ストリーム操作の中で副作用を伴う処理をするのはよろしくない！
-        // wrapped.put をやめ、リダクション操作で置き換える。
-        Direction.stream().forEach(d -> {
-            int count = countReversibles(board, move.color, move.point, d);
-            wrapped.put(d, count);
-        });
-        
-        return counts;
     }
     
     /**
