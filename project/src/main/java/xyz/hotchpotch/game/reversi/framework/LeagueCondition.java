@@ -238,7 +238,10 @@ public class LeagueCondition implements Condition<League>, Serializable {
         if (printLevel == null) {
             matchProperties.put("print.level", "LEAGUE");
         }
-        matchProperties.put("auto", "true");
+        String auto = properties.getProperty("auto");
+        if (auto == null) {
+            matchProperties.put("auto", "true");
+        }
         
         Map<Pair, MatchCondition> matchConditions = new HashMap<>();
         for (int idx1 = 0; idx1 < playerClasses.size() - 1; idx1++) {

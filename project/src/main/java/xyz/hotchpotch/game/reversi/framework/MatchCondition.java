@@ -247,7 +247,10 @@ public class MatchCondition implements Condition<Match>, Serializable {
         if (printLevel == null) {
             gameProperties.put("print.level", "MATCH");
         }
-        gameProperties.put("auto", "true");
+        String auto = properties.getProperty("auto");
+        if (auto == null) {
+            gameProperties.put("auto", "true");
+        }
         
         GameCondition gameConditionA = GameCondition.of(
                 playerClassA, playerClassB, givenMillisPerTurn, givenMillisInGame, gameProperties);
