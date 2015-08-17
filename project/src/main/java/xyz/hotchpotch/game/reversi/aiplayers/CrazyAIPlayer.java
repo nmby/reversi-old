@@ -9,7 +9,8 @@ import xyz.hotchpotch.game.reversi.framework.GameCondition;
 import xyz.hotchpotch.game.reversi.framework.Player;
 
 /**
- * その位置に自分の駒を置けるか否かも考えず、完全にランダムに手を選ぶ {@link Player} の実装です。<br>
+ * その位置に自分の駒を置けるか否かも考えず、駒が置かれていない位置のなかからランダムに手を選ぶ
+ * {@link Player} の実装です。<br>
  * 早晩、ルール違反で敗退することでしょう。<br>
  * 
  * @author nmby
@@ -44,12 +45,12 @@ public class CrazyAIPlayer implements Player {
     /**
      * {@inheritDoc}
      * <br>
-     * この実装は、駒を置けるか否かを考慮せず、完全にランダムに手を選びます。<br>
+     * この実装は、駒を置けるか否かを考慮せず、駒が置かれていない位置のなかからランダムに手を選びます。<br>
      * 早晩、ルール違反で敗退することでしょう。<br>
      */
     @Override
     public Point decide(Board board, Color color, long givenMillisPerTurn, long remainingMillisInGame) {
-        Point[] points = Point.values();
-        return points[random.nextInt(points.length)];
+        Point[] blankPoints = Point.stream().filter(p -> board.colorAt(p) == null).toArray(Point[]::new);
+        return blankPoints[random.nextInt(blankPoints.length)];
     }
 }

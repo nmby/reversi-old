@@ -35,8 +35,8 @@ public class MonteCarloAIPlayer implements Player {
         
         private LightweightBoard(Board board) {
             map = new HashMap<>();
-            for (Point point : Point.values()) {
-                map.put(point, board.colorAt(point));
+            for (Point p : Point.values()) {
+                map.put(p, board.colorAt(p));
             }
         }
         
@@ -66,45 +66,34 @@ public class MonteCarloAIPlayer implements Player {
     }
     
     private static class Record {
+        private final Color myColor;
         private final Point candidate;
-        private int blackWins = 0;
-        private int whiteWins = 0;
+        private int wins = 0;
+        private int losts = 0;
         
-        private Record(Point candidate) {
+        private Record(Color myColor, Point candidate) {
+            this.myColor = myColor;
             this.candidate = candidate;
         }
         
-        private void increment(Color color) {
-            if (color == Color.BLACK) {
-                blackWins++;
-            } else if (color == Color.WHITE) {
-                whiteWins++;
+        private void increment(Color winner) {
+            if (winner == myColor) {
+                wins++;
+            } else if (winner == myColor.opposite()) {
+                losts++;
             }
             // 引き分けの回数は数えても使わないため、数えない。
         }
     }
     
-    private static final Comparator<Record> comparatorForBlack = (r1, r2) -> {
-        if (r2.blackWins < r1.blackWins) {
+    private static final Comparator<Record> comparator = (r1, r2) -> {
+        if (r2.wins < r1.wins) {
             return 1;
-        } else if (r1.blackWins < r2.blackWins) {
+        } else if (r1.wins < r2.wins) {
             return -1;
-        } else if (r1.whiteWins < r2.whiteWins) {
+        } else if (r1.losts < r2.losts) {
             return 1;
-        } else if (r2.whiteWins < r1.whiteWins) {
-            return -1;
-        }
-        return 0;
-    };
-    
-    private static final Comparator<Record> comparatorForWhite = (r1, r2) -> {
-        if (r2.whiteWins < r1.whiteWins) {
-            return 1;
-        } else if (r1.whiteWins < r2.whiteWins) {
-            return -1;
-        } else if (r1.blackWins < r2.blackWins) {
-            return 1;
-        } else if (r2.blackWins < r1.blackWins) {
+        } else if (r2.losts < r1.losts) {
             return -1;
         }
         return 0;
@@ -113,8 +102,6 @@ public class MonteCarloAIPlayer implements Player {
     // ++++++++++++++++ instance members ++++++++++++++++
     
     private final Player proxy;
-    private final Comparator<Record> comparator;
-    
     private final long margin1;
     private final long margin2;
     
@@ -126,7 +113,6 @@ public class MonteCarloAIPlayer implements Player {
      */
     public MonteCarloAIPlayer(Color color, GameCondition gameCondition) {
         proxy = new RandomAIPlayer(null, gameCondition);
-        comparator = color == Color.BLACK ? comparatorForBlack : comparatorForWhite;
         
         // 動作制御用パラメータの取得
         margin1 = getParameter(gameCondition, ".margin1", Long::valueOf, Long.valueOf(30L));
@@ -180,7 +166,7 @@ public class MonteCarloAIPlayer implements Player {
     }
     
     /**
-     * 終了時刻になるまで、候補箇所それぞれに対してシミュレーションを来ない、
+     * 終了時刻になるまで、候補箇所それぞれに対してシミュレーションを行い、
      * 候補箇所それぞれに対する結果を返す。<br>
      * 
      * @param board 現在のリバーシ盤
@@ -196,10 +182,11 @@ public class MonteCarloAIPlayer implements Player {
         Map<Point, Board> nextBoards = new HashMap<>();
         
         for (Point candidate : candidates) {
+            records.put(candidate, new Record(color, candidate));
+            
             Board nextBoard = new LightweightBoard(board);
             nextBoard.apply(Move.of(color, candidate));
             nextBoards.put(candidate, nextBoard);
-            records.put(candidate, new Record(candidate));
         }
         
         // 本処理
