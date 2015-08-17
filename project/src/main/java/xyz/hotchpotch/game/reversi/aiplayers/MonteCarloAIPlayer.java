@@ -138,7 +138,7 @@ public class MonteCarloAIPlayer implements Player {
             String key,
             Function<String, T> converter,
             T defaultValue) {
-        
+            
         String str = gameCondition.getProperty(getClass().getName() + key);
         try {
             return converter.apply(str);
@@ -251,8 +251,7 @@ public class MonteCarloAIPlayer implements Player {
      * @return 今回のターンに費やせる時間（ミリ秒）
      */
     private long millisForThisTurn(Board board, long givenMillisPerTurn, long remainingMillisInGame) {
-        Map<Color, Integer> counts = board.counts();
-        int blankCells = Point.HEIGHT * Point.WIDTH - counts.get(Color.BLACK) - counts.get(Color.WHITE);
+        int blankCells = (int) Point.stream().filter(p -> board.colorAt(p) == null).count();
         
         // 末尾の「+ 1」は、相手がパスすることにより自分のターンが増える可能性があるため、
         // １ターン分余裕を持っておくもの。

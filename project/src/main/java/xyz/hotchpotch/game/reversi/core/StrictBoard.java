@@ -5,7 +5,6 @@ import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
@@ -103,14 +102,6 @@ public class StrictBoard extends BaseBoard implements Serializable {
     @Override
     public synchronized Color colorAt(Point point) {
         return super.colorAt(point);
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public synchronized Map<Color, Integer> counts() {
-        return super.counts();
     }
     
     /**

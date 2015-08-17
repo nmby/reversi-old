@@ -1,11 +1,12 @@
 package xyz.hotchpotch.game.reversi.framework;
 
-import java.util.Map;
 import java.util.Objects;
 
 import xyz.hotchpotch.game.reversi.core.Board;
 import xyz.hotchpotch.game.reversi.core.BoardSnapshot;
 import xyz.hotchpotch.game.reversi.core.Color;
+import xyz.hotchpotch.game.reversi.core.Point;
+import xyz.hotchpotch.game.reversi.core.Rule;
 
 /**
  * ゲームの結果を表す不変クラスです。<br>
@@ -60,16 +61,9 @@ public class GameResult implements Result<Game> {
         this.board = BoardSnapshot.of(board);
         this.violation = null;
         
-        Map<Color, Integer> counts = this.board.counts();
-        int black = counts.get(Color.BLACK);
-        int white = counts.get(Color.WHITE);
-        if (white < black) {
-            winner = Color.BLACK;
-        } else if (black < white) {
-            winner = Color.WHITE;
-        } else {
-            winner = null;
-        }
+        winner = Rule.winner(board);
+        int black = (int) Point.stream().filter(p -> board.colorAt(p) == Color.BLACK).count();
+        int white = (int) Point.stream().filter(p -> board.colorAt(p) == Color.WHITE).count();
         
         description = String.format("%s %s:%d, %s:%d",
                 winner == null ? "引き分けです。" : String.format("%s:%s の勝ちです。",

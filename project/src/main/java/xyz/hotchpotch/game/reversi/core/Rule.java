@@ -2,7 +2,6 @@ package xyz.hotchpotch.game.reversi.core;
 
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -143,9 +142,8 @@ public class Rule {
             throw new IllegalStateException("game is ongoing.");
         }
         
-        Map<Color, Integer> counts = board.counts();
-        int black = counts.get(Color.BLACK);
-        int white = counts.get(Color.WHITE);
+        int black = (int) Point.stream().filter(p -> board.colorAt(p) == Color.BLACK).count();
+        int white = (int) Point.stream().filter(p -> board.colorAt(p) == Color.WHITE).count();
         
         if (white < black) {
             return Color.BLACK;

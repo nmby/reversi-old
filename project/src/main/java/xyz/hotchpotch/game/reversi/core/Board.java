@@ -1,6 +1,5 @@
 package xyz.hotchpotch.game.reversi.core;
 
-import java.util.EnumMap;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -38,20 +37,6 @@ public interface Board {
     // 今回は「practice of java8」ということで、これ以降のメソッドをデフォルト実装してみた。
     // デフォルトメソッドは便利なんだけど、色々と混乱しそうな予感...
     // BaseBoard を完全に代替出来るわけではないし。棲み分けをどうしたものか...
-    
-    /**
-     * 色ごとの駒の数が格納された {@code Map} を返します。<br>
-     * 
-     * @return 色ごとの駒の数が格納された {@code Map}
-     */
-    default Map<Color, Integer> counts() {
-        Map<Color, Integer> counts = new EnumMap<>(Color.class);
-        int black = (int) Point.stream().filter(p -> colorAt(p) == Color.BLACK).count();
-        int white = (int) Point.stream().filter(p -> colorAt(p) == Color.WHITE).count();
-        counts.put(Color.BLACK, black);
-        counts.put(Color.WHITE, white);
-        return counts;
-    }
     
     /**
      * このリバーシ盤の文字列表現を返します。<br>
