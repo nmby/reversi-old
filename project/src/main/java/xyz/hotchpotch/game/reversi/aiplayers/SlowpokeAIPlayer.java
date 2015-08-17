@@ -32,29 +32,16 @@ public class SlowpokeAIPlayer implements Player {
      */
     public SlowpokeAIPlayer(Color color, GameCondition gameCondition) {
         // デバッグ用に各種パラメータ値を受け取れるようにしておく。
-        String keySeed = getClass().getName() + ".seed";
-        String strSeed = gameCondition.getProperty(keySeed);
-        Long seed;
-        try {
-            seed = Long.valueOf(strSeed);
-        } catch (NumberFormatException e) {
-            seed = null;
-        }
+        Long seed = CommonUtil.getParameter(
+                gameCondition, getClass().getName() + ".seed", Long::valueOf, null);
         random = seed == null ? new Random() : new Random(seed);
         
-        String keySlowest = getClass().getName() + ".slowest";
-        String strSlowest = gameCondition.getProperty(keySlowest);
-        int slowest;
-        try {
-            slowest = Integer.parseInt(strSlowest);
-        } catch (NumberFormatException e) {
-            if (0 < Long.compare(gameCondition.givenMillisPerTurn, Integer.MAX_VALUE)) {
-                slowest = Integer.MAX_VALUE;
-            } else if (0 < Long.compare(gameCondition.givenMillisPerTurn * 2, Integer.MAX_VALUE)) {
-                slowest = Integer.MAX_VALUE;
-            } else {
-                slowest = (int) gameCondition.givenMillisPerTurn * 2;
-            }
+        int slowest = CommonUtil.getParameter(
+                gameCondition, getClass().getName() + ".slowest", Integer::parseInt, 0);
+        if (slowest == 0) {
+            // 制限時間の 1.25 倍を上限とする。（5回に1回は制限時間オーバーになるはず）
+            long tmp = Math.addExact(gameCondition.givenMillisPerTurn, gameCondition.givenMillisPerTurn / 4);
+            slowest = (int) Long.min(tmp, Integer.MAX_VALUE);
         }
         this.slowest = slowest;
     }

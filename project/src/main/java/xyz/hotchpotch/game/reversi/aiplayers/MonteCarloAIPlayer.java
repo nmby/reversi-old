@@ -7,7 +7,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
 
 import xyz.hotchpotch.game.reversi.core.Board;
 import xyz.hotchpotch.game.reversi.core.Color;
@@ -115,22 +114,8 @@ public class MonteCarloAIPlayer implements Player {
         proxy = new RandomAIPlayer(null, gameCondition);
         
         // 動作制御用パラメータの取得
-        margin1 = getParameter(gameCondition, ".margin1", Long::valueOf, Long.valueOf(30L));
-        margin2 = getParameter(gameCondition, ".margin2", Long::valueOf, Long.valueOf(15L));
-    }
-    
-    private <T> T getParameter(
-            GameCondition gameCondition,
-            String key,
-            Function<String, T> converter,
-            T defaultValue) {
-            
-        String str = gameCondition.getProperty(getClass().getName() + key);
-        try {
-            return converter.apply(str);
-        } catch (RuntimeException e) {
-            return defaultValue;
-        }
+        margin1 = CommonUtil.getParameter(gameCondition, getClass().getName() + ".margin1", Long::valueOf, 30L);
+        margin2 = CommonUtil.getParameter(gameCondition, getClass().getName() + ".margin2", Long::valueOf, 15L);
     }
     
     /**

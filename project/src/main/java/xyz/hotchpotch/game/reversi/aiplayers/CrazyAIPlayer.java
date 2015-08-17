@@ -31,14 +31,8 @@ public class CrazyAIPlayer implements Player {
      */
     public CrazyAIPlayer(Color color, GameCondition gameCondition) {
         // デバッグ用にシード値を受け取れるようにしておく。
-        String keySeed = getClass().getName() + ".seed";
-        String strSeed = gameCondition.getProperty(keySeed);
-        Long seed;
-        try {
-            seed = Long.valueOf(strSeed);
-        } catch (NumberFormatException e) {
-            seed = null;
-        }
+        Long seed = CommonUtil.getParameter(
+                gameCondition, getClass().getName() + ".seed", Long::valueOf, null);
         random = seed == null ? new Random() : new Random(seed);
     }
     
