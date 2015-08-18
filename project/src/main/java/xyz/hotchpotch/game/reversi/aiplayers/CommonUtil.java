@@ -14,7 +14,7 @@ class CommonUtil {
             Function<String, T> converter,
             T defaultValue) {
             
-        String str = gameCondition.getProperty(key);
+        String str = gameCondition.getParam(key);
         try {
             return converter.apply(str);
         } catch (Exception e) {

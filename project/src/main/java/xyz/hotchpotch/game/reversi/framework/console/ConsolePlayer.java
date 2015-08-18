@@ -35,7 +35,7 @@ public class ConsolePlayer implements Player {
      */
     public ConsolePlayer(Color color, GameCondition gameCondition) {
         String keySafety = getClass().getName() + ".safety";
-        String strSafety = gameCondition.getProperty(keySafety);
+        String strSafety = gameCondition.getParam(keySafety);
         if (strSafety == null) {
             safety = true;
         } else {

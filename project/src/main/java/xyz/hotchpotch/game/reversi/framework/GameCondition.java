@@ -8,10 +8,6 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Properties;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import xyz.hotchpotch.game.reversi.core.Color;
 
@@ -29,14 +25,14 @@ public class GameCondition implements Condition<Game>, Serializable {
     private static class SerializationProxy implements Serializable {
         private static final long serialVersionUID = 1L;
         
-        private final Properties properties;
+        private final Map<String, String> params;
         
         private SerializationProxy(GameCondition gameCondition) {
-            properties = gameCondition.properties;
+            params = gameCondition.params;
         }
         
         private Object readResolve() {
-            return of(properties);
+            return of(params);
         }
     }
     
@@ -62,15 +58,15 @@ public class GameCondition implements Condition<Game>, Serializable {
     
     /**
      * 個々の必須パラメータと追加のパラメータを指定してゲーム条件を生成します。<br>
-     * {@code map} に必須パラメータが含まれる場合は、個別に引数で指定された値が優先されます。<br>
+     * {@code params} に必須パラメータが含まれる場合は、個別に引数で指定された値が優先されます。<br>
      * 
      * @param playerBlack 黒プレーヤーのクラス
      * @param playerWhite 白プレーヤーのクラス
      * @param givenMillisPerTurn 一手あたりの制限時間（ミリ秒）
      * @param givenMillisInGame ゲーム全体での持ち時間（ミリ秒）
-     * @param map 追加のパラメータが格納された {@code Map}
+     * @param params 追加のパラメータが格納された {@code Map}
      * @return ゲーム条件
-     * @throws NullPointerException {@code playerBlack}、{@code playerWhite}、{@code map}
+     * @throws NullPointerException {@code playerBlack}、{@code playerWhite}、{@code params}
      *                              のいずれかが {@code null} の場合
      * @throwsIllegalArgumentException {@code givenMillisPerTurn} または {@code givenMillisInGame} が正の整数でない場合
      */
@@ -79,37 +75,34 @@ public class GameCondition implements Condition<Game>, Serializable {
             Class<? extends Player> playerWhite,
             long givenMillisPerTurn,
             long givenMillisInGame,
-            Map<String, String> map) {
+            Map<String, String> params) {
             
         Objects.requireNonNull(playerBlack);
         Objects.requireNonNull(playerWhite);
-        Objects.requireNonNull(map);
+        Objects.requireNonNull(params);
         if (givenMillisPerTurn <= 0 || givenMillisInGame <= 0) {
             throw new IllegalArgumentException(
                     String.format("正の整数値が必要です。givenMillisPerTurn=%d, givenMillisInGame=%d",
                             givenMillisPerTurn, givenMillisInGame));
         }
         
-        Properties properties = new Properties();
-        for (Map.Entry<String, String> entry : map.entrySet()) {
-            properties.setProperty(entry.getKey(), entry.getValue());
-        }
-        properties.setProperty("player.black", playerBlack.getName());
-        properties.setProperty("player.white", playerWhite.getName());
-        properties.setProperty("givenMillisPerTurn", String.valueOf(givenMillisPerTurn));
-        properties.setProperty("givenMillisInGame", String.valueOf(givenMillisInGame));
+        Map<String, String> copy = new HashMap<>(params);
+        copy.put("player.black", playerBlack.getName());
+        copy.put("player.white", playerWhite.getName());
+        copy.put("givenMillisPerTurn", String.valueOf(givenMillisPerTurn));
+        copy.put("givenMillisInGame", String.valueOf(givenMillisInGame));
         
         return new GameCondition(
                 playerBlack,
                 playerWhite,
                 givenMillisPerTurn,
                 givenMillisInGame,
-                properties);
+                copy);
     }
     
     /**
      * パラメータを一括指定してゲーム条件を生成します。<br>
-     * {@code properties} は以下のプロパティを含む必要があります。<br>
+     * {@code params} は以下の必須パラメータを含む必要があります。<br>
      * <ul>
      *   <li>{@code player.black} ： 黒プレーヤーの完全修飾クラス名</li>
      *   <li>{@code player.white} ： 白プレーヤーの完全修飾クラス名</li>
@@ -117,20 +110,20 @@ public class GameCondition implements Condition<Game>, Serializable {
      *   <li>{@code givenMillisInGame} ： ゲーム全体での持ち時間（ミリ秒）</li>
      * </ul>
      * 
-     * @param properties ゲーム条件が設定されたプロパティセット
+     * @param params ゲーム条件が設定された {@code Map}
      * @return ゲーム条件
-     * @throws NullPointerException {@code properties} が {@code null} の場合
+     * @throws NullPointerException {@code params} が {@code null} の場合
      * @throws IllegalArgumentException 各条件の設定内容が不正の場合
      */
     @SuppressWarnings("unchecked")
-    public static GameCondition of(Properties properties) {
-        Objects.requireNonNull(properties);
-        Properties copy = new Properties(properties);
+    public static GameCondition of(Map<String, String> params) {
+        Objects.requireNonNull(params);
+        Map<String, String> copy = new HashMap<>(params);
         
-        String strPlayerBlack = copy.getProperty("player.black");
-        String strPlayerWhite = copy.getProperty("player.white");
-        String strGivenMillisPerTurn = copy.getProperty("givenMillisPerTurn");
-        String strGivenMillisInGame = copy.getProperty("givenMillisInGame");
+        String strPlayerBlack = copy.get("player.black");
+        String strPlayerWhite = copy.get("player.white");
+        String strGivenMillisPerTurn = copy.get("givenMillisPerTurn");
+        String strGivenMillisInGame = copy.get("givenMillisInGame");
         if (strPlayerBlack == null
                 || strPlayerWhite == null
                 || strGivenMillisPerTurn == null
@@ -199,14 +192,14 @@ public class GameCondition implements Condition<Game>, Serializable {
     /** ゲーム全体での持ち時間（ミリ秒） */
     public transient final long givenMillisInGame;
     
-    private transient final Properties properties;
+    private transient final Map<String, String> params;
     
     private GameCondition(
             Class<? extends Player> playerClassBlack,
             Class<? extends Player> playerClassWhite,
             long givenMillisPerTurn,
             long givenMillisInGame,
-            Properties properties) {
+            Map<String, String> params) {
             
         Map<Color, Class<? extends Player>> playerClasses = new EnumMap<>(Color.class);
         playerClasses.put(Color.BLACK, playerClassBlack);
@@ -214,53 +207,16 @@ public class GameCondition implements Condition<Game>, Serializable {
         this.playerClasses = Collections.unmodifiableMap(playerClasses);
         this.givenMillisPerTurn = givenMillisPerTurn;
         this.givenMillisInGame = givenMillisInGame;
-        this.properties = properties;
-    }
-    
-    /**
-     * {@inheritDoc}
-     * 
-     * @throws NullPointerException {@code key} が {@code null} の場合
-     * @see Properties#getProperty(String)
-     */
-    @Override
-    public String getProperty(String key) {
-        Objects.requireNonNull(key);
-        return properties.getProperty(key);
+        this.params = Collections.unmodifiableMap(params);
     }
     
     /**
      * {@inheritDoc}
      */
     @Override
-    public Properties getProperties() {
-        return new Properties(properties);
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String toStringKindly() {
-        // Properties ってナンでこんなに使いにくいンだ ?!
-        StringBuilder str = new StringBuilder();
-        
-        Set<?> keys = properties.keySet();
-        @SuppressWarnings("unchecked")
-        SortedSet<String> sortedKeys = new TreeSet<>((Set<String>) keys);
-        
-        for (String key : sortedKeys) {
-            str.append(String.format("%s=%s", key, properties.getProperty(key))).append(System.lineSeparator());
-        }
-        return str.toString();
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String toStringInLine() {
-        return properties.toString();
+    public Map<String, String> getParams() {
+        // Collections#unmodifiableMap でラップしているので直接返して問題ない
+        return params;
     }
     
     private Object writeReplace() {

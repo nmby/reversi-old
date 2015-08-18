@@ -1,9 +1,11 @@
 package xyz.hotchpotch.game.reversi.framework;
 
-import java.util.Properties;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
- * ゲーム等の実行条件を表します。<br>
+ * {@link Playable} の実行条件を表します。<br>
  * 
  * @param <P> ターゲット {@code Playable}
  * @author nmby
@@ -15,19 +17,23 @@ public interface Condition<P extends Playable> {
     // ++++++++++++++++ instance members ++++++++++++++++
     
     /**
-     * 指定されたプロパティの値を返します。<br>
+     * 指定されたパラメータの値を返します。<br>
      * 
-     * @param key プロパティ名
-     * @return プロパティ値
+     * @param key パラメータ名
+     * @return パラメータ値
+     * @throws NullPointerException {@code key} が {@code null} の場合
      */
-    String getProperty(String key);
+    default String getParam(String key) {
+        Objects.requireNonNull(key);
+        return getParams().get(key);
+    }
     
     /**
-     * 全条件が格納された {@list Properties} を返します。<br>
+     * 全パラメータが格納された {@list Map} を返します。<br>
      * 
-     * @return 全条件が格納された {@list Properties}
+     * @return 全パラメータが格納された {@list Map}
      */
-    Properties getProperties();
+    Map<String, String> getParams();
     
     /**
      * この実行条件の文字列表現を返します。<br>
@@ -35,7 +41,13 @@ public interface Condition<P extends Playable> {
      * 
      * @return この実行条件の文字列表現（複数行形式）
      */
-    String toStringKindly();
+    default String toStringKindly() {
+        return getParams().entrySet().stream()
+                .map(e -> String.format("%s=%s", e.getKey(), e.getValue()))
+                .sorted()
+                .collect(Collectors.joining(System.lineSeparator()))
+                + System.lineSeparator();
+    }
     
     /**
      * この実行条件の文字列表現を返します。<br>
@@ -43,5 +55,7 @@ public interface Condition<P extends Playable> {
      * 
      * @return この実行条件の文字列表現（単一行形式）
      */
-    String toStringInLine();
+    default String toStringInLine() {
+        return getParams().toString();
+    }
 }

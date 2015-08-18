@@ -9,10 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Properties;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import xyz.hotchpotch.game.reversi.framework.League.Pair;
 
@@ -30,14 +26,14 @@ public class LeagueCondition implements Condition<League>, Serializable {
     private static class SerializationProxy implements Serializable {
         private static final long serialVersionUID = 1L;
         
-        private final Properties properties;
+        private final Map<String, String> params;
         
         private SerializationProxy(LeagueCondition leagueCondition) {
-            properties = leagueCondition.properties;
+            params = leagueCondition.params;
         }
         
         private Object readResolve() {
-            return of(properties);
+            return of(params);
         }
     }
     
@@ -64,15 +60,15 @@ public class LeagueCondition implements Condition<League>, Serializable {
     
     /**
      * 個々の必須パラメータと追加のパラメータを指定してリーグ条件を生成します。<br>
-     * {@code map} に必須パラメータが含まれる場合は、個別に引数で指定された値が優先されます。<br>
+     * {@code params} に必須パラメータが含まれる場合は、個別に引数で指定された値が優先されます。<br>
      * 
      * @param players リーグに参加するプレーヤークラスのリスト
      * @param givenMillisPerTurn 一手あたりの制限時間（ミリ秒）
      * @param givenMillisInGame ゲーム全体での持ち時間（ミリ秒）
      * @param times 対戦回数
-     * @param map 追加のパラメータが格納された {@code Map}
+     * @param params 追加のパラメータが格納された {@code Map}
      * @return リーグ条件
-     * @throws NullPointerException {@code players}、{@code map} のいずれかが {@code null} の場合
+     * @throws NullPointerException {@code players}、{@code params} のいずれかが {@code null} の場合
      * @throwsIllegalArgumentException {@code givenMillisPerTurn}、{@code givenMillisInGame}、{@code times}
      *                                 のいずれかが正の整数でない場合
      */
@@ -81,38 +77,35 @@ public class LeagueCondition implements Condition<League>, Serializable {
             long givenMillisPerTurn,
             long givenMillisInGame,
             int times,
-            Map<String, String> map) {
+            Map<String, String> params) {
             
         Objects.requireNonNull(players);
-        Objects.requireNonNull(map);
+        Objects.requireNonNull(params);
         if (givenMillisPerTurn <= 0 || givenMillisInGame <= 0 || times <= 0) {
             throw new IllegalArgumentException(
                     String.format("正の整数値が必要です。givenMillisPerTurn=%d, givenMillisInGame=%d, times=%d",
                             givenMillisPerTurn, givenMillisInGame, times));
         }
         
-        Properties properties = new Properties();
-        for (Map.Entry<String, String> entry : map.entrySet()) {
-            properties.setProperty(entry.getKey(), entry.getValue());
-        }
+        Map<String, String> copy = new HashMap<>(params);
         for (int i = 0; i < players.size(); i++) {
-            properties.setProperty("player." + (i + 1), players.get(i).getName());
+            copy.put("player." + (i + 1), players.get(i).getName());
         }
-        properties.setProperty("givenMillisPerTurn", String.valueOf(givenMillisPerTurn));
-        properties.setProperty("givenMillisInGame", String.valueOf(givenMillisInGame));
-        properties.setProperty("times", String.valueOf(times));
+        copy.put("givenMillisPerTurn", String.valueOf(givenMillisPerTurn));
+        copy.put("givenMillisInGame", String.valueOf(givenMillisInGame));
+        copy.put("times", String.valueOf(times));
         
         return new LeagueCondition(
                 players,
                 givenMillisPerTurn,
                 givenMillisInGame,
                 times,
-                properties);
+                copy);
     }
     
     /**
      * パラメータを一括指定してリーグ条件を生成します。<br>
-     * {@code properties} は以下のプロパティを含む必要があります。<br>
+     * {@code params} は以下の必須パラメータを含む必要があります。<br>
      * <ul>
      *   <li>{@code player.?} ： プレーヤーの完全修飾クラス名（{@code ?} 部分は数字）</li>
      *   <li>{@code givenMillisPerTurn} ： 一手あたりの制限時間（ミリ秒）</li>
@@ -120,27 +113,25 @@ public class LeagueCondition implements Condition<League>, Serializable {
      *   <li>{@code times} ： 対戦回数</li>
      * </ul>
      * 
-     * @param properties リーグ条件が設定されたプロパティセット
+     * @param params リーグ条件が設定された {@code Map}
      * @return リーグ条件
-     * @throws NullPointerException {@code properties} が {@code null} の場合
+     * @throws NullPointerException {@code params} が {@code null} の場合
      * @throws IllegalArgumentException 各条件の設定内容が不正の場合
      */
     @SuppressWarnings("unchecked")
-    public static LeagueCondition of(Properties properties) {
-        Objects.requireNonNull(properties);
-        Properties copy = new Properties(properties);
+    public static LeagueCondition of(Map<String, String> params) {
+        Objects.requireNonNull(params);
+        Map<String, String> copy = new HashMap<>(params);
         
         List<String> strPlayers = new ArrayList<>();
-        for (Map.Entry<?, ?> entry : copy.entrySet()) {
-            String key = (String) entry.getKey();
+        for (String key : copy.keySet()) {
             if (key.matches("player.\\d+")) {
-                strPlayers.add((String) entry.getValue());
+                strPlayers.add(copy.get(key));
             }
-            
         }
-        String strGivenMillisPerTurn = copy.getProperty("givenMillisPerTurn");
-        String strGivenMillisInGame = copy.getProperty("givenMillisInGame");
-        String strTimes = copy.getProperty("times");
+        String strGivenMillisPerTurn = copy.get("givenMillisPerTurn");
+        String strGivenMillisInGame = copy.get("givenMillisInGame");
+        String strTimes = copy.get("times");
         if (strPlayers.size() < 2) {
             throw new IllegalArgumentException(String.format(
                     "2つ以上のプレーヤークラスを指定する必要があります。strPlayers=%s", strPlayers));
@@ -216,31 +207,28 @@ public class LeagueCondition implements Condition<League>, Serializable {
     /** マッチ条件が格納された {@code Map} */
     public transient final Map<Pair, MatchCondition> matchConditions;
     
-    private transient final Properties properties;
+    private transient final Map<String, String> params;
     
     private LeagueCondition(
             List<Class<? extends Player>> playerClasses,
             long givenMillisPerTurn,
             long givenMillisInGame,
             int times,
-            Properties properties) {
+            Map<String, String> params) {
             
         this.playerClasses = Collections.unmodifiableList(new ArrayList<>(playerClasses));
         this.givenMillisPerTurn = givenMillisPerTurn;
         this.givenMillisInGame = givenMillisInGame;
         this.times = times;
-        this.properties = properties;
+        this.params = Collections.unmodifiableMap(params);
         
-        @SuppressWarnings("unchecked")
-        Map<String, String> matchProperties = new HashMap<>((Map<String, String>) properties.clone());
+        Map<String, String> matchParams = new HashMap<>(params);
         
-        String printLevel = properties.getProperty("print.level");
-        if (printLevel == null) {
-            matchProperties.put("print.level", "LEAGUE");
+        if (!matchParams.containsKey("print.level")) {
+            matchParams.put("print.level", "LEAGUE");
         }
-        String auto = properties.getProperty("auto");
-        if (auto == null) {
-            matchProperties.put("auto", "true");
+        if (!matchParams.containsKey("auto")) {
+            matchParams.put("auto", "true");
         }
         
         Map<Pair, MatchCondition> matchConditions = new HashMap<>();
@@ -252,7 +240,7 @@ public class LeagueCondition implements Condition<League>, Serializable {
                     givenMillisPerTurn,
                     givenMillisInGame,
                     times,
-                    matchProperties);
+                    matchParams);
                 
                 matchConditions.put(Pair.of(idx1, idx2), matchCondition);
             }
@@ -262,48 +250,11 @@ public class LeagueCondition implements Condition<League>, Serializable {
     
     /**
      * {@inheritDoc}
-     * 
-     * @throws NullPointerException {@code key} が {@code null} の場合
-     * @see Properties#getProperty(String)
      */
     @Override
-    public String getProperty(String key) {
-        Objects.requireNonNull(key);
-        return properties.getProperty(key);
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Properties getProperties() {
-        return new Properties(properties);
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String toStringKindly() {
-        // Properties ってナンでこんなに使いにくいンだ ?!
-        StringBuilder str = new StringBuilder();
-        
-        Set<?> keys = properties.keySet();
-        @SuppressWarnings("unchecked")
-        SortedSet<String> sortedKeys = new TreeSet<>((Set<String>) keys);
-        
-        for (String key : sortedKeys) {
-            str.append(String.format("%s=%s", key, properties.getProperty(key))).append(System.lineSeparator());
-        }
-        return str.toString();
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String toStringInLine() {
-        return properties.toString();
+    public Map<String, String> getParams() {
+        // Collections#unmodifiableMap でラップしているので直接返して問題ない
+        return params;
     }
     
     private Object writeReplace() {

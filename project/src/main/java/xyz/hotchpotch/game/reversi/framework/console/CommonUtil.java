@@ -201,7 +201,7 @@ class CommonUtil {
             Function<String, T> converter,
             T defaultValue) {
             
-        String str = condition.getProperty(key);
+        String str = condition.getParam(key);
         try {
             return converter.apply(str);
         } catch (RuntimeException e) {
