@@ -236,14 +236,27 @@ public class MonteCarloAIPlayer implements Player {
      */
     private long millisForThisTurn(Board board, long givenMillisPerTurn, long remainingMillisInGame) {
         int blankCells = (int) Point.stream().filter(p -> board.colorAt(p) == null).count();
+        int myTurns = (blankCells + 1) / 2;
+        float weight;
         
-        // 末尾の「+ 1」は、相手がパスすることにより自分のターンが増える可能性があるため、
-        // １ターン分余裕を持っておくもの。
-        int myTurns = (blankCells + 1) / 2 + 1;
+        // 序盤～中盤に時間を割けるよう、残り手数に応じて配分を変える。
+        if (30 <= myTurns) {
+            // 黒の初手はどこを選んでも同じなので考えるだけ無駄
+            // 白の初手もランダムに選ぶことにする
+            return 0;
+        } else if (24 <= myTurns) {
+            weight = 1.5f;
+        } else if (18 <= myTurns) {
+            weight = 2.0f;
+        } else if (12 <= myTurns) {
+            weight = 1.5f;
+        } else if (6 <= myTurns) {
+            weight = 1.0f;
+        } else {
+            weight = 1.0f;
+        }
         
-        // ゲームの序盤/中盤/終盤で時間配分を変える戦略もあり得るが、ここでは単純に按分することとする。
-        long millisPerTurn = remainingMillisInGame / myTurns;
-        
-        return Long.min(millisPerTurn, givenMillisPerTurn) - margin1;
+        long millisPerTurn = (long) ((float) (remainingMillisInGame - margin1) * weight) / myTurns;
+        return Long.min(millisPerTurn, givenMillisPerTurn - margin1);
     }
 }
