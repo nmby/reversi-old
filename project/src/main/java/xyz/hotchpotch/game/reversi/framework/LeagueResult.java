@@ -47,9 +47,9 @@ public class LeagueResult implements Result<League> {
     private LeagueResult(LeagueCondition leagueCondition, Map<Pair, MatchResult> matchResults) {
         this.leagueCondition = leagueCondition;
         
-        int num = leagueCondition.playerClasses.size();
         Map<Pair, Map<String, Integer>> counts = new HashMap<>();
-        long[] totalRemainingMillisThroughLeague = new long[num];
+        
+        int num = leagueCondition.playerClasses.size();
         
         for (int idx1 = 0; idx1 < num - 1; idx1++) {
             for (int idx2 = idx1 + 1; idx2 < num; idx2++) {
@@ -61,9 +61,6 @@ public class LeagueResult implements Result<League> {
                     count.put("draw", matchResult.wins.get(null));
                     counts.put(entrant == Entrant.A ? Pair.of(idx1, idx2) : Pair.of(idx2, idx1), count);
                 }
-                
-                totalRemainingMillisThroughLeague[idx1] += matchResult.totalRemainingMillisThroughMatch.get(Entrant.A);
-                totalRemainingMillisThroughLeague[idx2] += matchResult.totalRemainingMillisThroughMatch.get(Entrant.B);
             }
         }
         this.counts = Collections.unmodifiableMap(counts);
@@ -100,9 +97,7 @@ public class LeagueResult implements Result<League> {
                     lose += l;
                 }
             }
-            str.append(String.format("     %4d/%4d/%4d", win, draw, lose))
-                    .append(String.format("  （累計残り時間 %d ms）", totalRemainingMillisThroughLeague[idx1]))
-                    .append(BR);
+            str.append(String.format("     %4d/%4d/%4d", win, draw, lose)).append(BR);
         }
         
         description = str.toString();
