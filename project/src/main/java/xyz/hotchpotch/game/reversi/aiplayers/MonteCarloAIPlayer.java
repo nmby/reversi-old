@@ -7,6 +7,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import xyz.hotchpotch.game.reversi.core.Board;
 import xyz.hotchpotch.game.reversi.core.Color;
@@ -103,6 +104,7 @@ public class MonteCarloAIPlayer implements Player {
     private final Player proxy;
     private final long margin1;
     private final long margin2;
+    private final boolean debug;
     
     /**
      * {@code MonteCarloAIPlayer} のインスタンスを生成します。<br>
@@ -116,6 +118,7 @@ public class MonteCarloAIPlayer implements Player {
         // 動作制御用パラメータの取得
         margin1 = CommonUtil.getParameter(gameCondition, getClass().getName() + ".margin1", Long::valueOf, 30L);
         margin2 = CommonUtil.getParameter(gameCondition, getClass().getName() + ".margin2", Long::valueOf, 15L);
+        debug = CommonUtil.getParameter(gameCondition, getClass().getName() + ".debug", Boolean::valueOf, false);
     }
     
     /**
@@ -146,6 +149,15 @@ public class MonteCarloAIPlayer implements Player {
         Collection<Record> records =
                 simulate(board, color, candidates, Instant.now().plusMillis(millisForThisTurn));
                 
+        // デバッグモードの場合、候補箇所ごとのスコアを出力する。
+        if (debug) {
+            System.out.println("＜候補箇所: 勝ち / 負け＞");
+            System.out.println(records.stream().sorted(comparator.reversed())
+                    .map(r -> String.format("%s: %3d / %3d", r.candidate.toStringKindly(), r.wins, r.losts))
+                    .collect(Collectors.joining(System.lineSeparator())));
+            System.out.println();
+        }
+        
         // 得られた結果の中から最もスコアの高いものを選ぶ。
         return Collections.max(records, comparator).candidate;
     }
