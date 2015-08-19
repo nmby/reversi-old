@@ -203,7 +203,6 @@ public class ConsoleGame implements ConsolePlayable<Game> {
             start = Instant.now();
             executor.execute(task);
             point = task.get(timeLimit3, TimeUnit.MILLISECONDS);
-            end = Instant.now();
             
         } catch (TimeoutException e) {
             if (timeLimit2 == timeLimit3) {
@@ -217,9 +216,7 @@ public class ConsoleGame implements ConsolePlayable<Game> {
             throw new GoCrazyException("思考中に割り込みが発生しました。" + e.getMessage(), currColor, e);
         } finally {
             // 例外で負けの場合も残り時間を差し引く。
-            if (end == null) {
-                end = Instant.now();
-            }
+            end = Instant.now();
             elapsed = Duration.between(start, end).toMillis();
             remainingMillisInGame.put(currColor, Long.max(timeLimit2 - elapsed, 0));
             
