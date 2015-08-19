@@ -138,12 +138,12 @@ public class ConsoleGame implements ConsolePlayable<Game> {
             
             printer.println(Level.GAME, "");
             printer.println(Level.GAME, board.toStringKindly());
-            gameResult = GameResult.of(gameCondition, board);
+            gameResult = GameResult.of(gameCondition, board, remainingMillisInGame);
             
         } catch (RuleViolationException e) {
             
             printer.println(Level.GAME, "");
-            gameResult = GameResult.of(gameCondition, board, e);
+            gameResult = GameResult.of(gameCondition, board, remainingMillisInGame, e);
             
         }
         
@@ -194,9 +194,11 @@ public class ConsoleGame implements ConsolePlayable<Game> {
         FutureTask<Point> task = new FutureTask<>(() -> player.decide(snapshot, currColor, timeLimit1, timeLimit2));
         ExecutorService executor = Executors.newSingleThreadExecutor();
         
-        Instant start;
-        Instant end;
-        Point point;
+        Instant start = null;
+        Instant end = null;
+        Point point = null;
+        long elapsed;
+        
         try {
             start = Instant.now();
             executor.execute(task);
@@ -214,6 +216,13 @@ public class ConsoleGame implements ConsolePlayable<Game> {
         } catch (InterruptedException e) {
             throw new GoCrazyException("思考中に割り込みが発生しました。" + e.getMessage(), currColor, e);
         } finally {
+            // 例外で負けの場合も残り時間を差し引く。
+            if (end == null) {
+                end = Instant.now();
+            }
+            elapsed = Duration.between(start, end).toMillis();
+            remainingMillisInGame.put(currColor, Long.max(timeLimit2 - elapsed, 0));
+            
             // MEMO: java.util.concurrent.ExecutorService 周りがよく分かってないので要お勉強
             // これで良いのか？？
             if (!executor.isShutdown()) {
@@ -221,13 +230,11 @@ public class ConsoleGame implements ConsolePlayable<Game> {
             }
         }
         
-        long elapsed = Duration.between(start, end).toMillis();
         if (timeLimit2 <= elapsed) {
             throw new TimeUpException("ゲーム内での持ち時間が無くなりました。", currColor);
         } else if (timeLimit1 <= elapsed) {
             throw new TimeUpException("一手あたりの制限時間を超過しました。", currColor);
         }
-        remainingMillisInGame.put(currColor, timeLimit2 - elapsed);
         
         return point;
     }

@@ -30,33 +30,40 @@ public class LeagueResult implements Result<League> {
     public static LeagueResult of(LeagueCondition leagueCondition, Map<Pair, MatchResult> matchResults) {
         Objects.requireNonNull(leagueCondition);
         Objects.requireNonNull(matchResults);
-        
-        // TODO: 防御的コピーをとるレイヤと不変ビューをとるレイヤがクラスごとにバラついてる気がするので合わせる
         return new LeagueResult(leagueCondition, new HashMap<>(matchResults));
     }
     
     // ++++++++++++++++ instance members ++++++++++++++++
     
+    /** リーグ条件 */
     public final LeagueCondition leagueCondition;
+    
+    /** ペアごとの勝ち、負け、引き分け回数が格納された {@code Map}（{@code Pair#idx1} から見た回数） */
     public final Map<Pair, Map<String, Integer>> counts;
+    
     private final String description;
     
+    // 我ながら酷いコードだ...
     private LeagueResult(LeagueCondition leagueCondition, Map<Pair, MatchResult> matchResults) {
         this.leagueCondition = leagueCondition;
         
-        Map<Pair, Map<String, Integer>> counts = new HashMap<>();
-        
         int num = leagueCondition.playerClasses.size();
+        Map<Pair, Map<String, Integer>> counts = new HashMap<>();
+        long[] totalRemainingMillisThroughLeague = new long[num];
+        
         for (int idx1 = 0; idx1 < num - 1; idx1++) {
             for (int idx2 = idx1 + 1; idx2 < num; idx2++) {
                 MatchResult matchResult = matchResults.get(Pair.of(idx1, idx2));
                 for (Entrant entrant : Entrant.values()) {
                     Map<String, Integer> count = new HashMap<>();
-                    count.put("win", matchResult.counts.get(entrant));
-                    count.put("lose", matchResult.counts.get(entrant.opposite()));
-                    count.put("draw", matchResult.counts.get(null));
+                    count.put("win", matchResult.wins.get(entrant));
+                    count.put("lose", matchResult.wins.get(entrant.opposite()));
+                    count.put("draw", matchResult.wins.get(null));
                     counts.put(entrant == Entrant.A ? Pair.of(idx1, idx2) : Pair.of(idx2, idx1), count);
                 }
+                
+                totalRemainingMillisThroughLeague[idx1] += matchResult.totalRemainingMillisThroughMatch.get(Entrant.A);
+                totalRemainingMillisThroughLeague[idx2] += matchResult.totalRemainingMillisThroughMatch.get(Entrant.B);
             }
         }
         this.counts = Collections.unmodifiableMap(counts);
@@ -72,6 +79,7 @@ public class LeagueResult implements Result<League> {
             str.append(String.format("   %-10s", "対 [" + (i + 1) + "]"));
         }
         str.append("     [total]").append(BR);
+        
         for (int idx1 = 0; idx1 < num; idx1++) {
             str.append(String.format("%5s", "[" + (idx1 + 1) + "]"));
             int win = 0;
@@ -92,7 +100,9 @@ public class LeagueResult implements Result<League> {
                     lose += l;
                 }
             }
-            str.append(String.format("     %4d/%4d/%4d", win, draw, lose)).append(BR);
+            str.append(String.format("     %4d/%4d/%4d", win, draw, lose))
+                    .append(String.format("  （累計残り時間 %d ms）", totalRemainingMillisThroughLeague[idx1]))
+                    .append(BR);
         }
         
         description = str.toString();
