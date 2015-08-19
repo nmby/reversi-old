@@ -210,15 +210,18 @@ public class ConsoleGame implements ConsolePlayable<Game> {
             } else {
                 throw new TimeUpException("一手あたりの制限時間を超過しました。", currColor);
             }
+            
         } catch (ExecutionException e) {
             throw new GoCrazyException("思考中に例外が発生しました。" + e.getMessage(), currColor, e);
+            
         } catch (InterruptedException e) {
             throw new GoCrazyException("思考中に割り込みが発生しました。" + e.getMessage(), currColor, e);
+            
         } finally {
             // 例外で負けの場合も残り時間を差し引く。
             end = Instant.now();
-            elapsed = Duration.between(start, end).toMillis();
-            remainingMillisInGame.put(currColor, Long.max(timeLimit2 - elapsed, 0));
+            elapsed = Long.min(timeLimit3, Duration.between(start, end).toMillis());
+            remainingMillisInGame.put(currColor, timeLimit2 - elapsed);
             
             // MEMO: java.util.concurrent.ExecutorService 周りがよく分かってないので要お勉強
             // これで良いのか？？
