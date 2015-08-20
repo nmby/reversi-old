@@ -18,7 +18,7 @@ import xyz.hotchpotch.game.reversi.framework.GameCondition;
 import xyz.hotchpotch.game.reversi.framework.Player;
 
 /**
- * モンテカルロ・シミュレーションにより最善の手を選択する {@link Player} の実装です。<br>
+ * モンテカルロ・シミュレーションにより最善手を選択する {@link Player} の実装です。<br>
  * 
  * @author nmby
  */
@@ -85,7 +85,7 @@ public class MonteCarloAIPlayer implements Player {
     /**
      * {@inheritDoc}
      * <br>
-     * この実装は、モンテカルロ・シミュレーションにより最善の手を選択します。<br>
+     * この実装は、モンテカルロ・シミュレーションにより最善手を選択します。<br>
      */
     @Override
     public Point decide(Board board, Color color, long givenMillisPerTurn, long remainingMillisInGame) {

@@ -12,7 +12,7 @@ import xyz.hotchpotch.game.reversi.framework.GameCondition;
 import xyz.hotchpotch.game.reversi.framework.Player;
 
 /**
- * 深さ優先探索により最適手を探す {@link Player} の実装です。<br>
+ * 深さ優先探索により必勝手を探す {@link Player} の実装です。<br>
  * 探索時間が足りない場合はランダムに手を選択します。<br>
  * 
  * @author nmby
@@ -53,7 +53,7 @@ public class DepthFirstAIPlayer implements Player {
     /**
      * {@inheritDoc}
      * <br>
-     * この実装は、深さ優先探索により最適手を探します。<br>
+     * この実装は、深さ優先探索により必勝手を探します。<br>
      * 探索時間が足りない場合はランダムに手を選択します。<br>
      */
     @Override
@@ -77,18 +77,18 @@ public class DepthFirstAIPlayer implements Player {
         long millisForThisTurn = Long.min(givenMillisPerTurn, remainingMillisInGame / myTurns);
         
         if (millisForThisTurn < margin1) {
-            // 残り時間が少ない場合はシミュレーションを行わずにランダムに返す。
+            // 残り時間が少ない場合は探索を行わずにランダムに返す。
             return proxy.decide(board, color, 0, 0);
         }
         
-        // 前回のシミュレーションで読み切れた深さよりも現時点での残りターン数の方が 2 以上多い場合は、
-        // 今回もどうせ読み切れずに時間切れとなり時間の無駄なので、シミュレーションを行わずにランダムに返す。
-        // 但し、rounds 回に 1 回はシミュレーションを行う。
+        // 前回の探索で読み切れた深さよりも現時点での残りターン数の方が 2 以上多い場合は、
+        // 今回もどうせ読み切れずに時間切れとなり時間の無駄なので、探索を行わずにランダムに返す。
+        // 但し、rounds 回に 1 回は探索を行う。
         if (searchableTurns + 1 < blankCells && 0 < round % rounds) {
             return proxy.decide(board, color, givenMillisPerTurn, remainingMillisInGame);
         }
         
-        // シミュレーションを行い、最善手を探索する。
+        // 探索を行い、必勝手を探索する。
         // 指定時間内に探索が終了しない場合は、ランダムに手を選択する。
         //
         // 本来、深さ優先探索はマルチスレッドと相性のよいアルゴリズムだが、
@@ -137,8 +137,8 @@ public class DepthFirstAIPlayer implements Player {
     }
     
     /**
-     * 深さ優先でゲーム木の末端まで再帰的に探索し、黒白それぞれが最適手を指した場合の勝者を返す。<br>
-     * 但し、最適手の探索においては勝ち負けのみを考慮し、駒数の差は考慮しない。<br>
+     * 深さ優先でゲーム木の末端まで再帰的に探索し、黒白それぞれが必勝手を指した場合の勝者を返す。<br>
+     * 但し、必勝手の探索においては勝ち負けのみを考慮し、駒数の差は考慮しない。<br>
      * 
      * @param board リバーシ盤
      * @param currColor 現在の手番
