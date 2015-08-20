@@ -6,9 +6,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
+import xyz.hotchpotch.game.reversi.aiplayers.CommonUtil.LightweightBoard;
 import xyz.hotchpotch.game.reversi.core.Board;
 import xyz.hotchpotch.game.reversi.core.Color;
 import xyz.hotchpotch.game.reversi.core.Move;
@@ -25,45 +25,6 @@ import xyz.hotchpotch.game.reversi.framework.Player;
 public class MonteCarloAIPlayer implements Player {
     
     // ++++++++++++++++ static members ++++++++++++++++
-    
-    /**
-     * パラメータチェック等を省き必要最小限の機能に絞った軽量リバーシ盤。<br>
-     */
-    private static class LightweightBoard implements Board {
-        
-        private final Map<Point, Color> map;
-        
-        private LightweightBoard(Board board) {
-            map = new HashMap<>();
-            for (Point p : Point.values()) {
-                map.put(p, board.colorAt(p));
-            }
-        }
-        
-        @Override
-        public Color colorAt(Point point) {
-            return map.get(point);
-        }
-        
-        /**
-         * {@inheritDoc}
-         * 
-         * ルールに基づく防御的なチェックは省く。
-         * クライアント側でルール妥当性を保証する必要がある。
-         */
-        @Override
-        public void apply(Move move) {
-            assert move != null;
-            assert move.point != null;
-            assert Rule.canApply(this, move);
-            
-            Set<Point> reversibles = Rule.reversibles(this, move);
-            for (Point p : reversibles) {
-                map.put(p, move.color);
-            }
-            map.put(move.point, move.color);
-        }
-    }
     
     private static class Record {
         private final Color myColor;
@@ -176,12 +137,15 @@ public class MonteCarloAIPlayer implements Player {
         
         // 下準備
         Map<Point, Record> records = new HashMap<>();
-        Map<Point, Board> nextBoards = new HashMap<>();
+        Map<Point, LightweightBoard> nextBoards = new HashMap<>();
         
         for (Point candidate : candidates) {
             records.put(candidate, new Record(color, candidate));
             
-            Board nextBoard = new LightweightBoard(board);
+            // 後続の simulateOneGame の中の処理で
+            // new LightweightBoard(Board) ではなく new LightweightBoard(LightweightBoard) が選ばれるように
+            // 敢えて LightweightBoard 型の参照で受けている。
+            LightweightBoard nextBoard = new LightweightBoard(board);
             nextBoard.apply(Move.of(color, candidate));
             nextBoards.put(candidate, nextBoard);
         }
@@ -211,7 +175,7 @@ public class MonteCarloAIPlayer implements Player {
      * @param nextColor 次のターンの色
      * @return 勝者の色
      */
-    private Color simulateOneGame(Board origin, Color nextColor) {
+    private Color simulateOneGame(LightweightBoard origin, Color nextColor) {
         Board board = new LightweightBoard(origin);
         Color currColor = nextColor;
         
