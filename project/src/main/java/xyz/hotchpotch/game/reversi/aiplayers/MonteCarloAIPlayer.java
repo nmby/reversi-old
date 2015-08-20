@@ -77,9 +77,9 @@ public class MonteCarloAIPlayer implements Player {
         proxy = new RandomAIPlayer(null, gameCondition);
         
         // 動作制御用パラメータの取得
-        margin1 = CommonUtil.getParameter(gameCondition, getClass().getName() + ".margin1", Long::valueOf, 30L);
-        margin2 = CommonUtil.getParameter(gameCondition, getClass().getName() + ".margin2", Long::valueOf, 15L);
-        debug = CommonUtil.getParameter(gameCondition, getClass().getName() + ".debug", Boolean::valueOf, false);
+        margin1 = CommonUtil.getParameter(gameCondition, getClass(), "margin1", Long::valueOf, 30L);
+        margin2 = CommonUtil.getParameter(gameCondition, getClass(), "margin2", Long::valueOf, 15L);
+        debug = CommonUtil.getParameter(gameCondition, getClass(), "debug", Boolean::valueOf, false);
     }
     
     /**

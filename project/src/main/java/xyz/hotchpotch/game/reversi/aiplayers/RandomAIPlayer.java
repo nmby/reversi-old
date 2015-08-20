@@ -30,8 +30,7 @@ public class RandomAIPlayer implements Player {
      */
     public RandomAIPlayer(Color color, GameCondition gameCondition) {
         // デバッグ用にシード値を受け取れるようにしておく。
-        Long seed = CommonUtil.getParameter(
-                gameCondition, getClass().getName() + ".seed", Long::valueOf, null);
+        Long seed = CommonUtil.getParameter(gameCondition, getClass(), "seed", Long::valueOf, null);
         random = seed == null ? new Random() : new Random(seed);
     }
     

@@ -31,8 +31,8 @@ class CommonUtil {
                 ConsolePlayer.class,
                 SimplestAIPlayer.class,
                 RandomAIPlayer.class,
-                MonteCarloAIPlayer.class,
                 DepthFirstAIPlayer.class,
+                MonteCarloAIPlayer.class,
                 SlowpokeAIPlayer.class,
                 CrazyAIPlayer.class);
     }

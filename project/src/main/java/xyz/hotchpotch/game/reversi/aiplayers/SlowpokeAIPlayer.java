@@ -32,16 +32,18 @@ public class SlowpokeAIPlayer implements Player {
      */
     public SlowpokeAIPlayer(Color color, GameCondition gameCondition) {
         // デバッグ用に各種パラメータ値を受け取れるようにしておく。
-        Long seed = CommonUtil.getParameter(
-                gameCondition, getClass().getName() + ".seed", Long::valueOf, null);
+        Long seed = CommonUtil.getParameter(gameCondition, getClass(), "seed", Long::valueOf, null);
         random = seed == null ? new Random() : new Random(seed);
         
-        int slowest = CommonUtil.getParameter(
-                gameCondition, getClass().getName() + ".slowest", Integer::parseInt, 0);
+        int slowest = CommonUtil.getParameter(gameCondition, getClass(), "slowest", Integer::parseInt, 0);
         if (slowest == 0) {
             // 制限時間の 1.25 倍を上限とする。（5回に1回は制限時間オーバーになるはず）
-            long tmp = Math.addExact(gameCondition.givenMillisPerTurn, gameCondition.givenMillisPerTurn / 4);
-            slowest = (int) Long.min(tmp, Integer.MAX_VALUE);
+            try {
+                long tmp = Math.multiplyExact(gameCondition.givenMillisPerTurn / 4, 5);
+                slowest = (int) Long.min(tmp, Integer.MAX_VALUE);
+            } catch (ArithmeticException e) {
+                slowest = Integer.MAX_VALUE;
+            }
         }
         this.slowest = slowest;
     }

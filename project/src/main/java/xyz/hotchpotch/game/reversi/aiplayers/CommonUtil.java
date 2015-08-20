@@ -11,6 +11,7 @@ import xyz.hotchpotch.game.reversi.core.Move;
 import xyz.hotchpotch.game.reversi.core.Point;
 import xyz.hotchpotch.game.reversi.core.Rule;
 import xyz.hotchpotch.game.reversi.framework.GameCondition;
+import xyz.hotchpotch.game.reversi.framework.Player;
 
 class CommonUtil {
     
@@ -63,6 +64,7 @@ class CommonUtil {
      * {@link GameCondition} オブジェクトから目的のパラメータを取得するためのメソッド。<br>
      * 
      * @param gameCondition ゲーム条件
+     * @param clazz 呼出元プレーヤークラス
      * @param key パラメータ名
      * @param converter パラメータ値を目的の型に変換するための {@code Function}
      * @param defaultValue ゲーム条件に目的のパラメータが含まれない場合のためのデフォルト値
@@ -70,11 +72,15 @@ class CommonUtil {
      */
     static <T> T getParameter(
             GameCondition gameCondition,
+            Class<? extends Player> clazz,
             String key,
             Function<String, T> converter,
             T defaultValue) {
             
         String str = gameCondition.getParam(key);
+        if (gameCondition.getParams().containsKey(clazz.getName() + "." + key)) {
+            str = gameCondition.getParam(clazz.getName() + "." + key);
+        }
         try {
             return converter.apply(str);
         } catch (Exception e) {
