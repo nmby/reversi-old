@@ -20,7 +20,7 @@ public class Rule {
      * 
      * @param board リバーシ盤
      * @return ゲーム継続中の場合は {@code true}、どちらの色も置けず終了状態の場合は {@code false}
-     * @NullPointerException {@code board} が {@code null} の場合
+     * @throws NullPointerException {@code board} が {@code null} の場合
      */
     public static boolean isGameOngoing(Board board) {
         Objects.requireNonNull(board);
@@ -33,7 +33,7 @@ public class Rule {
      * @param board リバーシ盤
      * @param move 手
      * @return 手を適用できる場合は {@code true}
-     * @NullPointerException {@code board}, {@code move} のいずれかが {@code null} の場合
+     * @throws NullPointerException {@code board}, {@code move} のいずれかが {@code null} の場合
      */
     public static boolean canApply(Board board, Move move) {
         Objects.requireNonNull(board);
@@ -52,7 +52,7 @@ public class Rule {
      * @param board リバーシ盤
      * @param color 置く駒の色
      * @return いずれかの位置に駒を置ける場合は {@code true}
-     * @NullPointerException {@code board}, {@code color} のいずれかが {@code null} の場合
+     * @throws NullPointerException {@code board}, {@code color} のいずれかが {@code null} の場合
      */
     public static boolean canPut(Board board, Color color) {
         Objects.requireNonNull(board);
@@ -68,7 +68,7 @@ public class Rule {
      * @param color 置く駒の色
      * @param point 駒を置く位置
      * @return 駒を置ける場合は {@code true}
-     * @NullPointerException {@code board}, {@code color}, {@code point} のいずれかが {@code null} の場合
+     * @throws NullPointerException {@code board}, {@code color}, {@code point} のいずれかが {@code null} の場合
      */
     public static boolean canPutAt(Board board, Color color, Point point) {
         Objects.requireNonNull(board);
@@ -112,7 +112,7 @@ public class Rule {
      * @param board リバーシ盤
      * @param move 手
      * @return ひっくり返せる位置を格納した {@code Set}
-     * @NullPointerException {@code board}, {@code move} のいずれかが {@code null} の場合
+     * @throws NullPointerException {@code board}, {@code move} のいずれかが {@code null} の場合
      */
     public static Set<Point> reversibles(Board board, Move move) {
         Objects.requireNonNull(board);

@@ -29,9 +29,9 @@ public interface Condition<P extends Playable> {
     }
     
     /**
-     * 全パラメータが格納された {@list Map} を返します。<br>
+     * 全パラメータが格納された {@code Map} を返します。<br>
      * 
-     * @return 全パラメータが格納された {@list Map}
+     * @return 全パラメータが格納された {@code Map}
      */
     Map<String, String> getParams();
     

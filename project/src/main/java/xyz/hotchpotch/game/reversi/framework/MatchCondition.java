@@ -46,8 +46,8 @@ public class MatchCondition implements Condition<Match>, Serializable {
      * @param times 対戦回数
      * @return マッチ条件
      * @throws NullPointerException {@code playerA}、{@code playerB} のいずれかが {@code null} の場合
-     * @throwsIllegalArgumentException {@code givenMillisPerTurn}、{@code givenMillisInGame}、{@code times}
-     *                                 のいずれかが正の整数でない場合
+     * @throws IllegalArgumentException {@code givenMillisPerTurn}、{@code givenMillisInGame}、{@code times}
+     *                                  のいずれかが正の整数でない場合
      */
     public static MatchCondition of(
             Class<? extends Player> playerA,
@@ -72,8 +72,8 @@ public class MatchCondition implements Condition<Match>, Serializable {
      * @return マッチ条件
      * @throws NullPointerException {@code playerA}、{@code playerB}、{@code params}
      *                              のいずれかが {@code null} の場合
-     * @throwsIllegalArgumentException {@code givenMillisPerTurn}、{@code givenMillisInGame}、{@code times}
-     *                                 のいずれかが正の整数でない場合
+     * @throws IllegalArgumentException {@code givenMillisPerTurn}、{@code givenMillisInGame}、{@code times}
+     *                                  のいずれかが正の整数でない場合
      */
     public static MatchCondition of(
             Class<? extends Player> playerA,

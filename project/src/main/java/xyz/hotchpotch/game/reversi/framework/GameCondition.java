@@ -45,7 +45,7 @@ public class GameCondition implements Condition<Game>, Serializable {
      * @param givenMillisInGame ゲーム全体での持ち時間（ミリ秒）
      * @return ゲーム条件
      * @throws NullPointerException {@code playerBlack} または {@code playerWhite} が {@code null} の場合
-     * @throwsIllegalArgumentException {@code givenMillisPerTurn} または {@code givenMillisInGame} が正の整数でない場合
+     * @throws IllegalArgumentException {@code givenMillisPerTurn} または {@code givenMillisInGame} が正の整数でない場合
      */
     public static GameCondition of(
             Class<? extends Player> playerBlack,
@@ -68,7 +68,7 @@ public class GameCondition implements Condition<Game>, Serializable {
      * @return ゲーム条件
      * @throws NullPointerException {@code playerBlack}、{@code playerWhite}、{@code params}
      *                              のいずれかが {@code null} の場合
-     * @throwsIllegalArgumentException {@code givenMillisPerTurn} または {@code givenMillisInGame} が正の整数でない場合
+     * @throws IllegalArgumentException {@code givenMillisPerTurn} または {@code givenMillisInGame} が正の整数でない場合
      */
     public static GameCondition of(
             Class<? extends Player> playerBlack,

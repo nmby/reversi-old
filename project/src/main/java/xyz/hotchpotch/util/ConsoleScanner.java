@@ -215,6 +215,7 @@ public class ConsoleScanner<T> implements Supplier<T> {
     /**
      * リストの中から選択された要素を取得するための {@code ConsoleScanner} のビルダーを返します。<br>
      * 
+     * @param <T> 最終的にクライアント・アプリケーションに返却されるデータの型
      * @param list 選択対象の要素が格納されたリスト
      * @return {@link Builder} オブジェクト
      * @throws NullPointerException {@code list} が {@code null} の場合
@@ -251,6 +252,7 @@ public class ConsoleScanner<T> implements Supplier<T> {
     /**
      * 列挙型の要素の中から選択された要素を取得するための {@code ConsoleScanner} のビルダーを返します。<br>
      * 
+     * @param <E> 最終的にクライアント・アプリケーションに返却されるデータの型
      * @param type 列挙型クラス
      * @return {@link Builder} オブジェクト
      * @throws NullPointerException {@code type} が {@code null} の場合
@@ -263,6 +265,7 @@ public class ConsoleScanner<T> implements Supplier<T> {
     /**
      * 任意の型の入力を取得するための {@code ConsoleScanner} のビルダーを返します。<br>
      * 
+     * @param <T> 最終的にクライアント・アプリケーションに返却されるデータの型
      * @param judge ユーザ入力値が要求形式に合致するかを判定する {@link Predicate}
      * @param converter ユーザ入力文字列を {@code T} 型に変換するための {@link Function}
      * @param prompt 標準出力に表示するプロンプト文字列
@@ -287,7 +290,7 @@ public class ConsoleScanner<T> implements Supplier<T> {
     /**
      * ユーザが確認するまで待機するための {@code ConsoleScanner} を生成します。<br>
      * 生成される {@code ConsoleScanner} の {@link #get()} メソッドは、
-     * 標準出力に「何か入力すると続行します > 」と表示し、
+     * 標準出力に「{@code 何か入力すると続行します > }」と表示し、
      * ユーザが何らかの入力を行うとその入力値を返します。<br>
      * 
      * @return ユーザが確認するまで待機するための {@code ConsoleScanner}

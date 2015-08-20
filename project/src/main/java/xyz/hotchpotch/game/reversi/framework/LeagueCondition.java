@@ -46,8 +46,8 @@ public class LeagueCondition implements Condition<League>, Serializable {
      * @param times 対戦回数
      * @return リーグ条件
      * @throws NullPointerException {@code players} が {@code null} の場合
-     * @throwsIllegalArgumentException {@code givenMillisPerTurn}、{@code givenMillisInGame}、{@code times}
-     *                                 のいずれかが正の整数でない場合
+     * @throws IllegalArgumentException {@code givenMillisPerTurn}、{@code givenMillisInGame}、{@code times}
+     *                                  のいずれかが正の整数でない場合
      */
     public static LeagueCondition of(
             List<Class<? extends Player>> players,
@@ -69,8 +69,8 @@ public class LeagueCondition implements Condition<League>, Serializable {
      * @param params 追加のパラメータが格納された {@code Map}
      * @return リーグ条件
      * @throws NullPointerException {@code players}、{@code params} のいずれかが {@code null} の場合
-     * @throwsIllegalArgumentException {@code givenMillisPerTurn}、{@code givenMillisInGame}、{@code times}
-     *                                 のいずれかが正の整数でない場合
+     * @throws IllegalArgumentException {@code givenMillisPerTurn}、{@code givenMillisInGame}、{@code times}
+     *                                  のいずれかが正の整数でない場合
      */
     public static LeagueCondition of(
             List<Class<? extends Player>> players,
