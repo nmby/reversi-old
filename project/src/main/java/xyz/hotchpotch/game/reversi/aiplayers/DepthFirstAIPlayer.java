@@ -45,7 +45,7 @@ public class DepthFirstAIPlayer implements Player {
         proxy = new RandomAIPlayer(null, gameCondition);
         
         // 動作制御用パラメータの取得
-        margin1 = CommonUtil.getParameter(gameCondition, getClass(), "margin1", Long::valueOf, 60L);
+        margin1 = CommonUtil.getParameter(gameCondition, getClass(), "margin1", Long::valueOf, 100L);
         rounds = CommonUtil.getParameter(gameCondition, getClass(), "rounds", Integer::valueOf, 3);
         debug = CommonUtil.getParameter(gameCondition, getClass(), "debug", Boolean::valueOf, false);
     }
