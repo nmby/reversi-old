@@ -24,14 +24,12 @@ public class ColorTest {
     @Test
     public void testStream() {
         assertThat(Color.stream().isParallel(), is(false));
-        assertThat(Color.stream().count(), is(2L));
         assertThat(Color.stream().toArray(Color[]::new), is(Color.values()));
     }
     
     @Test
     public void testParallelStream() {
         assertThat(Color.parallelStream().isParallel(), is(true));
-        assertThat(Color.parallelStream().count(), is(2L));
         assertThat(Color.parallelStream().toArray(Color[]::new), is(Color.values()));
     }
     
