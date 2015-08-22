@@ -37,15 +37,15 @@ public class GameCondition implements Condition<Game>, Serializable {
     }
     
     /**
-     * 個々の必須パラメータを指定してゲーム条件を生成します。<br>
+     * 個々の必須パラメータを指定してゲーム実施条件を生成します。<br>
      * 
      * @param playerBlack 黒プレーヤーのクラス
      * @param playerWhite 白プレーヤーのクラス
      * @param givenMillisPerTurn 一手あたりの制限時間（ミリ秒）
      * @param givenMillisInGame ゲーム全体での持ち時間（ミリ秒）
-     * @return ゲーム条件
-     * @throws NullPointerException {@code playerBlack} または {@code playerWhite} が {@code null} の場合
-     * @throws IllegalArgumentException {@code givenMillisPerTurn} または {@code givenMillisInGame} が正の整数でない場合
+     * @return ゲーム実施条件
+     * @throws NullPointerException {@code playerBlack}、{@code playerWhite} のいずれかが {@code null} の場合
+     * @throws IllegalArgumentException {@code givenMillisPerTurn}、{@code givenMillisInGame} のいずれかが正の整数でない場合
      */
     public static GameCondition of(
             Class<? extends Player> playerBlack,
@@ -57,7 +57,7 @@ public class GameCondition implements Condition<Game>, Serializable {
     }
     
     /**
-     * 個々の必須パラメータと追加のパラメータを指定してゲーム条件を生成します。<br>
+     * 個々の必須パラメータと追加のパラメータを指定してゲーム実施条件を生成します。<br>
      * {@code params} に必須パラメータが含まれる場合は、個別に引数で指定された値が優先されます。<br>
      * 
      * @param playerBlack 黒プレーヤーのクラス
@@ -65,10 +65,10 @@ public class GameCondition implements Condition<Game>, Serializable {
      * @param givenMillisPerTurn 一手あたりの制限時間（ミリ秒）
      * @param givenMillisInGame ゲーム全体での持ち時間（ミリ秒）
      * @param params 追加のパラメータが格納された {@code Map}
-     * @return ゲーム条件
+     * @return ゲーム実施条件
      * @throws NullPointerException {@code playerBlack}、{@code playerWhite}、{@code params}
      *                              のいずれかが {@code null} の場合
-     * @throws IllegalArgumentException {@code givenMillisPerTurn} または {@code givenMillisInGame} が正の整数でない場合
+     * @throws IllegalArgumentException {@code givenMillisPerTurn}、{@code givenMillisInGame} のいずれかが正の整数でない場合
      */
     public static GameCondition of(
             Class<? extends Player> playerBlack,
@@ -101,7 +101,7 @@ public class GameCondition implements Condition<Game>, Serializable {
     }
     
     /**
-     * パラメータを一括指定してゲーム条件を生成します。<br>
+     * パラメータを一括指定してゲーム実施条件を生成します。<br>
      * {@code params} は以下の必須パラメータを含む必要があります。<br>
      * <ul>
      *   <li>{@code player.black} ： 黒プレーヤーの完全修飾クラス名</li>
@@ -110,10 +110,10 @@ public class GameCondition implements Condition<Game>, Serializable {
      *   <li>{@code givenMillisInGame} ： ゲーム全体での持ち時間（ミリ秒）</li>
      * </ul>
      * 
-     * @param params ゲーム条件が設定された {@code Map}
-     * @return ゲーム条件
+     * @param params パラメータが格納された {@code Map}
+     * @return ゲーム実施条件
      * @throws NullPointerException {@code params} が {@code null} の場合
-     * @throws IllegalArgumentException 各条件の設定内容が不正の場合
+     * @throws IllegalArgumentException 各パラメータの設定内容が不正な場合
      */
     @SuppressWarnings("unchecked")
     public static GameCondition of(Map<String, String> params) {

@@ -38,13 +38,13 @@ public class LeagueCondition implements Condition<League>, Serializable {
     }
     
     /**
-     * 個々の必須パラメータを指定してリーグ条件を生成します。<br>
+     * 個々の必須パラメータを指定してリーグ実施条件を生成します。<br>
      * 
      * @param players リーグに参加するプレーヤークラスのリスト
      * @param givenMillisPerTurn 一手あたりの制限時間（ミリ秒）
      * @param givenMillisInGame ゲーム全体での持ち時間（ミリ秒）
-     * @param times 対戦回数
-     * @return リーグ条件
+     * @param times それぞれの組み合わせにおける対戦回数
+     * @return リーグ実施条件
      * @throws NullPointerException {@code players} が {@code null} の場合
      * @throws IllegalArgumentException {@code givenMillisPerTurn}、{@code givenMillisInGame}、{@code times}
      *                                  のいずれかが正の整数でない場合
@@ -59,15 +59,15 @@ public class LeagueCondition implements Condition<League>, Serializable {
     }
     
     /**
-     * 個々の必須パラメータと追加のパラメータを指定してリーグ条件を生成します。<br>
+     * 個々の必須パラメータと追加のパラメータを指定してリーグ実施条件を生成します。<br>
      * {@code params} に必須パラメータが含まれる場合は、個別に引数で指定された値が優先されます。<br>
      * 
      * @param players リーグに参加するプレーヤークラスのリスト
      * @param givenMillisPerTurn 一手あたりの制限時間（ミリ秒）
      * @param givenMillisInGame ゲーム全体での持ち時間（ミリ秒）
-     * @param times 対戦回数
+     * @param times それぞれの組み合わせにおける対戦回数
      * @param params 追加のパラメータが格納された {@code Map}
-     * @return リーグ条件
+     * @return リーグ実施条件
      * @throws NullPointerException {@code players}、{@code params} のいずれかが {@code null} の場合
      * @throws IllegalArgumentException {@code givenMillisPerTurn}、{@code givenMillisInGame}、{@code times}
      *                                  のいずれかが正の整数でない場合
@@ -81,6 +81,7 @@ public class LeagueCondition implements Condition<League>, Serializable {
             
         Objects.requireNonNull(players);
         Objects.requireNonNull(params);
+        
         if (givenMillisPerTurn <= 0 || givenMillisInGame <= 0 || times <= 0) {
             throw new IllegalArgumentException(
                     String.format("正の整数値が必要です。givenMillisPerTurn=%d, givenMillisInGame=%d, times=%d",
@@ -96,7 +97,7 @@ public class LeagueCondition implements Condition<League>, Serializable {
         copy.put("times", String.valueOf(times));
         
         return new LeagueCondition(
-                players,
+                new ArrayList<>(players),
                 givenMillisPerTurn,
                 givenMillisInGame,
                 times,
@@ -104,19 +105,19 @@ public class LeagueCondition implements Condition<League>, Serializable {
     }
     
     /**
-     * パラメータを一括指定してリーグ条件を生成します。<br>
+     * パラメータを一括指定してリーグ実施条件を生成します。<br>
      * {@code params} は以下の必須パラメータを含む必要があります。<br>
      * <ul>
-     *   <li>{@code player.?} ： プレーヤーの完全修飾クラス名（{@code ?} 部分は数字）</li>
+     *   <li>{@code player.?} ： プレーヤーの完全修飾クラス名（{@code ?} 部分は一意な数字）</li>
      *   <li>{@code givenMillisPerTurn} ： 一手あたりの制限時間（ミリ秒）</li>
      *   <li>{@code givenMillisInGame} ： ゲーム全体での持ち時間（ミリ秒）</li>
-     *   <li>{@code times} ： 対戦回数</li>
+     *   <li>{@code times} ： それぞれの組み合わせにおける対戦回数</li>
      * </ul>
      * 
-     * @param params リーグ条件が設定された {@code Map}
-     * @return リーグ条件
+     * @param params パラメータが格納された {@code Map}
+     * @return リーグ実施条件
      * @throws NullPointerException {@code params} が {@code null} の場合
-     * @throws IllegalArgumentException 各条件の設定内容が不正の場合
+     * @throws IllegalArgumentException 各パラメータの設定内容が不正な場合
      */
     @SuppressWarnings("unchecked")
     public static LeagueCondition of(Map<String, String> params) {
@@ -134,7 +135,7 @@ public class LeagueCondition implements Condition<League>, Serializable {
         String strTimes = copy.get("times");
         if (strPlayers.size() < 2) {
             throw new IllegalArgumentException(String.format(
-                    "2つ以上のプレーヤークラスを指定する必要があります。strPlayers=%s", strPlayers));
+                    "2つ以上のプレーヤークラスを指定する必要があります。count of player.? is %d", strPlayers.size()));
         }
         if (strGivenMillisPerTurn == null
                 || strGivenMillisInGame == null
@@ -192,7 +193,7 @@ public class LeagueCondition implements Condition<League>, Serializable {
     // 不変なメンバ変数は直接公開してしまう。
     // http://www.ibm.com/developerworks/jp/java/library/j-ft4/
     
-    /** プレーヤークラスが格納された {@code List} */
+    /** リーグに参加するプレーヤークラスが格納された {@code List} */
     public transient final List<Class<? extends Player>> playerClasses;
     
     /** 一手あたりの制限時間（ミリ秒） */
@@ -201,10 +202,10 @@ public class LeagueCondition implements Condition<League>, Serializable {
     /** ゲーム全体での持ち時間（ミリ秒） */
     public transient final long givenMillisInGame;
     
-    /** 対戦回数 */
+    /** それぞれの組み合わせにおける対戦回数 */
     public transient final int times;
     
-    /** マッチ条件が格納された {@code Map} */
+    /** マッチ実施条件が格納された {@code Map} */
     public transient final Map<Pair, MatchCondition> matchConditions;
     
     private transient final Map<String, String> params;
@@ -216,7 +217,7 @@ public class LeagueCondition implements Condition<League>, Serializable {
             int times,
             Map<String, String> params) {
             
-        this.playerClasses = Collections.unmodifiableList(new ArrayList<>(playerClasses));
+        this.playerClasses = Collections.unmodifiableList(playerClasses);
         this.givenMillisPerTurn = givenMillisPerTurn;
         this.givenMillisInGame = givenMillisInGame;
         this.times = times;
@@ -232,17 +233,17 @@ public class LeagueCondition implements Condition<League>, Serializable {
         }
         
         Map<Pair, MatchCondition> matchConditions = new HashMap<>();
-        for (int idx1 = 0; idx1 < playerClasses.size() - 1; idx1++) {
-            for (int idx2 = idx1 + 1; idx2 < playerClasses.size(); idx2++) {
+        for (int idxA = 0; idxA < playerClasses.size() - 1; idxA++) {
+            for (int idxB = idxA + 1; idxB < playerClasses.size(); idxB++) {
                 MatchCondition matchCondition = MatchCondition.of(
-                    playerClasses.get(idx1),
-                    playerClasses.get(idx2),
-                    givenMillisPerTurn,
-                    givenMillisInGame,
-                    times,
-                    matchParams);
-                
-                matchConditions.put(Pair.of(idx1, idx2), matchCondition);
+                        playerClasses.get(idxA),
+                        playerClasses.get(idxB),
+                        givenMillisPerTurn,
+                        givenMillisInGame,
+                        times,
+                        matchParams);
+                        
+                matchConditions.put(Pair.of(idxA, idxB), matchCondition);
             }
         }
         this.matchConditions = Collections.unmodifiableMap(matchConditions);

@@ -21,9 +21,9 @@ public class MatchResult implements Result<Match> {
     // ++++++++++++++++ static members ++++++++++++++++
     
     /**
-     * マッチ条件とゲーム結果からマッチ結果を生成します。<br>
+     * マッチ実施条件とゲーム結果からマッチ結果を生成します。<br>
      * 
-     * @param matchCondition マッチ条件
+     * @param matchCondition マッチ実施条件
      * @param gameResults 黒白それぞれにとってのゲーム結果が格納された {@code Map}
      * @return マッチ結果
      * @throws NullPointerException {@code matchCondition}、{@code gameResults} のいずれかが {@code null} の場合
@@ -40,7 +40,7 @@ public class MatchResult implements Result<Match> {
     
     // ++++++++++++++++ instance members ++++++++++++++++
     
-    /** マッチ条件 */
+    /** マッチ実施条件 */
     public final MatchCondition matchCondition;
     
     /** 勝者（引き分けの場合は {@code null}） */

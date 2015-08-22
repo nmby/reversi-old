@@ -52,7 +52,7 @@ public class GameResult implements Result<Game> {
      * @param gameCondition ゲーム実施条件
      * @param board ゲーム終了時のリバーシ盤
      * @param remainingMillisInGame 黒白それぞれの残り持ち時間（ミリ秒）が格納された {@code Map}
-     * @param violation ルール違反
+     * @param violation ルール違反を表す例外
      * @return ゲーム結果
      * @throws NullPointerException {@code gameCondition}、{@code board}、{@code remainingMillisInGame}、{@code violation}
      *                              のいずれかが {@code null} の場合

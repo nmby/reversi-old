@@ -23,7 +23,7 @@ public enum Menu {
     /** リーグ：複数プレーヤーでそれぞれ複数回、総当たり戦を行います。 */
     LEAGUE("複数プレーヤーでそれぞれ複数回、総当たり戦を行います。", ConsoleLeague::arrange),
     
-    /** 終了 */
+    /** 終了：このアプリケーションを終了します。 */
     EXIT("終了します。", null) {
         @Override
         public void execute() {

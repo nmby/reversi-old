@@ -37,14 +37,14 @@ public class MatchCondition implements Condition<Match>, Serializable {
     }
     
     /**
-     * 個々の必須パラメータを指定してマッチ条件を生成します。<br>
+     * 個々の必須パラメータを指定してマッチ実施条件を生成します。<br>
      * 
      * @param playerA プレーヤーAのクラス
      * @param playerB プレーヤーBのクラス
      * @param givenMillisPerTurn 一手あたりの制限時間（ミリ秒）
      * @param givenMillisInGame ゲーム全体での持ち時間（ミリ秒）
      * @param times 対戦回数
-     * @return マッチ条件
+     * @return マッチ実施条件
      * @throws NullPointerException {@code playerA}、{@code playerB} のいずれかが {@code null} の場合
      * @throws IllegalArgumentException {@code givenMillisPerTurn}、{@code givenMillisInGame}、{@code times}
      *                                  のいずれかが正の整数でない場合
@@ -60,7 +60,7 @@ public class MatchCondition implements Condition<Match>, Serializable {
     }
     
     /**
-     * 個々の必須パラメータと追加のパラメータを指定してマッチ条件を生成します。<br>
+     * 個々の必須パラメータと追加のパラメータを指定してマッチ実施条件を生成します。<br>
      * {@code params} に必須パラメータが含まれる場合は、個別に引数で指定された値が優先されます。<br>
      * 
      * @param playerA プレーヤーAのクラス
@@ -69,7 +69,7 @@ public class MatchCondition implements Condition<Match>, Serializable {
      * @param givenMillisInGame ゲーム全体での持ち時間（ミリ秒）
      * @param times 対戦回数
      * @param params 追加のパラメータが格納された {@code Map}
-     * @return マッチ条件
+     * @return マッチ実施条件
      * @throws NullPointerException {@code playerA}、{@code playerB}、{@code params}
      *                              のいずれかが {@code null} の場合
      * @throws IllegalArgumentException {@code givenMillisPerTurn}、{@code givenMillisInGame}、{@code times}
@@ -86,6 +86,7 @@ public class MatchCondition implements Condition<Match>, Serializable {
         Objects.requireNonNull(playerA);
         Objects.requireNonNull(playerB);
         Objects.requireNonNull(params);
+        
         if (givenMillisPerTurn <= 0 || givenMillisInGame <= 0 || times <= 0) {
             throw new IllegalArgumentException(
                     String.format("正の整数値が必要です。givenMillisPerTurn=%d, givenMillisInGame=%d, times=%d",
@@ -109,8 +110,8 @@ public class MatchCondition implements Condition<Match>, Serializable {
     }
     
     /**
-     * パラメータを一括指定してマッチ条件を生成します。<br>
-     * {@code params} は以下のパラメータを含む必要があります。<br>
+     * パラメータを一括指定してマッチ実施条件を生成します。<br>
+     * {@code params} は以下の必須パラメータを含む必要があります。<br>
      * <ul>
      *   <li>{@code player.a} ： プレーヤーAの完全修飾クラス名</li>
      *   <li>{@code player.b} ： プレーヤーBの完全修飾クラス名</li>
@@ -119,21 +120,22 @@ public class MatchCondition implements Condition<Match>, Serializable {
      *   <li>{@code times} ： 対戦回数</li>
      * </ul>
      * 
-     * @param params マッチ条件が設定された {@code Map}
-     * @return マッチ条件
+     * @param params パラメータが格納された {@code Map}
+     * @return マッチ実施条件
      * @throws NullPointerException {@code params} が {@code null} の場合
-     * @throws IllegalArgumentException 各条件の設定内容が不正の場合
+     * @throws IllegalArgumentException 各パラメータの設定内容が不正な場合
      */
     @SuppressWarnings("unchecked")
     public static MatchCondition of(Map<String, String> params) {
         Objects.requireNonNull(params);
-        Map<String, String> copy = new HashMap<>(params);
         
+        Map<String, String> copy = new HashMap<>(params);
         String strPlayerA = copy.get("player.a");
         String strPlayerB = copy.get("player.b");
         String strGivenMillisPerTurn = copy.get("givenMillisPerTurn");
         String strGivenMillisInGame = copy.get("givenMillisInGame");
         String strTimes = copy.get("times");
+        
         if (strPlayerA == null
                 || strPlayerB == null
                 || strGivenMillisPerTurn == null
@@ -211,7 +213,7 @@ public class MatchCondition implements Condition<Match>, Serializable {
     /** 対戦回数 */
     public transient final int times;
     
-    /** ゲーム実行条件が格納された {@code Map} */
+    /** ゲーム実施条件が格納された {@code Map} */
     public transient final Map<Entrant, GameCondition> gameConditions;
     
     private transient final Map<String, String> params;

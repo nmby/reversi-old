@@ -14,7 +14,7 @@ import java.util.Objects;
  * </ul>
  * <br>
  * {@code Move} は値ベースのクラスです。
- * 同値性を確認するときは Move{@link #equals(Object)} メソッドを使用してください。<br>
+ * 同値性を確認するときは Move.{@link #equals(Object)} メソッドを使用してください。<br>
  * 
  * @author nmby
  */
@@ -27,8 +27,8 @@ public class Move implements Serializable {
     /**
      * 指定された手を表す {@code Move} オブジェクトを返します。<br>
      * 
-     * @param color 駒の色
-     * @param point 駒の位置（パスの場合は {@code null}）
+     * @param color  手を指したプレーヤーの色
+     * @param point 指定された駒の位置（パスの場合は {@code null}）
      * @return Move オブジェクト
      * @throws NullPointerException {@code color} が {@code null} の場合
      */
@@ -60,10 +60,10 @@ public class Move implements Serializable {
     // むしろ積極的に public にすべきだという主張もある。
     // http://www.ibm.com/developerworks/jp/java/library/j-ft4/
     
-    /** 駒の色 */
+    /** 手を指したプレーヤーの色 */
     public final Color color;
     
-    /** 駒の位置（パスの場合は {@code null}） */
+    /** 指定された駒の位置（パスの場合は {@code null}） */
     public final Point point;
     
     private Move(Color color, Point point) {
@@ -75,8 +75,8 @@ public class Move implements Serializable {
      * {@code obj} がこのオブジェクトと同じ内容を表すかを返します。<br>
      * 
      * @param obj 検査対象
-     * @return {@code obj} がこのオブジェクトと同じ内容を表す {@code Move} の場合は {@code true}
-     *         {@code obj} が異なる内容や {@code null} の場合は {@code false}。
+     * @return {@code obj} がこのオブジェクトと同じ内容を表す {@code Move} の場合は {@code true}。
+     *         {@code obj} の内容が異なる場合や {@code null} の場合は {@code false}。
      */
     @Override
     public boolean equals(Object obj) {

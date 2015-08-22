@@ -28,7 +28,7 @@ public class Rule {
     }
     
     /**
-     * リバーシ盤の指定した位置に指定した手を適用できるかを返します。<br>
+     * リバーシ盤に指定した手を適用できるかを返します。<br>
      * 
      * @param board リバーシ盤
      * @param move 手
@@ -106,12 +106,12 @@ public class Rule {
     }
     
     /**
-     * リバーシ盤上に指定された手を適用した場合にひっくり返すことのできる駒の位置を返します。<br>
-     * 置くことのできない手が指定された場合や、パスの手が指定された場合は、空のセットを返します。<br>
+     * リバーシ盤に指定した手を適用した場合にひっくり返すことのできる駒の位置を返します。<br>
+     * 適用できない手やパスが指定された場合は、空のセットを返します。<br>
      * 
      * @param board リバーシ盤
      * @param move 手
-     * @return ひっくり返せる位置を格納した {@code Set}
+     * @return ひっくり返すことのできる駒の位置を格納した {@code Set}
      * @throws NullPointerException {@code board}, {@code move} のいずれかが {@code null} の場合
      */
     public static Set<Point> reversibles(Board board, Move move) {

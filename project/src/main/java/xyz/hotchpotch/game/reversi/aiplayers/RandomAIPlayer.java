@@ -23,10 +23,10 @@ public class RandomAIPlayer implements Player {
     private final Random random;
     
     /**
-     * {@code RandomAIPlayer} のインスタンスを生成します。<br>
+     * このクラスのインスタンスを生成します。<br>
      * 
      * @param color このプレーヤーの駒の色
-     * @param gameCondition ゲーム条件
+     * @param gameCondition ゲーム実施条件
      */
     public RandomAIPlayer(Color color, GameCondition gameCondition) {
         // デバッグ用にシード値を受け取れるようにしておく。

@@ -9,7 +9,7 @@ import java.util.Objects;
 import java.util.Set;
 
 /**
- * リバーシのルールを忠実に守るリバーシ盤の実装です。<br>
+ * ルールを忠実に守るリバーシ盤の実装です。<br>
  * このリバーシ盤に対してルールに反する手が指定された場合は例外がスローされます。<br>
  * <br>
  * この実装はスレッドセーフです。<br>
@@ -66,11 +66,12 @@ public class StrictBoard extends BaseBoard implements Serializable {
     /**
      * このリバーシ盤に指定された手を適用します。<br>
      * この実装は、リバーシのルールに忠実に従います。ルール上許可されない手が指定された場合は、例外がスローされます。<br>
-     * 次の手番がパスの場合は、パスを表す {@link Move} オブジェクトを指定して本メソッドを実行する必要があります。<br>
+     * また、黒白の順番も忠実に守る必要があります。
+     * 次の手番がパスの場合は、パスを表す {@link Move} オブジェクトを指定して本メソッドを実行しなければなりません。<br>
      * 
      * @param move 適用する手
      * @throws NullPointerException {@code move} が {@code null} の場合
-     * @throws IllegalArgumentException 許可されない手が指定された場合
+     * @throws IllegalArgumentException 許可されない手や手番とは異なる色の手が指定された場合
      */
     @Override
     public synchronized void apply(Move move) {

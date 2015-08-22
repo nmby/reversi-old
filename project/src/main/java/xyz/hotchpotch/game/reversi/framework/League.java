@@ -19,16 +19,21 @@ public interface League extends Playable {
      */
     static class Pair {
         
-        public static Pair of(int idx1, int idx2) {
-            return new Pair(idx1, idx2);
+        /**
+         * @param idxA リーグ参加プレーヤーのリストにおける、プレーヤーAのインデックス
+         * @param idxB リーグ参加プレーヤーのリストにおける、プレーヤーBのインデックス
+         * @return プレーヤーA, B の組み合わせを表す {@code Pair} オブジェクト
+         */
+        public static Pair of(int idxA, int idxB) {
+            return new Pair(idxA, idxB);
         }
         
-        final int idx1;
-        final int idx2;
+        final int idxA;
+        final int idxB;
         
-        private Pair(int idx1, int idx2) {
-            this.idx1 = idx1;
-            this.idx2 = idx2;
+        private Pair(int idxA, int idxB) {
+            this.idxA = idxA;
+            this.idxB = idxB;
         }
         
         /**
@@ -36,9 +41,12 @@ public interface League extends Playable {
          */
         @Override
         public boolean equals(Object o) {
+            if (o == this) {
+                return true;
+            }
             if (o instanceof Pair) {
                 Pair other = (Pair) o;
-                return idx1 == other.idx1 && idx2 == other.idx2;
+                return idxA == other.idxA && idxB == other.idxB;
             }
             return false;
         }
@@ -48,7 +56,7 @@ public interface League extends Playable {
          */
         @Override
         public int hashCode() {
-            return Objects.hash(idx1, idx2);
+            return Objects.hash(idxA, idxB);
         }
     }
     

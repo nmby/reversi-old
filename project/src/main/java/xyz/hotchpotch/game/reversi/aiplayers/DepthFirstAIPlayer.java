@@ -36,10 +36,10 @@ public class DepthFirstAIPlayer implements Player {
     private Instant deadline;
     
     /**
-     * {@code DepthFirstAIPlayer} のインスタンスを生成します。<br>
+     * このクラスのインスタンスを生成します。<br>
      * 
      * @param color このプレーヤーの駒の色
-     * @param gameCondition ゲーム条件
+     * @param gameCondition ゲーム実施条件
      */
     public DepthFirstAIPlayer(Color color, GameCondition gameCondition) {
         proxy = new RandomAIPlayer(null, gameCondition);
@@ -111,7 +111,6 @@ public class DepthFirstAIPlayer implements Player {
         return selected;
     }
     
-    
     private Point searchDeeply(Board board, Color color, Point[] candidates) {
         int remainingTurns = (int) Point.stream().filter(p -> board.colorAt(p) == null).count();
         Point drawable = null;
@@ -168,7 +167,7 @@ public class DepthFirstAIPlayer implements Player {
             return winner;
         } else if (availables.length == 1) {
             board.apply(Move.of(currColor, availables[0]));
-            Color winner =  searchWinner(board, currColor.opposite(), remainingTurns - 1);
+            Color winner = searchWinner(board, currColor.opposite(), remainingTurns - 1);
             if (searchableTurns < remainingTurns) {
                 searchableTurns = remainingTurns;
             }

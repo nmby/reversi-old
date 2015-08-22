@@ -5,7 +5,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
- * {@link Playable} の実行条件を表します。<br>
+ * {@link Playable} の実施条件を表します。<br>
  * 
  * @param <P> ターゲット {@code Playable}
  * @author nmby
@@ -36,10 +36,10 @@ public interface Condition<P extends Playable> {
     Map<String, String> getParams();
     
     /**
-     * この実行条件の文字列表現を返します。<br>
+     * この実施条件の文字列表現を返します。<br>
      * 人間にとって分かり易い、複数行形式の文字列です。<br>
      * 
-     * @return この実行条件の文字列表現（複数行形式）
+     * @return この実施条件の文字列表現（複数行形式）
      */
     default String toStringKindly() {
         return getParams().entrySet().stream()
@@ -50,10 +50,10 @@ public interface Condition<P extends Playable> {
     }
     
     /**
-     * この実行条件の文字列表現を返します。<br>
+     * この実施条件の文字列表現を返します。<br>
      * ログ出力等に便利な、単一行形式の文字列です。<br>
      * 
-     * @return この実行条件の文字列表現（単一行形式）
+     * @return この実施条件の文字列表現（単一行形式）
      */
     default String toStringInLine() {
         return getParams().toString();

@@ -10,19 +10,17 @@ import xyz.hotchpotch.game.reversi.core.Point;
 /**
  * リバーシゲームのプレーヤーを表します。<br>
  * <br>
- * {@code Player} 実装クラスは次のいずれかのコンストラクタを持つ必要があります。<br>
+ * {@code Player} 実装クラスは次のいずれかの public なコンストラクタを持つ必要があります。<br>
  * <ol>
  *   <li>{@link Color} と {@link GameCondition} を引数にとるコンストラクタ</li>
  *   <li>引数なしのコンストラクタ</li>
  * </ol>
- * ゲーム実行フレームワークは、ゲーム開始時に Player{@link #getPlayerInstance(Class, Color, GameCondition)}
+ * ゲーム実行フレームワークは、ゲーム開始時に {@code Player.}{@link #getPlayerInstance(Class, Color, GameCondition)}
  * を使用して {@code Player} 実装クラスのインスタンスを生成します。<br>
- * 1. のコンストラクタでは、そのプレーヤーの駒の色と、制限時間等のゲーム条件が伝えられます。
- * {@code Player} 実装クラスはこれらの情報を自身の戦略に役立ててもよいですし、無視しても構いません。<br>
+ * 1. のコンストラクタでは、そのプレーヤーの駒の色と、制限時間等のゲーム実施条件が伝えられます。
+ * {@code Player} 実装クラスはこれらの情報を自身の戦略に役立ててもよいですし、単に無視しても構いません。<br>
  * <br>
- * ゲームの間中、同じインスタンスが利用され、ゲームの終了とともに破棄されます。
- * 換言すると、同じゲーム中は同じインスタンスが使用されること、ひとつのインスタンスが複数のゲームで
- * 使いまわされないことが保証されます。<br>
+ * ゲームの間中、同じプレーヤーインスタンスが利用され、ゲームの終了とともに破棄されます。
  * <br>
  * {@code Player} は、自身の番になるたびに、ゲーム実行フレームワークからの要求に応じて打つ手を返さなければなりません。
  * 打てる手がない場合は、正しくパスを宣言しなければなりません。<br>
@@ -39,13 +37,13 @@ public interface Player {
     /**
      * {@code Player} 実装クラスのインスタンスを返します。<br>
      * <br>
-     * まず、({@link Color}, {@link GameCondition}) を引数にとるコンストラクタでのインスタンス化を試みます。<br>
-     * 次に、引数なしのコンストラクタでのインスタンス化を試みます。<br>
+     * まず、({@link Color}, {@link GameCondition}) を引数にとるコンストラクタでインスタンス化を試みます。<br>
+     * 次に、引数なしのコンストラクタでインスタンス化を試みます。<br>
      * インスタンス化できた場合はそのインスタンスを返し、できなかった場合は例外をスローします。<br>
      * 
      * @param playerClass インスタンス化する {@code Player} 実装クラス
      * @param color インスタンス化するプレーヤーの駒の色
-     * @param gameCondition ゲーム条件
+     * @param gameCondition ゲーム実施条件
      * @return Player 実装クラスのインスタンス
      * @throws NullPointerException {@code playerClass}, {@code color}, {@code gameCondition} のいずれかが
      *                              {@code null} の場合
@@ -84,7 +82,7 @@ public interface Player {
     // ++++++++++++++++ instance members ++++++++++++++++
     
     /**
-     * プレーヤーが自分の手を指定するためのメソッドです。<br>
+     * プレーヤーが自身の手を指定するためのメソッドです。<br>
      * このメソッドは、このプレーヤーの番になるたびに、ゲーム実行フレームワークから呼ばれます。<br>
      * {@code Player} 実装クラスは正しい手（駒を打つ位置）を返さなければなりません。
      * 指せる手がない場合は、{@code null} を返すことにより正しくパスを宣言しなければなりません。<br>

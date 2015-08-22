@@ -19,6 +19,7 @@ import xyz.hotchpotch.game.reversi.framework.Player;
 
 /**
  * モンテカルロ・シミュレーションにより最善手を選択する {@link Player} の実装です。<br>
+ * 試行時間が足りない場合はランダムに手を選択します。<br>
  * 
  * @author nmby
  */
@@ -68,10 +69,10 @@ public class MonteCarloAIPlayer implements Player {
     private final boolean debug;
     
     /**
-     * {@code MonteCarloAIPlayer} のインスタンスを生成します。<br>
+     * このクラスのインスタンスを生成します。<br>
      * 
      * @param color このプレーヤーの駒の色
-     * @param gameCondition ゲーム条件
+     * @param gameCondition ゲーム実施条件
      */
     public MonteCarloAIPlayer(Color color, GameCondition gameCondition) {
         proxy = new RandomAIPlayer(null, gameCondition);
@@ -86,6 +87,7 @@ public class MonteCarloAIPlayer implements Player {
      * {@inheritDoc}
      * <br>
      * この実装は、モンテカルロ・シミュレーションにより最善手を選択します。<br>
+     * 試行時間が足りない場合はランダムに手を選択します。<br>
      */
     @Override
     public Point decide(Board board, Color color, long givenMillisPerTurn, long remainingMillisInGame) {
@@ -191,7 +193,7 @@ public class MonteCarloAIPlayer implements Player {
     }
     
     /**
-     * 今回のターンの思考に何ミリ秒費やすかを決める。<br>
+     * 今回のターンの思考（試行）に何ミリ秒費やすかを決める。<br>
      * 
      * @param board 現在のリバーシ盤
      * @param givenMillisPerTurn 一手あたりの制限時間（ミリ秒）

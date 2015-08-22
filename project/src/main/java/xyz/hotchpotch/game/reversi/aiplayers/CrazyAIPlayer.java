@@ -25,10 +25,10 @@ public class CrazyAIPlayer implements Player {
     private final Random random;
     
     /**
-     * {@code CrazyAIPlayer} のインスタンスを生成します。<br>
+     * このクラスのインスタンスを生成します。<br>
      * 
      * @param color このプレーヤーの駒の色
-     * @param gameCondition ゲーム条件
+     * @param gameCondition ゲーム実施条件
      */
     public CrazyAIPlayer(Color color, GameCondition gameCondition) {
         // デバッグ用にシード値を受け取れるようにしておく。

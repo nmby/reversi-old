@@ -20,51 +20,77 @@ public class LeagueResult implements Result<League> {
     private static final String BR = System.lineSeparator();
     
     /**
-     * リーグ条件とマッチ結果からリーグ結果を生成します。<br>
+     * 対戦成績を表す不変クラスです。<br>
+     */
+    public static class Count {
+        
+        /** 勝ち数 */
+        public final int win;
+        
+        /** 引き分け数 */
+        public final int draw;
+        
+        /** 負け数 */
+        public final int lose;
+        
+        private Count(int win, int draw, int lose) {
+            this.win = win;
+            this.draw = draw;
+            this.lose = lose;
+        }
+    }
+    
+    /**
+     * リーグ実施条件とマッチ結果からリーグ結果を生成します。<br>
      * 
-     * @param leagueCondition リーグ条件
+     * @param leagueCondition リーグ実施条件
      * @param matchResults マッチ結果が格納された {@code Map}
      * @return リーグ結果
      * @throws NullPointerException {@code leagueCondition}、{@code matchResults} のいずれかが {@code null} の場合
      */
-    public static LeagueResult of(LeagueCondition leagueCondition, Map<Pair, MatchResult> matchResults) {
+    public static LeagueResult of(
+            LeagueCondition leagueCondition,
+            Map<Pair, MatchResult> matchResults) {
+        
         Objects.requireNonNull(leagueCondition);
         Objects.requireNonNull(matchResults);
+        
         return new LeagueResult(leagueCondition, new HashMap<>(matchResults));
     }
     
     // ++++++++++++++++ instance members ++++++++++++++++
     
-    /** リーグ条件 */
+    /** リーグ実施条件 */
     public final LeagueCondition leagueCondition;
     
-    /** ペアごとの勝ち、負け、引き分け回数が格納された {@code Map}（{@code Pair#idx1} から見た回数） */
-    public final Map<Pair, Map<String, Integer>> counts;
+    /** ペアごとの対戦成績が格納された {@code Map}（{@link Pair#idxA} から見た成績） */
+    public final Map<Pair, Count> counts;
     
     private final String description;
     
-    // 我ながら酷いコードだ...
     private LeagueResult(LeagueCondition leagueCondition, Map<Pair, MatchResult> matchResults) {
         this.leagueCondition = leagueCondition;
         
-        Map<Pair, Map<String, Integer>> counts = new HashMap<>();
-        
+        Map<Pair, Count> counts = new HashMap<>();
         int num = leagueCondition.playerClasses.size();
         
-        for (int idx1 = 0; idx1 < num - 1; idx1++) {
-            for (int idx2 = idx1 + 1; idx2 < num; idx2++) {
-                MatchResult matchResult = matchResults.get(Pair.of(idx1, idx2));
+        for (int idxA = 0; idxA < num - 1; idxA++) {
+            for (int idxB = idxA + 1; idxB < num; idxB++) {
+                MatchResult matchResult = matchResults.get(Pair.of(idxA, idxB));
+                
                 for (Entrant entrant : Entrant.values()) {
-                    Map<String, Integer> count = new HashMap<>();
-                    count.put("win", matchResult.wins.get(entrant));
-                    count.put("lose", matchResult.wins.get(entrant.opposite()));
-                    count.put("draw", matchResult.wins.get(null));
-                    counts.put(entrant == Entrant.A ? Pair.of(idx1, idx2) : Pair.of(idx2, idx1), count);
+                    Count count = new Count(
+                            matchResult.wins.get(entrant),
+                            matchResult.wins.get(null),
+                            matchResult.wins.get(entrant.opposite()));
+                    
+                    counts.put(entrant == Entrant.A ? Pair.of(idxA, idxB) : Pair.of(idxB, idxA), count);
                 }
             }
         }
         this.counts = Collections.unmodifiableMap(counts);
         
+        // これ以降、文字列の組み立て
         StringBuilder str = new StringBuilder();
         for (int i = 0; i < num; i++) {
             str.append(String.format("[%d] %s", i + 1, leagueCondition.playerClasses.get(i).getName())).append(BR);
@@ -77,27 +103,24 @@ public class LeagueResult implements Result<League> {
         }
         str.append("     [total]").append(BR);
         
-        for (int idx1 = 0; idx1 < num; idx1++) {
-            str.append(String.format("%5s", "[" + (idx1 + 1) + "]"));
-            int win = 0;
-            int draw = 0;
-            int lose = 0;
+        for (int idxA = 0; idxA < num; idxA++) {
+            str.append(String.format("%5s", "[" + (idxA + 1) + "]"));
+            int totalWin = 0;
+            int totalDraw = 0;
+            int totalLose = 0;
             
-            for (int idx2 = 0; idx2 < num; idx2++) {
-                if (idx1 == idx2) {
+            for (int idxB = 0; idxB < num; idxB++) {
+                if (idxA == idxB) {
                     str.append(String.format("     -/  -/  -"));
                 } else {
-                    Map<String, Integer> count = counts.get(Pair.of(idx1, idx2));
-                    int w = count.get("win");
-                    int d = count.get("draw");
-                    int l = count.get("lose");
-                    str.append(String.format("   %3d/%3d/%3d", w, d, l));
-                    win += w;
-                    draw += d;
-                    lose += l;
+                    Count count = counts.get(Pair.of(idxA, idxB));
+                    str.append(String.format("   %3d/%3d/%3d", count.win, count.draw, count.lose));
+                    totalWin += count.win;
+                    totalDraw += count.draw;
+                    totalLose += count.lose;
                 }
             }
-            str.append(String.format("     %4d/%4d/%4d", win, draw, lose)).append(BR);
+            str.append(String.format("     %4d/%4d/%4d", totalWin, totalDraw, totalLose)).append(BR);
         }
         
         description = str.toString();

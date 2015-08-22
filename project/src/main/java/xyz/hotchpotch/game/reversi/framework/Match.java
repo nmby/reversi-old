@@ -16,13 +16,17 @@ public interface Match extends Playable {
      * マッチの対戦者を表す列挙型です。<br>
      */
     static enum Entrant {
+        
+        /** 対戦者A */
         A,
+        
+        /** 対戦者B */
         B;
         
         /**
-         * 自身と反対の要素を返します。<br>
+         * 自身と反対の対戦者を返します。<br>
          * 
-         * @return 自身と反対の要素
+         * @return 自身と反対の対戦者
          */
         public Entrant opposite() {
             return this == A ? B : A;

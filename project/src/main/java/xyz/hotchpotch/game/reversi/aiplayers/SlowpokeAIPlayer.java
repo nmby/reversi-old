@@ -25,10 +25,10 @@ public class SlowpokeAIPlayer implements Player {
     private final int slowest;
     
     /**
-     * {@code SlowpokeAIPlayer} のインスタンスを生成します。<br>
+     * このクラスのインスタンスを生成します。<br>
      * 
      * @param color このプレーヤーの駒の色
-     * @param gameCondition ゲーム条件
+     * @param gameCondition ゲーム実施条件
      */
     public SlowpokeAIPlayer(Color color, GameCondition gameCondition) {
         // デバッグ用に各種パラメータ値を受け取れるようにしておく。
