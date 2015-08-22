@@ -80,6 +80,7 @@ public class GameCondition implements Condition<Game>, Serializable {
         Objects.requireNonNull(playerBlack);
         Objects.requireNonNull(playerWhite);
         Objects.requireNonNull(params);
+        
         if (givenMillisPerTurn <= 0 || givenMillisInGame <= 0) {
             throw new IllegalArgumentException(
                     String.format("正の整数値が必要です。givenMillisPerTurn=%d, givenMillisInGame=%d",
@@ -115,60 +116,15 @@ public class GameCondition implements Condition<Game>, Serializable {
      * @throws NullPointerException {@code params} が {@code null} の場合
      * @throws IllegalArgumentException 各パラメータの設定内容が不正な場合
      */
-    @SuppressWarnings("unchecked")
     public static GameCondition of(Map<String, String> params) {
         Objects.requireNonNull(params);
+        
         Map<String, String> copy = new HashMap<>(params);
         
-        String strPlayerBlack = copy.get("player.black");
-        String strPlayerWhite = copy.get("player.white");
-        String strGivenMillisPerTurn = copy.get("givenMillisPerTurn");
-        String strGivenMillisInGame = copy.get("givenMillisInGame");
-        if (strPlayerBlack == null
-                || strPlayerWhite == null
-                || strGivenMillisPerTurn == null
-                || strGivenMillisInGame == null) {
-            throw new IllegalArgumentException(
-                    String.format("必須パラメータが指定されていません。"
-                            + "player.black=%s, player.white=%s, "
-                            + "givenMillisPerTurn=%s, givenMillisInGame=%s",
-                            strPlayerBlack, strPlayerWhite,
-                            strGivenMillisPerTurn, strGivenMillisInGame));
-        }
-        
-        Class<? extends Player> playerBlack;
-        Class<? extends Player> playerWhite;
-        try {
-            playerBlack = (Class<? extends Player>) Class.forName(strPlayerBlack);
-            playerWhite = (Class<? extends Player>) Class.forName(strPlayerWhite);
-        } catch (ClassNotFoundException e) {
-            throw new IllegalArgumentException(
-                    String.format("プレーヤークラスをロードできません。player.black=%s, player.white=%s",
-                            strPlayerBlack, strPlayerWhite),
-                    e);
-        } catch (ClassCastException e) {
-            throw new IllegalArgumentException(
-                    String.format("プレーヤークラスは %s を実装する必要があります。"
-                            + "player.black=%s, player.white=%s",
-                            Player.class.getName(), strPlayerBlack, strPlayerWhite),
-                    e);
-        }
-        
-        long givenMillisPerTurn;
-        long givenMillisInGame;
-        try {
-            givenMillisPerTurn = Long.parseLong(strGivenMillisPerTurn);
-            givenMillisInGame = Long.parseLong(strGivenMillisInGame);
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException(
-                    String.format("整数値が必要です。givenMillisPerTurn=%s, givenMillisInGame=%s",
-                            strGivenMillisPerTurn, strGivenMillisInGame));
-        }
-        if (givenMillisPerTurn <= 0 || givenMillisInGame <= 0) {
-            throw new IllegalArgumentException(
-                    String.format("正の整数値が必要です。givenMillisPerTurn=%d, givenMillisInGame=%d",
-                            givenMillisPerTurn, givenMillisInGame));
-        }
+        Class<? extends Player> playerBlack = ConditionUtil.getPlayerClass(copy, "player.black");
+        Class<? extends Player> playerWhite = ConditionUtil.getPlayerClass(copy, "player.white");
+        long givenMillisPerTurn = ConditionUtil.getLongPositiveValue(copy, "givenMillisPerTurn");
+        long givenMillisInGame = ConditionUtil.getLongPositiveValue(copy, "givenMillisInGame");
         
         return new GameCondition(
                 playerBlack,

@@ -125,67 +125,16 @@ public class MatchCondition implements Condition<Match>, Serializable {
      * @throws NullPointerException {@code params} が {@code null} の場合
      * @throws IllegalArgumentException 各パラメータの設定内容が不正な場合
      */
-    @SuppressWarnings("unchecked")
     public static MatchCondition of(Map<String, String> params) {
         Objects.requireNonNull(params);
         
         Map<String, String> copy = new HashMap<>(params);
-        String strPlayerA = copy.get("player.a");
-        String strPlayerB = copy.get("player.b");
-        String strGivenMillisPerTurn = copy.get("givenMillisPerTurn");
-        String strGivenMillisInGame = copy.get("givenMillisInGame");
-        String strTimes = copy.get("times");
         
-        if (strPlayerA == null
-                || strPlayerB == null
-                || strGivenMillisPerTurn == null
-                || strGivenMillisInGame == null
-                || strTimes == null) {
-            throw new IllegalArgumentException(
-                    String.format("必須パラメータが指定されていません。"
-                            + "player.a=%s, player.b=%s, "
-                            + "givenMillisPerTurn=%s, givenMillisInGame=%s, "
-                            + "times=%s",
-                            strPlayerA, strPlayerB,
-                            strGivenMillisPerTurn, strGivenMillisInGame,
-                            strTimes));
-        }
-        
-        Class<? extends Player> playerA;
-        Class<? extends Player> playerB;
-        try {
-            playerA = (Class<? extends Player>) Class.forName(strPlayerA);
-            playerB = (Class<? extends Player>) Class.forName(strPlayerB);
-        } catch (ClassNotFoundException e) {
-            throw new IllegalArgumentException(
-                    String.format("プレーヤークラスをロードできません。player.a=%s, player.b=%s",
-                            strPlayerA, strPlayerB),
-                    e);
-        } catch (ClassCastException e) {
-            throw new IllegalArgumentException(
-                    String.format("プレーヤークラスは %s を実装する必要があります。"
-                            + "player.a=%s, player.b=%s",
-                            Player.class.getName(), strPlayerA, strPlayerB),
-                    e);
-        }
-        
-        long givenMillisPerTurn;
-        long givenMillisInGame;
-        int times;
-        try {
-            givenMillisPerTurn = Long.parseLong(strGivenMillisPerTurn);
-            givenMillisInGame = Long.parseLong(strGivenMillisInGame);
-            times = Integer.parseInt(strTimes);
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException(
-                    String.format("整数値が必要です。givenMillisPerTurn=%s, givenMillisInGame=%s, times=%s",
-                            strGivenMillisPerTurn, strGivenMillisInGame, strTimes));
-        }
-        if (givenMillisPerTurn <= 0 || givenMillisInGame <= 0 || times <= 0) {
-            throw new IllegalArgumentException(
-                    String.format("正の整数値が必要です。givenMillisPerTurn=%d, givenMillisInGame=%d, times=%d",
-                            givenMillisPerTurn, givenMillisInGame, times));
-        }
+        Class<? extends Player> playerA = ConditionUtil.getPlayerClass(copy, "player.a");
+        Class<? extends Player> playerB = ConditionUtil.getPlayerClass(copy, "player.b");
+        long givenMillisPerTurn = ConditionUtil.getLongPositiveValue(copy, "givenMillisPerTurn");
+        long givenMillisInGame = ConditionUtil.getLongPositiveValue(copy, "givenMillisInGame");
+        int times = (int) ConditionUtil.getLongPositiveValue(copy, "times");
         
         return new MatchCondition(
                 playerA,

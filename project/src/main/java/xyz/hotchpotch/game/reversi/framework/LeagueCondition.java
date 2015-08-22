@@ -119,66 +119,31 @@ public class LeagueCondition implements Condition<League>, Serializable {
      * @throws NullPointerException {@code params} が {@code null} の場合
      * @throws IllegalArgumentException 各パラメータの設定内容が不正な場合
      */
-    @SuppressWarnings("unchecked")
     public static LeagueCondition of(Map<String, String> params) {
         Objects.requireNonNull(params);
+        
         Map<String, String> copy = new HashMap<>(params);
         
-        List<String> strPlayers = new ArrayList<>();
+        List<String> playerClassNames = new ArrayList<>();
         for (String key : copy.keySet()) {
             if (key.matches("player.\\d+")) {
-                strPlayers.add(copy.get(key));
+                playerClassNames.add(copy.get(key));
             }
         }
-        String strGivenMillisPerTurn = copy.get("givenMillisPerTurn");
-        String strGivenMillisInGame = copy.get("givenMillisInGame");
-        String strTimes = copy.get("times");
-        if (strPlayers.size() < 2) {
+        if (playerClassNames.size() < 2) {
             throw new IllegalArgumentException(String.format(
-                    "2つ以上のプレーヤークラスを指定する必要があります。count of player.? is %d", strPlayers.size()));
-        }
-        if (strGivenMillisPerTurn == null
-                || strGivenMillisInGame == null
-                || strTimes == null) {
-            throw new IllegalArgumentException(
-                    String.format("必須パラメータが指定されていません。"
-                            + "givenMillisPerTurn=%s, givenMillisInGame=%s, times=%s",
-                            strGivenMillisPerTurn, strGivenMillisInGame, strTimes));
+                    "2つ以上のプレーヤークラスを指定する必要があります。count of player.? is %d", playerClassNames.size()));
         }
         
         List<Class<? extends Player>> players = new ArrayList<>();
-        String tmp = null;
-        try {
-            for (String strPlayer : strPlayers) {
-                tmp = strPlayer;
-                Class<? extends Player> player = (Class<? extends Player>) Class.forName(strPlayer);
-                players.add(player);
-            }
-        } catch (ClassNotFoundException e) {
-            throw new IllegalArgumentException(String.format(
-                    "プレーヤークラスをロードできません。player.?=%s", tmp), e);
-        } catch (ClassCastException e) {
-            throw new IllegalArgumentException(String.format(
-                    "プレーヤークラスは %s を実装する必要があります。player.?=%s", Player.class.getName(), tmp), e);
+        for (String playerClassName : playerClassNames) {
+            Class<? extends Player> player = ConditionUtil.getPlayerClass(playerClassName);
+            players.add(player);
         }
         
-        long givenMillisPerTurn;
-        long givenMillisInGame;
-        int times;
-        try {
-            givenMillisPerTurn = Long.parseLong(strGivenMillisPerTurn);
-            givenMillisInGame = Long.parseLong(strGivenMillisInGame);
-            times = Integer.parseInt(strTimes);
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException(
-                    String.format("整数値が必要です。givenMillisPerTurn=%s, givenMillisInGame=%s, times=%s",
-                            strGivenMillisPerTurn, strGivenMillisInGame, strTimes));
-        }
-        if (givenMillisPerTurn <= 0 || givenMillisInGame <= 0 || times <= 0) {
-            throw new IllegalArgumentException(
-                    String.format("正の整数値が必要です。givenMillisPerTurn=%d, givenMillisInGame=%d, times=%d",
-                            givenMillisPerTurn, givenMillisInGame, times));
-        }
+        long givenMillisPerTurn = ConditionUtil.getLongPositiveValue(copy, "givenMillisPerTurn");
+        long givenMillisInGame = ConditionUtil.getLongPositiveValue(copy, "givenMillisInGame");
+        int times = (int) ConditionUtil.getLongPositiveValue(copy, "times");
         
         return new LeagueCondition(
                 players,
