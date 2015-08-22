@@ -3,7 +3,7 @@ package xyz.hotchpotch.game.reversi.framework;
 import xyz.hotchpotch.game.reversi.core.Color;
 
 /**
- * リバーシのルールに違反したことを示す基底例外です。<br>
+ * リバーシのルールに違反したことを表す基底例外です。<br>
  * 
  * @author nmby
  */
@@ -37,5 +37,15 @@ public class RuleViolationException extends Exception {
     public RuleViolationException(String message, Color violator) {
         super(message);
         this.violator = violator;
+    }
+    
+    /**
+     * 例外をコピーして生成します。<br>
+     * 
+     * @param original 元の例外
+     */
+    RuleViolationException(RuleViolationException original) {
+        super(original.getMessage(), original.getCause());
+        violator = original.violator;
     }
 }

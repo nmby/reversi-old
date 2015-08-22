@@ -1,5 +1,6 @@
 package xyz.hotchpotch.game.reversi.framework;
 
+import java.lang.reflect.Constructor;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Map;
@@ -23,7 +24,7 @@ public class GameResult implements Result<Game> {
     /**
      * ルール違反なくゲームが正常終了した場合のゲーム結果を生成します。<br>
      * 
-     * @param gameCondition ゲーム条件
+     * @param gameCondition ゲーム実施条件
      * @param board ゲーム終了時のリバーシ盤
      * @param remainingMillisInGame 黒白それぞれの残り持ち時間（ミリ秒）が格納された {@code Map}
      * @return ゲーム結果
@@ -35,16 +36,20 @@ public class GameResult implements Result<Game> {
             Board board,
             Map<Color, Long> remainingMillisInGame) {
             
+        Objects.requireNonNull(gameCondition);
+        Objects.requireNonNull(board);
+        Objects.requireNonNull(remainingMillisInGame);
+        
         return new GameResult(
-                Objects.requireNonNull(gameCondition),
-                Objects.requireNonNull(board),
-                new EnumMap<>(Objects.requireNonNull(remainingMillisInGame)));
+                gameCondition,
+                BoardSnapshot.of(board),
+                new EnumMap<>(remainingMillisInGame));
     }
     
     /**
      * ルール違反によりゲームが終了した場合のゲーム結果を生成します。<br>
      * 
-     * @param gameCondition ゲーム条件
+     * @param gameCondition ゲーム実施条件
      * @param board ゲーム終了時のリバーシ盤
      * @param remainingMillisInGame 黒白それぞれの残り持ち時間（ミリ秒）が格納された {@code Map}
      * @param violation ルール違反
@@ -58,16 +63,37 @@ public class GameResult implements Result<Game> {
             Map<Color, Long> remainingMillisInGame,
             RuleViolationException violation) {
             
+        Objects.requireNonNull(gameCondition);
+        Objects.requireNonNull(board);
+        Objects.requireNonNull(remainingMillisInGame);
+        Objects.requireNonNull(violation);
+        
         return new GameResult(
-                Objects.requireNonNull(gameCondition),
-                Objects.requireNonNull(board),
-                new EnumMap<>(Objects.requireNonNull(remainingMillisInGame)),
-                Objects.requireNonNull(violation));
+                gameCondition,
+                BoardSnapshot.of(board),
+                new EnumMap<>(remainingMillisInGame),
+                copyOf(violation));
+    }
+    
+    private static RuleViolationException copyOf(RuleViolationException original) {
+        // このクラスを不変にするために、インスタンス生成時には防御的コピーをとり、クライアントへはコピーを返す。
+        // 出来るだけ violation インスタンスの実際の型が備えるコピーコンストラクタを利用し、
+        // 失敗した場合は RuleViolationException のコピーコンストラクタを利用する。
+        // 
+        // 何かもうちょっとスマートなやり方はないんだろうか... Collections#unmodifiableThrowable とか無いのかな...
+        // それとも例外オブジェクトをこんなふうに使うことがそもそも間違っている...？
+        Class<? extends RuleViolationException> type = original.getClass();
+        try {
+            Constructor<? extends RuleViolationException> copyConstructor = type.getConstructor(type);
+            return copyConstructor.newInstance(original);
+        } catch (Exception e) {
+            return new RuleViolationException(original);
+        }
     }
     
     // ++++++++++++++++ instance members ++++++++++++++++
     
-    /** ゲーム条件 */
+    /** ゲーム実施条件 */
     public final GameCondition gameCondition;
     
     /** ゲーム終了時のリバーシ盤 */
@@ -76,12 +102,10 @@ public class GameResult implements Result<Game> {
     /** 黒白それぞれの残り持ち時間（ミリ秒）が格納された {@code Map} */
     public final Map<Color, Long> remainingMillisInGame;
     
-    /** ルール違反 */
-    public final RuleViolationException violation;
-    
     /** 勝者（引き分けの場合は {@code null}） */
     public final Color winner;
     
+    private final RuleViolationException violation;
     private final String description;
     
     private GameResult(
@@ -89,8 +113,9 @@ public class GameResult implements Result<Game> {
             Board board,
             Map<Color, Long> remainingMillisInGame) {
             
+        // 防御的コピーをとるのは static メソッドのレイヤ、public で公開するために不変化ラップするのはコンストラクタのレイヤとする。
         this.gameCondition = gameCondition;
-        this.board = BoardSnapshot.of(board);
+        this.board = board;
         this.remainingMillisInGame = Collections.unmodifiableMap(remainingMillisInGame);
         this.violation = null;
         
@@ -112,7 +137,7 @@ public class GameResult implements Result<Game> {
             RuleViolationException violation) {
             
         this.gameCondition = gameCondition;
-        this.board = BoardSnapshot.of(board);
+        this.board = board;
         this.remainingMillisInGame = Collections.unmodifiableMap(remainingMillisInGame);
         this.violation = violation;
         winner = violation.violator.opposite();
@@ -123,6 +148,16 @@ public class GameResult implements Result<Game> {
                 violation.getMessage(),
                 Color.BLACK, remainingMillisInGame.get(Color.BLACK),
                 Color.WHITE, remainingMillisInGame.get(Color.WHITE));
+    }
+    
+    /**
+     * ゲーム終了の原因となったルール違反の内容を表す例外オブジェクトを返します。<br>
+     * ルール違反なくゲームが正常終了した場合は {@code null} を返します。<br>
+     * 
+     * @return ルール違反の内容を表す例外オブジェクト
+     */
+    public RuleViolationException violation() {
+        return violation == null ? null : copyOf(violation);
     }
     
     /**

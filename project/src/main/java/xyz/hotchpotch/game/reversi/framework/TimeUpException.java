@@ -22,4 +22,13 @@ public class TimeUpException extends RuleViolationException {
     public TimeUpException(String message, Color violator) {
         super(message, violator);
     }
+    
+    /**
+     * 例外をコピーして生成します。<br>
+     * 
+     * @param original 元の例外
+     */
+    TimeUpException(TimeUpException original) {
+        super(original.getMessage(), original.violator, original.getCause());
+    }
 }

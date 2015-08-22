@@ -35,4 +35,15 @@ public class IllegalMoveException extends RuleViolationException {
         this.move = move;
         this.board = BoardSnapshot.of(board);
     }
+    
+    /**
+     * 例外をコピーして生成します。<br>
+     * 
+     * @param original 元の例外
+     */
+    IllegalMoveException(IllegalMoveException original) {
+        super(original.getMessage(), original.violator, original.getCause());
+        move = original.move;
+        board = BoardSnapshot.of(original.board);
+    }
 }
