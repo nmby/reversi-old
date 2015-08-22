@@ -20,27 +20,6 @@ public class LeagueResult implements Result<League> {
     private static final String BR = System.lineSeparator();
     
     /**
-     * 対戦成績を表す不変クラスです。<br>
-     */
-    public static class Count {
-        
-        /** 勝ち数 */
-        public final int win;
-        
-        /** 引き分け数 */
-        public final int draw;
-        
-        /** 負け数 */
-        public final int lose;
-        
-        private Count(int win, int draw, int lose) {
-            this.win = win;
-            this.draw = draw;
-            this.lose = lose;
-        }
-    }
-    
-    /**
      * リーグ実施条件とマッチ結果からリーグ結果を生成します。<br>
      * 
      * @param leagueCondition リーグ実施条件
@@ -64,14 +43,14 @@ public class LeagueResult implements Result<League> {
     public final LeagueCondition leagueCondition;
     
     /** ペアごとの対戦成績が格納された {@code Map}（{@link Pair#idxA} から見た成績） */
-    public final Map<Pair, Count> counts;
+    public final Map<Pair, ResultCount> counts;
     
     private final String description;
     
     private LeagueResult(LeagueCondition leagueCondition, Map<Pair, MatchResult> matchResults) {
         this.leagueCondition = leagueCondition;
         
-        Map<Pair, Count> counts = new HashMap<>();
+        Map<Pair, ResultCount> counts = new HashMap<>();
         int num = leagueCondition.playerClasses.size();
         
         for (int idxA = 0; idxA < num - 1; idxA++) {
@@ -79,11 +58,7 @@ public class LeagueResult implements Result<League> {
                 MatchResult matchResult = matchResults.get(Pair.of(idxA, idxB));
                 
                 for (Entrant entrant : Entrant.values()) {
-                    Count count = new Count(
-                            matchResult.wins.get(entrant),
-                            matchResult.wins.get(null),
-                            matchResult.wins.get(entrant.opposite()));
-                    
+                    ResultCount count = matchResult.resultCounts.get(entrant);
                     counts.put(entrant == Entrant.A ? Pair.of(idxA, idxB) : Pair.of(idxB, idxA), count);
                 }
             }
@@ -105,22 +80,18 @@ public class LeagueResult implements Result<League> {
         
         for (int idxA = 0; idxA < num; idxA++) {
             str.append(String.format("%5s", "[" + (idxA + 1) + "]"));
-            int totalWin = 0;
-            int totalDraw = 0;
-            int totalLose = 0;
+            ResultCount total = new ResultCount(0, 0, 0);
             
             for (int idxB = 0; idxB < num; idxB++) {
                 if (idxA == idxB) {
                     str.append(String.format("     -/  -/  -"));
                 } else {
-                    Count count = counts.get(Pair.of(idxA, idxB));
+                    ResultCount count = counts.get(Pair.of(idxA, idxB));
                     str.append(String.format("   %3d/%3d/%3d", count.win, count.draw, count.lose));
-                    totalWin += count.win;
-                    totalDraw += count.draw;
-                    totalLose += count.lose;
+                    total = total.sum(count);
                 }
             }
-            str.append(String.format("     %4d/%4d/%4d", totalWin, totalDraw, totalLose)).append(BR);
+            str.append(String.format("     %4d/%4d/%4d", total.win, total.draw, total.lose)).append(BR);
         }
         
         description = str.toString();

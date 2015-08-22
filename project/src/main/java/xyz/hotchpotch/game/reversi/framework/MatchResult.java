@@ -3,7 +3,6 @@ package xyz.hotchpotch.game.reversi.framework;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -24,7 +23,7 @@ public class MatchResult implements Result<Match> {
      * マッチ実施条件とゲーム結果からマッチ結果を生成します。<br>
      * 
      * @param matchCondition マッチ実施条件
-     * @param gameResults 黒白それぞれにとってのゲーム結果が格納された {@code Map}
+     * @param gameResults ゲーム実施条件A, Bそれぞれにおけるゲーム結果が格納された {@code Map}
      * @return マッチ結果
      * @throws NullPointerException {@code matchCondition}、{@code gameResults} のいずれかが {@code null} の場合
      */
@@ -46,40 +45,44 @@ public class MatchResult implements Result<Match> {
     /** 勝者（引き分けの場合は {@code null}） */
     public final Entrant winner;
     
-    /** プレーヤーA, Bそれぞれの勝利回数が格納された {@code Map}（{@code key=null} は引き分け回数） */
-    public final Map<Entrant, Integer> wins;
+    /** プレーヤーA, Bそれぞれの対戦成績が格納された {@code Map} */
+    public final Map<Entrant, ResultCount> resultCounts;
     
     private final String description;
     
     private MatchResult(MatchCondition matchCondition, Map<Entrant, List<GameResult>> gameResults) {
         this.matchCondition = matchCondition;
         
-        int winA = (int) gameResults.get(Entrant.A).stream().filter(r -> r.winner == Color.BLACK).count()
-                + (int) gameResults.get(Entrant.B).stream().filter(r -> r.winner == Color.WHITE).count();
-        int winB = (int) gameResults.get(Entrant.A).stream().filter(r -> r.winner == Color.WHITE).count()
-                + (int) gameResults.get(Entrant.B).stream().filter(r -> r.winner == Color.BLACK).count();
-        int draw = (int) gameResults.get(Entrant.A).stream().filter(r -> r.winner == null).count()
-                + (int) gameResults.get(Entrant.B).stream().filter(r -> r.winner == null).count();
-                
-        if (winB < winA) {
+        Map<Entrant, ResultCount> resultCounts = new EnumMap<>(Entrant.class);
+        for (Entrant entrant : Entrant.values()) {
+            List<GameResult> blackResults = gameResults.get(entrant);
+            List<GameResult> whiteResults = gameResults.get(entrant.opposite());
+            
+            int win = (int) blackResults.stream().filter(r -> r.winner == Color.BLACK).count()
+                    + (int) whiteResults.stream().filter(r -> r.winner == Color.WHITE).count();
+            int draw = (int) blackResults.stream().filter(r -> r.winner == null).count()
+                    + (int) whiteResults.stream().filter(r -> r.winner == null).count();
+            int lose = (int) blackResults.stream().filter(r -> r.winner == Color.WHITE).count()
+                    + (int) whiteResults.stream().filter(r -> r.winner == Color.BLACK).count();
+            
+            resultCounts.put(entrant, new ResultCount(win, draw, lose));
+        }
+        this.resultCounts = Collections.unmodifiableMap(resultCounts);
+        
+        ResultCount countA = resultCounts.get(Entrant.A);
+        if (countA.lose < countA.win) {
             winner = Entrant.A;
-        } else if (winA < winB) {
+        } else if (countA.win < countA.lose) {
             winner = Entrant.B;
         } else {
             winner = null;
         }
         
-        Map<Entrant, Integer> wins = new HashMap<>();
-        wins.put(Entrant.A, winA);
-        wins.put(Entrant.B, winB);
-        wins.put(null, draw);
-        this.wins = Collections.unmodifiableMap(wins);
-        
         description = String.format("%s:%s, %s:%s\t>> %s %sの勝ち:%d, %sの勝ち:%d, 引き分け:%d ",
                 Entrant.A, matchCondition.playerClasses.get(Entrant.A).getSimpleName(),
                 Entrant.B, matchCondition.playerClasses.get(Entrant.B).getSimpleName(),
                 winner == null ? "引き分けです。" : winner + "の勝ちです。",
-                Entrant.A, winA, Entrant.B, winB, draw);
+                Entrant.A, countA.win, Entrant.B, countA.lose, countA.draw);
     }
     
     /**
