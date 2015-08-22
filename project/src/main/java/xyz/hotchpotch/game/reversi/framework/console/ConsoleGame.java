@@ -41,9 +41,9 @@ public class ConsoleGame implements ConsolePlayable<Game> {
     // ++++++++++++++++ static members ++++++++++++++++
     
     /**
-     * ゲーム条件を指定してゲーム実行クラスを生成します。<br>
+     * ゲーム実施条件を指定してゲーム実行クラスを生成します。<br>
      * 
-     * @param gameCondition ゲーム条件
+     * @param gameCondition ゲーム実施条件
      * @return ゲーム実行クラス
      * @throws NullPointerException {@code gameCondition} が {@code null} の場合
      */
@@ -52,7 +52,7 @@ public class ConsoleGame implements ConsolePlayable<Game> {
     }
     
     /**
-     * ゲーム条件を標準入力から指定することによりゲーム実行クラスを生成します。<br>
+     * ゲーム実施条件を標準入力から指定することによりゲーム実行クラスを生成します。<br>
      * 
      * @return ゲーム実行クラス
      */
@@ -65,6 +65,7 @@ public class ConsoleGame implements ConsolePlayable<Game> {
         Class<? extends Player> playerWhite = CommonUtil.arrangePlayerClass(Color.WHITE + "のプレーヤー");
         long givenMillisPerTurn = CommonUtil.arrangeGivenMillisPerTurn();
         long givenMillisInGame = CommonUtil.arrangeGivenMillisInGame();
+        
         Map<String, String> params = new HashMap<>();
         boolean auto = CommonUtil.arrangeAuto();
         params.put("auto", Boolean.toString(auto));

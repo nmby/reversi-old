@@ -25,9 +25,9 @@ public class ConsoleLeague implements ConsolePlayable<League> {
     // ++++++++++++++++ static members ++++++++++++++++
     
     /**
-     * リーグ条件を指定してリーグ実行クラスを生成します。<br>
+     * リーグ実施条件を指定してリーグ実行クラスを生成します。<br>
      * 
-     * @param leagueCondition リーグ条件
+     * @param leagueCondition リーグ実施条件
      * @return リーグ実行クラス
      * @throws NullPointerException {@code leagueCondition} が {@code null} の場合
      */
@@ -36,7 +36,7 @@ public class ConsoleLeague implements ConsolePlayable<League> {
     }
     
     /**
-     * リーグ条件を標準入力から指定することによりリーグ実行クラスを生成します。<br>
+     * リーグ実施条件を標準入力から指定することによりリーグ実行クラスを生成します。<br>
      * 
      * @return リーグ実行クラス
      */
@@ -49,6 +49,7 @@ public class ConsoleLeague implements ConsolePlayable<League> {
         long givenMillisPerTurn = CommonUtil.arrangeGivenMillisPerTurn();
         long givenMillisInGame = CommonUtil.arrangeGivenMillisInGame();
         int times = CommonUtil.arrangeTimes();
+        
         Map<String, String> params = new HashMap<>();
         boolean dispDetail = CommonUtil.arrangeDispDetail();
         if (dispDetail) {

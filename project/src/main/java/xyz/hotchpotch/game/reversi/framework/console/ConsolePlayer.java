@@ -26,12 +26,12 @@ public class ConsolePlayer implements Player {
             .stringBuilder("[a-h][1-8]|PASS")
             .prompt("手を選択してください（\"a1\"～\"h8\" または \"PASS\"）" + System.lineSeparator() + "> ")
             .build();
-    
+            
     /**
      * {@code ConsolePlayer} のインスタンスを生成します。<br>
      * 
      * @param color このプレーヤーの駒の色
-     * @param gameCondition ゲーム条件
+     * @param gameCondition ゲーム実施条件
      */
     public ConsolePlayer(Color color, GameCondition gameCondition) {
         String keySafety = getClass().getName() + ".safety";

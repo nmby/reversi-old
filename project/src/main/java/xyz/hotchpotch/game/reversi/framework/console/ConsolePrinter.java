@@ -44,6 +44,7 @@ public class ConsolePrinter {
     
     // ++++++++++++++++ instance members ++++++++++++++++
     
+    /** このロガーのログ出力レベル */
     public final Level level;
     
     private ConsolePrinter(Level level) {

@@ -26,9 +26,9 @@ public class ConsoleMatch implements ConsolePlayable<Match> {
     // ++++++++++++++++ static members ++++++++++++++++
     
     /**
-     * マッチ条件を指定してマッチ実行クラスを生成します。<br>
+     * マッチ実施条件を指定してマッチ実行クラスを生成します。<br>
      * 
-     * @param matchCondition マッチ条件
+     * @param matchCondition マッチ実施条件
      * @return マッチ実行クラス
      * @throws NullPointerException {@code matchCondition} が {@code null} の場合
      */
@@ -37,7 +37,7 @@ public class ConsoleMatch implements ConsolePlayable<Match> {
     }
     
     /**
-     * マッチ条件を標準入力から指定することによりマッチ実行クラスを生成します。<br>
+     * マッチ実施条件を標準入力から指定することによりマッチ実行クラスを生成します。<br>
      * 
      * @return マッチ実行クラス
      */
@@ -51,6 +51,7 @@ public class ConsoleMatch implements ConsolePlayable<Match> {
         long givenMillisPerTurn = CommonUtil.arrangeGivenMillisPerTurn();
         long givenMillisInGame = CommonUtil.arrangeGivenMillisInGame();
         int times = CommonUtil.arrangeTimes();
+        
         Map<String, String> params = new HashMap<>();
         boolean dispDetail = CommonUtil.arrangeDispDetail();
         if (dispDetail) {
