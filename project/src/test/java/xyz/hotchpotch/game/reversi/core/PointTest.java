@@ -217,14 +217,17 @@ public class PointTest {
     
     @Test
     public void testSerializable3() throws IOException {
-        // （Point$SerializationProxyではなく）Pointのデシリアル化が抑止されることの確認
         byte[] bytesOfPoint = TestUtil.bytes(Point.class.getName());
         byte[] bytesOfPointProxy = TestUtil.bytes(Point.class.getName() + "$SerializationProxy");
         byte[] bytesOfInstance = TestUtil.write(Point.of(0, 0));
         
+        // （Point$SerializationProxyではなく）Pointのデシリアル化が抑止されることの確認
         byte[] modified = TestUtil.replace(bytesOfInstance, bytesOfPointProxy, bytesOfPoint);
-        
         assertThat(of(() -> TestUtil.read(modified)),
                 raise(FailToDeserializeException.class).rootCause(ObjectStreamException.class));
+        
+        // Point$SerializationProxyであればデシリアル化できることの確認
+        byte[] modified2 = TestUtil.replace(bytesOfInstance, bytesOfPoint, bytesOfPointProxy);
+        assertThat(TestUtil.read(modified2), theInstance(Point.of(0, 0)));
     }
 }
