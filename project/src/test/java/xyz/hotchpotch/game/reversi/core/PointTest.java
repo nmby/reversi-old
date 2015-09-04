@@ -227,7 +227,7 @@ public class PointTest {
                 raise(FailToDeserializeException.class).rootCause(ObjectStreamException.class));
         
         // Point$SerializationProxyであればデシリアル化できることの確認
-        byte[] modified2 = TestUtil.replace(bytesOfInstance, bytesOfPoint, bytesOfPointProxy);
+        byte[] modified2 = TestUtil.replace(modified, bytesOfPoint, bytesOfPointProxy);
         assertThat(TestUtil.read(modified2), theInstance(Point.of(0, 0)));
     }
 }
