@@ -8,6 +8,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({
         ColorTest.class,
         DirectionTest.class,
+        MoveTest.class,
         PointTest.class
 })
 public class AllTests {

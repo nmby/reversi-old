@@ -10,14 +10,14 @@ import java.util.Objects;
 import java.util.function.Function;
 
 /**
- * TODO: doc me !!
  * 
- * @since TODO:
  * @author nmby
  */
 public class TestUtil {
     
     // ++++++++++++++++ static members ++++++++++++++++
+    
+    private static final byte[] OBJECT_HEADER = { (byte) 0xac, (byte) 0xed, 0x00, 0x05 };
     
     // ■■■シリアル化／デシリアル化関連のユーティリティ■■■
     
@@ -27,6 +27,7 @@ public class TestUtil {
      * @param obj シリアル化対象のオブジェクト（{@code null} が許容されます）
      * @return {@code obj} をシリアル化することによって得られるバイト配列
      * @throws FailToSerializeException シリアル化の過程で何らかの例外が発生した場合
+     * @see ObjectOutputStream#writeObject(Object)
      */
     public static byte[] write(Object obj) {
         try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -48,6 +49,7 @@ public class TestUtil {
      * @return バイト配列をデシリアル化することにより得られるオブジェクト
      * @throws NullPointerException {@code bytes} が {@code null} の場合
      * @throws FailToDeserializeException デシリアル化の過程で何らかの例外が発生した場合
+     * @see ObjectInputStream#readObject()
      */
     public static Object read(byte[] bytes) {
         Objects.requireNonNull(bytes);
@@ -97,7 +99,7 @@ public class TestUtil {
         return read(modified);
     }
     
-    // ■■■プリミティブデータ型とStringのシリアル化形式取得に関するユーティリティ■■■
+    // ■■■プリミティブデータ型とオブジェクトのシリアル化形式取得に関するユーティリティ■■■
     
     /**
      * boolean 値をシリアル化して得られるバイト配列を返します。<br>
@@ -107,6 +109,7 @@ public class TestUtil {
      * @param b 任意の boolean 値
      * @return boolean 値をシリアル化して得られるバイト配列
      * @throws FailToSerializeException シリアル化の過程で何らかの例外が発生した場合
+     * @see DataOutputStream#writeBoolean(boolean)
      */
     public static byte[] bytes(boolean b) {
         try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -129,6 +132,7 @@ public class TestUtil {
      * @param i 任意の int 値
      * @return int 値をシリアル化して得られるバイト配列
      * @throws FailToSerializeException シリアル化の過程で何らかの例外が発生した場合
+     * @see DataOutputStream#writeInt(int)
      */
     public static byte[] bytes(int i) {
         try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -151,6 +155,7 @@ public class TestUtil {
      * @param l 任意の long 値
      * @return long 値をシリアル化して得られるバイト配列
      * @throws FailToSerializeException シリアル化の過程で何らかの例外が発生した場合
+     * @see DataOutputStream#writeLong(long)
      */
     public static byte[] bytes(long l) {
         try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -171,6 +176,7 @@ public class TestUtil {
      * @param f 任意の float 値
      * @return float 値をシリアル化して得られるバイト配列
      * @throws FailToSerializeException シリアル化の過程で何らかの例外が発生した場合
+     * @see DataOutputStream#writeFloat(float)
      */
     public static byte[] bytes(float f) {
         try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -191,6 +197,7 @@ public class TestUtil {
      * @param d 任意の double 値
      * @return double 値をシリアル化して得られるバイト配列
      * @throws FailToSerializeException シリアル化の過程で何らかの例外が発生した場合
+     * @see DataOutputStream#writeDouble(double)
      */
     public static byte[] bytes(double d) {
         try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -225,7 +232,7 @@ public class TestUtil {
      * @throws FailToSerializeException シリアル化の過程で何らかの例外が発生した場合
      * @see DataOutputStream#writeUTF(String)
      */
-    public static byte[] bytes(String str) {
+    public static byte[] bytesOfString(String str) {
         Objects.requireNonNull(str);
         
         try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -238,6 +245,22 @@ public class TestUtil {
         } catch (Exception e) {
             throw new FailToSerializeException(e);
         }
+    }
+    
+    /**
+     * オブジェクトをシリアル化して得られるバイト配列から先頭の固定 4 バイトを除いた配列を返します。<br>
+     * 
+     * @param obj 任意のオブジェクト
+     * @return オブジェクトをシリアル化して得られるバイト配列から先頭の固定 4 バイトを除いた配列
+     * @throws FailToSerializeException シリアル化の過程で何らかの例外が発生した場合
+     */
+    public static byte[] bytesOfObject(Object obj) {
+        byte[] bytes = write(obj);
+        
+        assert bytes != null;
+        assert Arrays.equals(OBJECT_HEADER, Arrays.copyOf(bytes, OBJECT_HEADER.length));
+        
+        return Arrays.copyOfRange(bytes, OBJECT_HEADER.length, bytes.length);
     }
     
     // ■■■バイト配列の加工、およびバイト配列と16進表示形式文字列の変換に関するユーティリティ■■■
