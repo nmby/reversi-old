@@ -11,6 +11,7 @@ public class DirectionTest {
     public void testValues() {
         Direction[] directions = Direction.values();
         
+        assertThat(directions, instanceOf(Direction[].class));
         assertThat(directions.length, is(8));
         
         assertThat(directions[0], theInstance(Direction.UPPER));
