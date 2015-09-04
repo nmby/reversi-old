@@ -9,7 +9,6 @@ public class ColorTest {
     
     @Test
     public void testValues() {
-        assertThat(Color.values(), instanceOf(Color[].class));
         assertThat(Color.values().length, is(2));
         
         assertThat(Color.values()[0], theInstance(Color.BLACK));

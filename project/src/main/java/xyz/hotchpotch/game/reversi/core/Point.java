@@ -2,6 +2,7 @@ package xyz.hotchpotch.game.reversi.core;
 
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
+import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
@@ -34,8 +35,12 @@ public class Point implements Serializable {
             j = point.j;
         }
         
-        private Object readResolve() {
-            return of(i, j);
+        private Object readResolve() throws ObjectStreamException {
+            try {
+                return of(i, j);
+            } catch (IndexOutOfBoundsException e) {
+                throw new InvalidObjectException("IndexOutOfBounds: " + desc(i,  j));
+            }
         }
     }
     

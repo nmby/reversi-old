@@ -7,7 +7,8 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({
         ColorTest.class,
-        DirectionTest.class
+        DirectionTest.class,
+        PointTest.class
 })
 public class AllTests {
 }
