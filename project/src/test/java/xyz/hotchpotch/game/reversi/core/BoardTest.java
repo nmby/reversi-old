@@ -27,7 +27,7 @@ public class BoardTest {
         }
     }
     
-    private String lineToBox(String line) {
+    private static String lineToBox(String line) {
         assert line != null;
         assert line.length() == Point.HEIGHT * Point.WIDTH;
         
@@ -45,7 +45,7 @@ public class BoardTest {
         return box.toString();
     }
     
-    private static final String board1 = ""
+    private static final String boardStr1 = ""
             + "・・・・・・・・"
             + "・・・・・・・・"
             + "・・・・・・・・"
@@ -55,7 +55,7 @@ public class BoardTest {
             + "・・・・・・・・"
             + "・・・・・・・・";
     
-    private static final String board2 = ""
+    private static final String boardStr2 = ""
             + "●●●●●●●●"
             + "●●●●●●●●"
             + "●●●●●●●●"
@@ -65,7 +65,7 @@ public class BoardTest {
             + "●●●●●●●●"
             + "●●●●●●●●";
     
-    private static final String board3 = ""
+    private static final String boardStr3 = ""
             + "○○○○○○○○"
             + "○○○○○○○○"
             + "○○○○○○○○"
@@ -75,7 +75,7 @@ public class BoardTest {
             + "○○○○○○○○"
             + "○○○○○○○○";
     
-    private static final String board4 = ""
+    private static final String boardStr4 = ""
             + "●●●●●●●○"
             + "●●●●●●○○"
             + "●●●●●○○○"
@@ -87,17 +87,17 @@ public class BoardTest {
     
     @Test
     public void testToStringKindly() {
-        assertThat(new TestBoard(board1).toStringKindly(), is(lineToBox(board1)));
-        assertThat(new TestBoard(board2).toStringKindly(), is(lineToBox(board2)));
-        assertThat(new TestBoard(board3).toStringKindly(), is(lineToBox(board3)));
-        assertThat(new TestBoard(board4).toStringKindly(), is(lineToBox(board4)));
+        assertThat(new TestBoard(boardStr1).toStringKindly(), is(lineToBox(boardStr1)));
+        assertThat(new TestBoard(boardStr2).toStringKindly(), is(lineToBox(boardStr2)));
+        assertThat(new TestBoard(boardStr3).toStringKindly(), is(lineToBox(boardStr3)));
+        assertThat(new TestBoard(boardStr4).toStringKindly(), is(lineToBox(boardStr4)));
     }
     
     @Test
     public void testToStringInLine() {
-        assertThat(new TestBoard(board1).toStringInLine(), is(board1));
-        assertThat(new TestBoard(board2).toStringInLine(), is(board2));
-        assertThat(new TestBoard(board3).toStringInLine(), is(board3));
-        assertThat(new TestBoard(board4).toStringInLine(), is(board4));
+        assertThat(new TestBoard(boardStr1).toStringInLine(), is(boardStr1));
+        assertThat(new TestBoard(boardStr2).toStringInLine(), is(boardStr2));
+        assertThat(new TestBoard(boardStr3).toStringInLine(), is(boardStr3));
+        assertThat(new TestBoard(boardStr4).toStringInLine(), is(boardStr4));
     }
 }
