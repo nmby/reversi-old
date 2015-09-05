@@ -217,8 +217,8 @@ public class PointTest {
     
     @Test
     public void testSerializable3() throws IOException {
-        byte[] bytesOfPoint = TestUtil.bytesOfString(Point.class.getName());
-        byte[] bytesOfPointProxy = TestUtil.bytesOfString(Point.class.getName() + "$SerializationProxy");
+        byte[] bytesOfPoint = TestUtil.bytes(Point.class.getName());
+        byte[] bytesOfPointProxy = TestUtil.bytes(Point.class.getName() + "$SerializationProxy");
         byte[] bytesOfInstance = TestUtil.write(Point.of(0, 0));
         
         // （Point$SerializationProxyではなく）Pointのデシリアル化が抑止されることの確認

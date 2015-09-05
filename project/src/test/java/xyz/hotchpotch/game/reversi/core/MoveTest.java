@@ -131,12 +131,12 @@ public class MoveTest {
     public void testSerializable2() {
         // 先ずは、Move の中身を改竄できることを確認（テスト方法の妥当性確認）
         assertThat(TestUtil.writeModifyAndRead(Move.of(Color.BLACK, Point.of(0, 0)),
-                bytes -> TestUtil.replace(bytes, TestUtil.bytesOfObject(Color.BLACK), TestUtil.bytesOfObject(Color.WHITE))),
+                bytes -> TestUtil.replace(bytes, TestUtil.bytes(Color.BLACK), TestUtil.bytes(Color.WHITE))),
                 is(Move.of(Color.WHITE, Point.of(0, 0))));
                 
         // color == null に改竄されたオブジェクトのデシリアル化が抑止されることの確認
         assertThat(of(() -> TestUtil.writeModifyAndRead(Move.of(Color.BLACK, Point.of(0, 0)),
-                bytes -> TestUtil.replace(bytes, TestUtil.bytesOfObject(Color.BLACK), TestUtil.bytesOfObject(null)))),
+                bytes -> TestUtil.replace(bytes, TestUtil.bytes(Color.BLACK), TestUtil.bytes((Object) null)))),
                 raise(FailToDeserializeException.class).rootCause(InvalidObjectException.class));
     }
 }

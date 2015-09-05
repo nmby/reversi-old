@@ -232,7 +232,7 @@ public class TestUtil {
      * @throws FailToSerializeException シリアル化の過程で何らかの例外が発生した場合
      * @see DataOutputStream#writeUTF(String)
      */
-    public static byte[] bytesOfString(String str) {
+    public static byte[] bytes(String str) {
         Objects.requireNonNull(str);
         
         try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -254,7 +254,7 @@ public class TestUtil {
      * @return オブジェクトをシリアル化して得られるバイト配列から先頭の固定 4 バイトを除いた配列
      * @throws FailToSerializeException シリアル化の過程で何らかの例外が発生した場合
      */
-    public static byte[] bytesOfObject(Object obj) {
+    public static byte[] bytes(Object obj) {
         byte[] bytes = write(obj);
         
         assert bytes != null;

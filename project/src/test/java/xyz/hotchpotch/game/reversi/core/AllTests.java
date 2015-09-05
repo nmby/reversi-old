@@ -6,6 +6,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
+        BoardTest.class,
         ColorTest.class,
         DirectionTest.class,
         MoveTest.class,

@@ -56,8 +56,7 @@ public interface Board {
      * @return このリバーシ盤の文字列表現（複数行形式）
      */
     default String toStringKindly() {
-        StringBuilder str = new StringBuilder();
-        str.append("  ");
+        StringBuilder str = new StringBuilder("   ");
         
         for (int j = 0; j < Point.WIDTH; j++) {
             str.append(String.format("%c ", 'a' + j));
@@ -65,7 +64,7 @@ public interface Board {
         str.append(System.lineSeparator());
         
         for (int i = 0; i < Point.HEIGHT; i++) {
-            str.append(String.format("%-2d", i + 1));
+            str.append(String.format("%2c ", '1' + i));
             for (int j = 0; j < Point.WIDTH; j++) {
                 str.append(Color.toString(colorAt(Point.of(i, j))));
             }
