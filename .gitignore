@@ -5,7 +5,7 @@
 
 # Package Files #
 *.jar
-!xyz.hotchpotch.game.reversi-*.jar
+!xyz.hotchpotch.*.jar
 *.war
 *.ear
 

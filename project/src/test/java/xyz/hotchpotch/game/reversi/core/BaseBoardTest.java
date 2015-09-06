@@ -28,7 +28,7 @@ public class BaseBoardTest {
         
         @Override
         public void apply(Move move) {
-            throw new UnsupportedOperationException();
+            map.put(move.point, move.color);
         }
     }
     
@@ -98,6 +98,12 @@ public class BaseBoardTest {
         assertThat(new TestBoard(lineToMap(boardStr3)).toStringInLine(), is(boardStr3));
         assertThat(new TestBoard(lineToMap(boardStr4)).toStringInLine(), is(boardStr4));
         
+        Map<Point, Color> map4 = new HashMap<>(lineToMap(boardStr4));
+        Board board4 = new TestBoard(map4);
+        assertThat(board4.colorAt(Point.of(0, 0)), is(Color.BLACK));
+        map4.put(Point.of(0, 0), Color.WHITE);
+        assertThat(board4.colorAt(Point.of(0, 0)), is(Color.BLACK));
+        
         assertThat(of(() -> new TestBoard((Map<Point, Color>) null)), raise(NullPointerException.class));
     }
     
@@ -107,6 +113,14 @@ public class BaseBoardTest {
         assertThat(new TestBoard(new TestBoard(lineToMap(boardStr2))).toStringInLine(), is(boardStr2));
         assertThat(new TestBoard(new TestBoard(lineToMap(boardStr3))).toStringInLine(), is(boardStr3));
         assertThat(new TestBoard(new TestBoard(lineToMap(boardStr4))).toStringInLine(), is(boardStr4));
+        
+        Board board4 = new TestBoard(lineToMap(boardStr4));
+        Board copy = new TestBoard(board4);
+        assertThat(board4.colorAt(Point.of(0, 0)), is(Color.BLACK));
+        assertThat(copy.colorAt(Point.of(0, 0)), is(Color.BLACK));
+        board4.apply(Move.of(Color.WHITE, Point.of(0, 0)));
+        assertThat(board4.colorAt(Point.of(0, 0)), is(Color.WHITE));
+        assertThat(copy.colorAt(Point.of(0, 0)), is(Color.BLACK));
         
         assertThat(of(() -> new TestBoard((Board) null)), raise(NullPointerException.class));
     }
@@ -139,11 +153,9 @@ public class BaseBoardTest {
         Board board3 = new TestBoard(lineToMap(boardStr3));
         Board board4 = new TestBoard(lineToMap(boardStr4));
         
-        Point.stream().forEach(p -> {
-            assertThat(board1.toString(), is(board1.toStringInLine()));
-            assertThat(board2.toString(), is(board2.toStringInLine()));
-            assertThat(board3.toString(), is(board3.toStringInLine()));
-            assertThat(board4.toString(), is(board4.toStringInLine()));
-        });
+        assertThat(board1.toString(), is(board1.toStringInLine()));
+        assertThat(board2.toString(), is(board2.toStringInLine()));
+        assertThat(board3.toString(), is(board3.toStringInLine()));
+        assertThat(board4.toString(), is(board4.toStringInLine()));
     }
 }

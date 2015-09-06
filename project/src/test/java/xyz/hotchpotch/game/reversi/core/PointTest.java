@@ -2,6 +2,7 @@ package xyz.hotchpotch.game.reversi.core;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
+import static xyz.hotchpotch.jutaime.serializable.experimental.TestUtil.*;
 import static xyz.hotchpotch.jutaime.throwable.RaiseMatchers.*;
 import static xyz.hotchpotch.jutaime.throwable.Testee.*;
 
@@ -16,7 +17,6 @@ import org.junit.Test;
 
 import xyz.hotchpotch.jutaime.serializable.experimental.FailToDeserializeException;
 import xyz.hotchpotch.jutaime.serializable.experimental.TestUtil;
-
 public class PointTest {
     
     @Test
@@ -165,33 +165,33 @@ public class PointTest {
     @Test
     public void testSerializable1() throws IOException {
         Point.stream().forEach(p -> {
-            assertThat(TestUtil.writeAndRead(p), theInstance(p));
+            assertThat(writeAndRead(p), theInstance(p));
         });
     }
     
     @Test
     public void testSerializable2() {
         // 先ずは、(i, j) を改竄できることを確認（テスト方法の妥当性を確認）
-        assertThat(TestUtil.writeModifyAndRead(Point.of(0, 0), bytes -> modifyIJ(bytes, 1, 2)),
+        assertThat(writeModifyAndRead(Point.of(0, 0), bytes -> modifyIJ(bytes, 1, 2)),
                 theInstance(Point.of(1, 2)));
                 
         // (i, j) が正常範囲ならば正常にデシリアル化できることの確認
         IntStream.range(0, Point.HEIGHT).forEach(i -> IntStream.range(0, Point.WIDTH).forEach(j -> {
-            assertThat(TestUtil.writeModifyAndRead(Point.of(0, 0), bytes -> modifyIJ(bytes, i, j)),
+            assertThat(writeModifyAndRead(Point.of(0, 0), bytes -> modifyIJ(bytes, i, j)),
                     theInstance(Point.of(i, j)));
         }));
         
         // (i, j) が不正な範囲ならばデシリアル化が抑止されることの確認
         IntStream.range(0, Point.WIDTH).forEach(j -> {
-            assertThat(of(() -> TestUtil.writeModifyAndRead(Point.of(0, 0), bytes -> modifyIJ(bytes, -1, j))),
+            assertThat(of(() -> writeModifyAndRead(Point.of(0, 0), bytes -> modifyIJ(bytes, -1, j))),
                     raise(FailToDeserializeException.class).rootCause(InvalidObjectException.class));
-            assertThat(of(() -> TestUtil.writeModifyAndRead(Point.of(0, 0), bytes -> modifyIJ(bytes, Point.HEIGHT, j))),
+            assertThat(of(() -> writeModifyAndRead(Point.of(0, 0), bytes -> modifyIJ(bytes, Point.HEIGHT, j))),
                     raise(FailToDeserializeException.class).rootCause(InvalidObjectException.class));
         });
         IntStream.range(0, Point.HEIGHT).forEach(i -> {
-            assertThat(of(() -> TestUtil.writeModifyAndRead(Point.of(0, 0), bytes -> modifyIJ(bytes, i, -1))),
+            assertThat(of(() -> writeModifyAndRead(Point.of(0, 0), bytes -> modifyIJ(bytes, i, -1))),
                     raise(FailToDeserializeException.class).rootCause(InvalidObjectException.class));
-            assertThat(of(() -> TestUtil.writeModifyAndRead(Point.of(0, 0), bytes -> modifyIJ(bytes, i, Point.WIDTH))),
+            assertThat(of(() -> writeModifyAndRead(Point.of(0, 0), bytes -> modifyIJ(bytes, i, Point.WIDTH))),
                     raise(FailToDeserializeException.class).rootCause(InvalidObjectException.class));
         });
     }
@@ -217,17 +217,17 @@ public class PointTest {
     
     @Test
     public void testSerializable3() throws IOException {
-        byte[] bytesOfPoint = TestUtil.bytes(Point.class.getName());
-        byte[] bytesOfPointProxy = TestUtil.bytes(Point.class.getName() + "$SerializationProxy");
-        byte[] bytesOfInstance = TestUtil.write(Point.of(0, 0));
+        byte[] bytesOfPoint = bytes(Point.class.getName());
+        byte[] bytesOfPointProxy = bytes(Point.class.getName() + "$SerializationProxy");
+        byte[] bytesOfInstance = write(Point.of(0, 0));
         
         // （Point$SerializationProxyではなく）Pointのデシリアル化が抑止されることの確認
-        byte[] modified = TestUtil.replace(bytesOfInstance, bytesOfPointProxy, bytesOfPoint);
-        assertThat(of(() -> TestUtil.read(modified)),
+        byte[] modified = replace(bytesOfInstance, bytesOfPointProxy, bytesOfPoint);
+        assertThat(of(() -> read(modified)),
                 raise(FailToDeserializeException.class).rootCause(ObjectStreamException.class));
         
         // Point$SerializationProxyであればデシリアル化できることの確認
-        byte[] modified2 = TestUtil.replace(modified, bytesOfPoint, bytesOfPointProxy);
-        assertThat(TestUtil.read(modified2), theInstance(Point.of(0, 0)));
+        byte[] modified2 = replace(modified, bytesOfPoint, bytesOfPointProxy);
+        assertThat(read(modified2), theInstance(Point.of(0, 0)));
     }
 }

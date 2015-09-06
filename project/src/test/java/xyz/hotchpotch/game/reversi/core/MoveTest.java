@@ -2,6 +2,7 @@ package xyz.hotchpotch.game.reversi.core;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
+import static xyz.hotchpotch.jutaime.serializable.experimental.TestUtil.*;
 import static xyz.hotchpotch.jutaime.throwable.RaiseMatchers.*;
 import static xyz.hotchpotch.jutaime.throwable.Testee.*;
 
@@ -12,7 +13,6 @@ import java.util.Set;
 import org.junit.Test;
 
 import xyz.hotchpotch.jutaime.serializable.experimental.FailToDeserializeException;
-import xyz.hotchpotch.jutaime.serializable.experimental.TestUtil;
 
 public class MoveTest {
     
@@ -119,10 +119,10 @@ public class MoveTest {
     @Test
     public void testSerializable1() {
         Color.stream().forEach(c -> {
-            assertThat(TestUtil.writeAndRead(Move.of(c, null)), is(Move.of(c, null)));
+            assertThat(writeAndRead(Move.of(c, null)), is(Move.of(c, null)));
             
             Point.stream().forEach(p -> {
-                assertThat(TestUtil.writeAndRead(Move.of(c, p)), is(Move.of(c, p)));
+                assertThat(writeAndRead(Move.of(c, p)), is(Move.of(c, p)));
             });
         });
     }
@@ -130,13 +130,13 @@ public class MoveTest {
     @Test
     public void testSerializable2() {
         // 先ずは、Move の中身を改竄できることを確認（テスト方法の妥当性確認）
-        assertThat(TestUtil.writeModifyAndRead(Move.of(Color.BLACK, Point.of(0, 0)),
-                bytes -> TestUtil.replace(bytes, TestUtil.bytes(Color.BLACK), TestUtil.bytes(Color.WHITE))),
+        assertThat(writeModifyAndRead(Move.of(Color.BLACK, Point.of(0, 0)),
+                bytes -> replace(bytes, bytes(Color.BLACK), bytes(Color.WHITE))),
                 is(Move.of(Color.WHITE, Point.of(0, 0))));
                 
         // color == null に改竄されたオブジェクトのデシリアル化が抑止されることの確認
-        assertThat(of(() -> TestUtil.writeModifyAndRead(Move.of(Color.BLACK, Point.of(0, 0)),
-                bytes -> TestUtil.replace(bytes, TestUtil.bytes(Color.BLACK), TestUtil.bytes((Object) null)))),
+        assertThat(of(() -> writeModifyAndRead(Move.of(Color.BLACK, Point.of(0, 0)),
+                bytes -> replace(bytes, bytes(Color.BLACK), bytes((Object) null)))),
                 raise(FailToDeserializeException.class).rootCause(InvalidObjectException.class));
     }
 }
