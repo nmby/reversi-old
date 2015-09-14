@@ -14,6 +14,14 @@ import xyz.hotchpotch.game.reversi.framework.Player;
 /**
  * 深さ優先探索により必勝手を探す {@link Player} の実装です。<br>
  * 探索時間が足りない場合はランダムに手を選択します。<br>
+ * <br>
+ * 動作制御のために、次のオプションパラメータを与えることができます。<br>
+ * <ul>
+ *   <li>seed : 乱数ジェネレータのシード値（long）</li>
+ *   <li>margin1 : 探索を実施する最少の残り持ち時間（ミリ秒：long）</li>
+ *   <li>rounds : ゲームの序盤において、何手に一度、探索を試みるか（int）</li>
+ *   <li>debug : デバッグ出力の有無（true/false）</li>
+ * </ul>
  * 
  * @author nmby
  */
@@ -45,8 +53,10 @@ public class DepthFirstAIPlayer implements Player {
         proxy = new RandomAIPlayer(null, gameCondition);
         
         // 動作制御用パラメータの取得
-        margin1 = CommonUtil.getParameter(gameCondition, getClass(), "margin1", Long::valueOf, 100L);
-        rounds = CommonUtil.getParameter(gameCondition, getClass(), "rounds", Integer::valueOf, 3);
+        long tmpMargin1 = CommonUtil.getParameter(gameCondition, getClass(), "margin1", Long::valueOf, 0L);
+        margin1 = 0 < tmpMargin1 ? tmpMargin1 : 100L;
+        int tmpRounds = CommonUtil.getParameter(gameCondition, getClass(), "rounds", Integer::valueOf, 0);
+        rounds = 0 < tmpRounds ? tmpRounds : 3;
         debug = CommonUtil.getParameter(gameCondition, getClass(), "debug", Boolean::valueOf, false);
     }
     
@@ -84,8 +94,8 @@ public class DepthFirstAIPlayer implements Player {
         // 前回の探索で読み切れた深さよりも現時点での残りターン数の方が 2 以上多い場合は、
         // 今回もどうせ読み切れずに時間切れとなり時間の無駄なので、探索を行わずにランダムに返す。
         // 但し、rounds 回に 1 回は探索を行う。
-        if (searchableTurns + 1 < blankCells && 0 < round % rounds) {
-            return proxy.decide(board, color, givenMillisPerTurn, remainingMillisInGame);
+        if (searchableTurns + 1 < blankCells && 0 < round) {
+            return proxy.decide(board, color, 0, 0);
         }
         
         // 探索を行い、必勝手を探索する。
@@ -112,7 +122,7 @@ public class DepthFirstAIPlayer implements Player {
     }
     
     private Point searchDeeply(Board board, Color color, Point[] candidates) {
-        int remainingTurns = (int) Point.stream().filter(p -> board.colorAt(p) == null).count();
+        int remainingTurns = (int) Point.stream().filter(p -> board.colorAt(p) == null).count() - 1;
         Point drawable = null;
         
         for (Point candidate : candidates) {
@@ -141,6 +151,7 @@ public class DepthFirstAIPlayer implements Player {
      * 
      * @param board リバーシ盤
      * @param currColor 現在の手番
+     * @param remainingTurns 空のマスの数（どの程度の深さまで読めたかの記録に使用）
      * @return 勝者の色
      */
     private Color searchWinner(LightweightBoard board, Color currColor, int remainingTurns) {

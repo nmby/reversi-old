@@ -20,6 +20,14 @@ import xyz.hotchpotch.game.reversi.framework.Player;
 /**
  * モンテカルロ・シミュレーションにより最善手を選択する {@link Player} の実装です。<br>
  * 試行時間が足りない場合はランダムに手を選択します。<br>
+ * <br>
+ * 動作制御のために、次のオプションパラメータを与えることができます。<br>
+ * <ul>
+ *   <li>seed : 乱数ジェネレータのシード値（long）</li>
+ *   <li>margin1 : シミュレーション結果の評価のために確保する時間（ミリ秒：long）</li>
+ *   <li>margin2 : シミュレーションを実施する最少の残り持ち時間（ミリ秒：long）</li>
+ *   <li>debug : デバッグ出力の有無（true/false）</li>
+ * </ul>
  * 
  * @author nmby
  */
@@ -78,8 +86,10 @@ public class MonteCarloAIPlayer implements Player {
         proxy = new RandomAIPlayer(null, gameCondition);
         
         // 動作制御用パラメータの取得
-        margin1 = CommonUtil.getParameter(gameCondition, getClass(), "margin1", Long::valueOf, 100L);
-        margin2 = CommonUtil.getParameter(gameCondition, getClass(), "margin2", Long::valueOf, 50L);
+        long tmpMargin1 = CommonUtil.getParameter(gameCondition, getClass(), "margin1", Long::valueOf, 0L);
+        margin1 = 0 < tmpMargin1 ? tmpMargin1 : 100L;
+        long tmpMargin2 = CommonUtil.getParameter(gameCondition, getClass(), "margin2", Long::valueOf, 0L);
+        margin2 = 0 < tmpMargin2 ? tmpMargin2 : 50L;
         debug = CommonUtil.getParameter(gameCondition, getClass(), "debug", Boolean::valueOf, false);
     }
     
@@ -105,7 +115,7 @@ public class MonteCarloAIPlayer implements Player {
         long millisForThisTurn = millisForThisTurn(board, givenMillisPerTurn, remainingMillisInGame);
         if (millisForThisTurn < margin2) {
             // 残り時間が少ない場合はシミュレーションを行わずにランダムに返す。
-            return proxy.decide(board, color, givenMillisPerTurn, remainingMillisInGame);
+            return proxy.decide(board, color, 0, 0);
         }
         
         // シミュレーションを行い、候補箇所ごとの結果を受け取る。

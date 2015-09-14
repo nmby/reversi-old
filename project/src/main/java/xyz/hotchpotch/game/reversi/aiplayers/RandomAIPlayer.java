@@ -11,6 +11,11 @@ import xyz.hotchpotch.game.reversi.framework.Player;
 
 /**
  * ランダムに手を選ぶ {@link Player} の実装です。<br>
+ * <br>
+ * 動作制御のために、次のオプションパラメータを与えることができます。
+ * <ul>
+ *   <li>seed : 乱数ジェネレータのシード値（long）</li>
+ * </ul>
  * 
  * @author nmby
  */

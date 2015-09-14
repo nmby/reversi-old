@@ -13,6 +13,11 @@ import xyz.hotchpotch.game.reversi.framework.Player;
  * その位置に自分の駒を置けるか否かも考えず、既存の駒に隣接する空きセルの中からランダムに手を選ぶ
  * {@link Player} の実装です。<br>
  * 早晩、ルール違反で敗退することでしょう。<br>
+ * <br>
+ * 動作制御のために、次のオプションパラメータを与えることができます。
+ * <ul>
+ *   <li>seed : 乱数ジェネレータのシード値（long）</li>
+ * </ul>
  * 
  * @author nmby
  */

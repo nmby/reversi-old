@@ -12,6 +12,12 @@ import xyz.hotchpotch.game.reversi.framework.Player;
 /**
  * ランダムに手を選びますが、のろまな {@link Player} の実装です。<br>
  * 早晩、時間切れで敗退することでしょう。<br>
+ * <br>
+ * 動作制御のために、次のオプションパラメータを与えることができます。
+ * <ul>
+ *   <li>seed : 乱数ジェネレータのシード値（long）</li>
+ *   <li>slowest : 思考にかける最大の時間（ミリ秒：int）（0ミリ秒からこの値の間でランダムに選択されます。）</li>
+ * </ul>
  * 
  * @author nmby
  */
@@ -36,7 +42,7 @@ public class SlowpokeAIPlayer implements Player {
         random = seed == null ? new Random() : new Random(seed);
         
         int slowest = CommonUtil.getParameter(gameCondition, getClass(), "slowest", Integer::parseInt, 0);
-        if (slowest == 0) {
+        if (slowest <= 0) {
             // 制限時間の 1.25 倍を上限とする。（5回に1回は制限時間オーバーになるはず）
             try {
                 long tmp = Math.multiplyExact(gameCondition.givenMillisPerTurn / 4, 5);
