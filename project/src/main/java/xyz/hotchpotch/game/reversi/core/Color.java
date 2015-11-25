@@ -51,7 +51,7 @@ public enum Color {
     
     private final String symbol;
     
-    Color(String symbol) {
+    private Color(String symbol) {
         this.symbol = symbol;
     }
     
@@ -65,7 +65,9 @@ public enum Color {
     }
     
     /**
-     * {@inheritDoc}
+     * このオブジェクトの文字列表現を返します。<br>
+     * 
+     * return このオブジェクトの文字列表現（{@code "●"} または {@code "○"}）
      */
     @Override
     public String toString() {

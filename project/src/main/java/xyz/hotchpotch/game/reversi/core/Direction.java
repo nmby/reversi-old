@@ -56,16 +56,18 @@ public enum Direction {
     
     // ++++++++++++++++ instance members ++++++++++++++++
     
-    final int di;
-    final int dj;
+    /*package*/ final int di;
+    /*package*/ final int dj;
     
-    Direction(int di, int dj) {
+    private Direction(int di, int dj) {
         this.di = di;
         this.dj = dj;
     }
     
     /**
-     * {@inheritDoc}
+     * このオブジェクトの文字列表現を返します。<br>
+     * 
+     * return このオブジェクトの文字列表現
      */
     @Override
     public String toString() {
