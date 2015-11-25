@@ -99,6 +99,8 @@ public class StrictBoard extends BaseBoard implements Serializable {
     
     /**
      * {@inheritDoc}
+     * 
+     * @throws NullPointerException {@code point} が {@code null} の場合
      */
     @Override
     public synchronized Color colorAt(Point point) {
@@ -123,6 +125,8 @@ public class StrictBoard extends BaseBoard implements Serializable {
     
     /**
      * {@inheritDoc}
+     * 
+     * @see #toStringInLine()
      */
     @Override
     public synchronized String toString() {
