@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.Objects;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 /**
@@ -54,11 +55,9 @@ public class Point implements Serializable {
     
     static {
         points = new Point[HEIGHT * WIDTH];
-        for (int i = 0; i < HEIGHT; i++) {
-            for (int j = 0; j < WIDTH; j++) {
-                points[ordinal(i, j)] = new Point(i, j);
-            }
-        }
+        IntStream.range(0, HEIGHT).forEach(i -> IntStream.range(0, WIDTH).forEach(j -> {
+            points[ordinal(i, j)] = new Point(i, j);
+        }));
     }
     
     /**
@@ -186,7 +185,7 @@ public class Point implements Serializable {
         }
     }
     
-    int ordinal() {
+    /*package*/ int ordinal() {
         return ordinal(i, j);
     }
     
@@ -206,7 +205,7 @@ public class Point implements Serializable {
      * @return この {@code Point} の文字列表現（{@code a1}～{@code h8} の形式）
      */
     public String toStringKindly() {
-        return String.format("%c%d", 'a' + j, i + 1);
+        return String.format("%c%d", 'a' + j, 1 + i);
     }
     
     private Object writeReplace() {
