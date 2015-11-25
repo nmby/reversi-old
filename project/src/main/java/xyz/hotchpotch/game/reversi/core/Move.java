@@ -14,7 +14,7 @@ import java.util.Objects;
  * </ul>
  * <br>
  * {@code Move} は値ベースのクラスです。
- * 同値性を確認するときは Move.{@link #equals(Object)} メソッドを使用してください。<br>
+ * 同値性を確認するときは {@code Move.}{@link #equals(Object)} メソッドを使用してください。<br>
  * 
  * @author nmby
  */
@@ -27,7 +27,7 @@ public class Move implements Serializable {
     /**
      * 指定された手を表す {@code Move} オブジェクトを返します。<br>
      * 
-     * @param color  手を指したプレーヤーの色
+     * @param color 手を指したプレーヤーの色
      * @param point 指定された駒の位置（パスの場合は {@code null}）
      * @return Move オブジェクト
      * @throws NullPointerException {@code color} が {@code null} の場合
@@ -76,7 +76,7 @@ public class Move implements Serializable {
      * 
      * @param obj 検査対象
      * @return {@code obj} がこのオブジェクトと同じ内容を表す {@code Move} の場合は {@code true}。
-     *         {@code obj} の内容が異なる場合や {@code null} の場合は {@code false}。
+     *         {@code obj} の内容がこのオブジェクトと異なる場合や {@code null} の場合は {@code false}。
      */
     @Override
     public boolean equals(Object obj) {
@@ -91,7 +91,9 @@ public class Move implements Serializable {
     }
     
     /**
-     * {@inheritDoc}
+     * このオブジェクトのハッシュコードを返します。<br>
+     * 
+     * return このオブジェクトのハッシュコード
      */
     @Override
     public int hashCode() {
@@ -100,7 +102,9 @@ public class Move implements Serializable {
     }
     
     /**
-     * {@inheritDoc}
+     * このオブジェクトの文字列表現を返します。<br>
+     * 
+     * return このオブジェクトの文字列表現
      */
     @Override
     public String toString() {
