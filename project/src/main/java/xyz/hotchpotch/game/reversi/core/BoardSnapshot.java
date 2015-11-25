@@ -1,6 +1,7 @@
 package xyz.hotchpotch.game.reversi.core;
 
 import java.io.IOException;
+import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
@@ -64,7 +65,10 @@ public class BoardSnapshot extends BaseBoard implements Serializable {
         s.defaultReadObject();
         
         @SuppressWarnings("unchecked")
-        Map<Point, Color> map = (Map<Point, Color>) Objects.requireNonNull(s.readObject());
+        Map<Point, Color> map = (Map<Point, Color>) s.readObject();
+        if (map == null) {
+            throw new InvalidObjectException("map cannot null.");
+        }
         super.map.putAll(map);
     }
 }
