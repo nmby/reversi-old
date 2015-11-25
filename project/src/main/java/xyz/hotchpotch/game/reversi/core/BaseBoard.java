@@ -6,36 +6,41 @@ import java.util.Objects;
 
 // このクラスを Serializable にしてみようかとも思ったが、
 // 自分の現状の理解では無理なので、今回は止める。
-abstract class BaseBoard implements Board {
+/*package*/ abstract class BaseBoard implements Board {
     
     // ++++++++++++++++ static members ++++++++++++++++
     
     // ++++++++++++++++ instance members ++++++++++++++++
     
-    final Map<Point, Color> map;
+    protected final Map<Point, Color> map;
     
-    BaseBoard() {
+    protected BaseBoard() {
         map = new HashMap<>();
     }
     
-    BaseBoard(Map<Point, Color> map) {
+    protected BaseBoard(Map<Point, Color> map) {
         assert map != null;
         this.map = new HashMap<>(map);
     }
     
-    BaseBoard(Board board) {
+    protected BaseBoard(Board board) {
         assert board != null;
         
-        map = new HashMap<>();
-        for (Point p : Point.values()) {
-            map.put(p, board.colorAt(p));
+        if (board instanceof BaseBoard) {
+            BaseBoard bBoard = (BaseBoard) board;
+            map = new HashMap<>(bBoard.map);
+        } else {
+            map = new HashMap<>();
+            for (Point p : Point.values()) {
+                map.put(p, board.colorAt(p));
+            }
         }
     }
     
     /**
      * {@inheritDoc}
      * 
-     * @throws NullPointerException point が null の場合
+     * @throws NullPointerException {@code point} が {@code null} の場合
      */
     @Override
     public Color colorAt(Point point) {
