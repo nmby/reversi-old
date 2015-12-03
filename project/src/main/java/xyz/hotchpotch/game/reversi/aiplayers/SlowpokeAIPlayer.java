@@ -1,5 +1,6 @@
 package xyz.hotchpotch.game.reversi.aiplayers;
 
+import java.util.Optional;
 import java.util.Random;
 
 import xyz.hotchpotch.game.reversi.core.Board;
@@ -38,10 +39,10 @@ public class SlowpokeAIPlayer implements Player {
      */
     public SlowpokeAIPlayer(Color color, GameCondition gameCondition) {
         // デバッグ用に各種パラメータ値を受け取れるようにしておく。
-        Long seed = CommonUtil.getParameter(gameCondition, getClass(), "seed", Long::valueOf, null);
-        random = seed == null ? new Random() : new Random(seed);
+        Optional<Long> seed = AIPlayerUtil.getParameter(gameCondition, "seed", Long::valueOf);
+        random = seed.isPresent() ? new Random(seed.get()) : new Random();
         
-        int slowest = CommonUtil.getParameter(gameCondition, getClass(), "slowest", Integer::parseInt, 0);
+        int slowest = AIPlayerUtil.getParameter(gameCondition, "slowest", Integer::valueOf).orElse(0);
         if (slowest <= 0) {
             // 制限時間の 1.25 倍を上限とする。（5回に1回は制限時間オーバーになるはず）
             try {

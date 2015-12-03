@@ -1,5 +1,6 @@
 package xyz.hotchpotch.game.reversi.aiplayers;
 
+import java.util.Optional;
 import java.util.Random;
 
 import xyz.hotchpotch.game.reversi.core.Board;
@@ -35,8 +36,8 @@ public class RandomAIPlayer implements Player {
      */
     public RandomAIPlayer(Color color, GameCondition gameCondition) {
         // デバッグ用にシード値を受け取れるようにしておく。
-        Long seed = CommonUtil.getParameter(gameCondition, getClass(), "seed", Long::valueOf, null);
-        random = seed == null ? new Random() : new Random(seed);
+        Optional<Long> seed = AIPlayerUtil.getParameter(gameCondition, "seed", Long::valueOf);
+        random = seed.isPresent() ? new Random(seed.get()) : new Random();
     }
     
     /**

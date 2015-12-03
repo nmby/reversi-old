@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import xyz.hotchpotch.game.reversi.aiplayers.CommonUtil.LightweightBoard;
+import xyz.hotchpotch.game.reversi.aiplayers.AIPlayerUtil.LightweightBoard;
 import xyz.hotchpotch.game.reversi.core.Board;
 import xyz.hotchpotch.game.reversi.core.Color;
 import xyz.hotchpotch.game.reversi.core.Move;
@@ -86,11 +86,9 @@ public class MonteCarloAIPlayer implements Player {
         proxy = new RandomAIPlayer(null, gameCondition);
         
         // 動作制御用パラメータの取得
-        long tmpMargin1 = CommonUtil.getParameter(gameCondition, getClass(), "margin1", Long::valueOf, 0L);
-        margin1 = 0 < tmpMargin1 ? tmpMargin1 : 100L;
-        long tmpMargin2 = CommonUtil.getParameter(gameCondition, getClass(), "margin2", Long::valueOf, 0L);
-        margin2 = 0 < tmpMargin2 ? tmpMargin2 : 50L;
-        debug = CommonUtil.getParameter(gameCondition, getClass(), "debug", Boolean::valueOf, false);
+        margin1 = AIPlayerUtil.getParameter(gameCondition, "margin1", Long::valueOf).filter(v -> 0 < v).orElse(100L);
+        margin2 = AIPlayerUtil.getParameter(gameCondition, "margin2", Long::valueOf).filter(v -> 0 < v).orElse(50L);
+        debug = AIPlayerUtil.getParameter(gameCondition, "debug", Boolean::valueOf).orElse(false);
     }
     
     /**
