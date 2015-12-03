@@ -17,6 +17,7 @@ import org.junit.Test;
 
 import xyz.hotchpotch.jutaime.serializable.experimental.FailToDeserializeException;
 import xyz.hotchpotch.jutaime.serializable.experimental.TestUtil;
+
 public class PointTest {
     
     @Test
@@ -33,7 +34,7 @@ public class PointTest {
     }
     
     @Test
-    public void testOf1_1() {
+    public void testOfIntInt1() {
         Point[] points = Point.values();
         
         IntStream.range(0, Point.HEIGHT).forEach(i -> IntStream.range(0, Point.WIDTH).forEach(j -> {
@@ -42,15 +43,15 @@ public class PointTest {
     }
     
     @Test
-    public void testOf1_2() {
-        IntStream.range(0, Point.WIDTH).forEach(j -> {
-            assertThat(of(() -> Point.of(-1, j)), raise(IndexOutOfBoundsException.class));
-            assertThat(of(() -> Point.of(Point.HEIGHT, j)), raise(IndexOutOfBoundsException.class));
-        });
-        
+    public void testOfIntInt2() {
         IntStream.range(0, Point.HEIGHT).forEach(i -> {
             assertThat(of(() -> Point.of(i, -1)), raise(IndexOutOfBoundsException.class));
             assertThat(of(() -> Point.of(i, Point.WIDTH)), raise(IndexOutOfBoundsException.class));
+        });
+        
+        IntStream.range(0, Point.WIDTH).forEach(j -> {
+            assertThat(of(() -> Point.of(-1, j)), raise(IndexOutOfBoundsException.class));
+            assertThat(of(() -> Point.of(Point.HEIGHT, j)), raise(IndexOutOfBoundsException.class));
         });
         
         assertThat(of(() -> Point.of(-1, -1)), raise(IndexOutOfBoundsException.class));
@@ -61,14 +62,14 @@ public class PointTest {
     }
     
     @Test
-    public void testOf2_1() {
+    public void testOfString1() {
         IntStream.range('a', 'a' + Point.WIDTH).forEach(c -> IntStream.range('1', '1' + Point.HEIGHT).forEach(n -> {
             assertThat(Point.of(String.format("%c%c", c, n)), theInstance(Point.of(n - '1', c - 'a')));
         }));
     }
     
     @Test
-    public void testOf2_2() {
+    public void testOfString2() {
         assertThat(of(() -> Point.of(null)), raise(NullPointerException.class));
         assertThat(of(() -> Point.of("")), raise(IllegalArgumentException.class));
         assertThat(of(() -> Point.of("a1")), raiseNothing());
@@ -141,9 +142,9 @@ public class PointTest {
     public void testOrdinal() {
         Point[] points = Point.values();
         
-        for (int i = 0; i < points.length; i++) {
-            assertThat(points[i].ordinal(), is(i));
-        }
+        IntStream.range(0, points.length).forEach(n -> {
+            assertThat(points[n].ordinal(), is(n));
+        });
     }
     
     @Test
@@ -182,16 +183,16 @@ public class PointTest {
         }));
         
         // (i, j) が不正な範囲ならばデシリアル化が抑止されることの確認
-        IntStream.range(0, Point.WIDTH).forEach(j -> {
-            assertThat(of(() -> writeModifyAndRead(Point.of(0, 0), bytes -> modifyIJ(bytes, -1, j))),
-                    raise(FailToDeserializeException.class).rootCause(InvalidObjectException.class));
-            assertThat(of(() -> writeModifyAndRead(Point.of(0, 0), bytes -> modifyIJ(bytes, Point.HEIGHT, j))),
-                    raise(FailToDeserializeException.class).rootCause(InvalidObjectException.class));
-        });
         IntStream.range(0, Point.HEIGHT).forEach(i -> {
             assertThat(of(() -> writeModifyAndRead(Point.of(0, 0), bytes -> modifyIJ(bytes, i, -1))),
                     raise(FailToDeserializeException.class).rootCause(InvalidObjectException.class));
             assertThat(of(() -> writeModifyAndRead(Point.of(0, 0), bytes -> modifyIJ(bytes, i, Point.WIDTH))),
+                    raise(FailToDeserializeException.class).rootCause(InvalidObjectException.class));
+        });
+        IntStream.range(0, Point.WIDTH).forEach(j -> {
+            assertThat(of(() -> writeModifyAndRead(Point.of(0, 0), bytes -> modifyIJ(bytes, -1, j))),
+                    raise(FailToDeserializeException.class).rootCause(InvalidObjectException.class));
+            assertThat(of(() -> writeModifyAndRead(Point.of(0, 0), bytes -> modifyIJ(bytes, Point.HEIGHT, j))),
                     raise(FailToDeserializeException.class).rootCause(InvalidObjectException.class));
         });
     }
@@ -224,8 +225,8 @@ public class PointTest {
         // （Point$SerializationProxyではなく）Pointのデシリアル化が抑止されることの確認
         byte[] modified = replace(bytesOfInstance, bytesOfPointProxy, bytesOfPoint);
         assertThat(of(() -> read(modified)),
-                raise(FailToDeserializeException.class).rootCause(ObjectStreamException.class));
-        
+                raise(FailToDeserializeException.class).rootCause(ObjectStreamException.class, "Proxy required"));
+                
         // Point$SerializationProxyであればデシリアル化できることの確認
         byte[] modified2 = replace(modified, bytesOfPoint, bytesOfPointProxy);
         assertThat(read(modified2), theInstance(Point.of(0, 0)));

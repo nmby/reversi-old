@@ -7,8 +7,8 @@ import static xyz.hotchpotch.jutaime.throwable.RaiseMatchers.*;
 import static xyz.hotchpotch.jutaime.throwable.Testee.*;
 
 import java.io.InvalidObjectException;
-import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.junit.Test;
 
@@ -27,9 +27,11 @@ public class MoveTest {
                 assertThat(Move.of(c, p), instanceOf(Move.class));
                 assertThat(Move.of(c, p).color, theInstance(c));
                 assertThat(Move.of(c, p).point, theInstance(p));
-                
-                assertThat(of(() -> Move.of(null, p)), raise(NullPointerException.class));
             });
+        });
+        
+        Point.stream().forEach(p -> {
+            assertThat(of(() -> Move.of(null, p)), raise(NullPointerException.class));
         });
     }
     
@@ -49,20 +51,21 @@ public class MoveTest {
     @Test
     public void testEquals() {
         Color.stream().forEach(c -> Point.stream().forEach(p -> {
-            Move move = Move.of(c, p);
+            Move move1 = Move.of(c, p);
+            Move move2 = Move.of(c, p);
             
-            assertThat(move, not(sameInstance(Move.of(c, p))));
-            assertThat(move.equals(Move.of(c, p)), is(true));
-            assertThat(move.equals(move), is(true));
+            assertThat(move1, not(sameInstance(move2)));
+            assertThat(move1.equals(move1), is(true));
+            assertThat(move1.equals(move2), is(true));
             
-            assertThat(move.equals(Move.of(c.opposite(), p)), is(false));
-            assertThat(move.equals(Move.of(c, null)), is(false));
-            assertThat(Move.of(c, null).equals(move), is(false));
-            assertThat(move.equals(Move.of(c, p == Point.of(0, 0) ? Point.of(1, 1) : Point.of(0, 0))), is(false));
+            assertThat(move1.equals(Move.of(c.opposite(), p)), is(false));
+            assertThat(move1.equals(Move.of(c, null)), is(false));
+            assertThat(Move.of(c, null).equals(move1), is(false));
+            assertThat(move1.equals(Move.of(c, p == Point.of(0, 0) ? Point.of(1, 1) : Point.of(0, 0))), is(false));
             
-            assertThat(move.equals(null), is(false));
-            assertThat(move.equals(c), is(false));
-            assertThat(move.equals(p), is(false));
+            assertThat(move1.equals(null), is(false));
+            assertThat(move1.equals(c), is(false));
+            assertThat(move1.equals(p), is(false));
         }));
         
         Color.stream().forEach(c -> {
@@ -87,20 +90,12 @@ public class MoveTest {
     
     @Test
     public void testHashCode2() {
-        // 値がばらけていることの確認
-        Set<Integer> hashCodes = new HashSet<>();
-        
-        for (Color c : Color.values()) {
-            int hashCode = Move.of(c, null).hashCode();
-            assertThat(hashCodes.contains(hashCode), is(false));
-            hashCodes.add(hashCode);
-            
-            for (Point p : Point.values()) {
-                hashCode = Move.of(c, p).hashCode();
-                assertThat(hashCodes.contains(hashCode), is(false));
-                hashCodes.add(hashCode);
-            }
-        }
+        // ハッシュ値がばらけていることの確認
+        Set<Integer> hashCodes = Color.stream()
+                .flatMap(c -> Point.stream().map(p -> Move.of(c, p).hashCode()))
+                .collect(Collectors.toSet());
+        hashCodes.add(Move.passOf(Color.BLACK).hashCode());
+        hashCodes.add(Move.passOf(Color.WHITE).hashCode());
         
         assertThat(hashCodes.size(), is(Color.values().length * (Point.values().length + 1)));
     }
@@ -130,12 +125,14 @@ public class MoveTest {
     @Test
     public void testSerializable2() {
         // 先ずは、Move の中身を改竄できることを確認（テスト方法の妥当性確認）
-        assertThat(writeModifyAndRead(Move.of(Color.BLACK, Point.of(0, 0)),
+        assertThat(writeModifyAndRead(
+                Move.of(Color.BLACK, Point.of(0, 0)),
                 bytes -> replace(bytes, bytes(Color.BLACK), bytes(Color.WHITE))),
                 is(Move.of(Color.WHITE, Point.of(0, 0))));
                 
         // color == null に改竄されたオブジェクトのデシリアル化が抑止されることの確認
-        assertThat(of(() -> writeModifyAndRead(Move.of(Color.BLACK, Point.of(0, 0)),
+        assertThat(of(() -> writeModifyAndRead(
+                Move.of(Color.BLACK, Point.of(0, 0)),
                 bytes -> replace(bytes, bytes(Color.BLACK), bytes((Object) null)))),
                 raise(FailToDeserializeException.class).rootCause(InvalidObjectException.class));
     }

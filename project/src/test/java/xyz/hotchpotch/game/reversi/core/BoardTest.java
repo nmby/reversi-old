@@ -16,8 +16,7 @@ public class BoardTest {
             Point[] points = Point.values();
             for (int n = 0; n < Point.HEIGHT * Point.WIDTH; n++) {
                 char c = str.charAt(n);
-                Color color = c == '●' ? Color.BLACK : c == '○' ? Color.WHITE : null;
-                map.put(points[n], color);
+                map.put(points[n], c == '●' ? Color.BLACK : c == '○' ? Color.WHITE : null);
             }
         }
         
