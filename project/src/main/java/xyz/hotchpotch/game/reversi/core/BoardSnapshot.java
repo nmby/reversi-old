@@ -67,7 +67,7 @@ public class BoardSnapshot extends BaseBoard implements Serializable {
         @SuppressWarnings("unchecked")
         Map<Point, Color> map = (Map<Point, Color>) s.readObject();
         if (map == null) {
-            throw new InvalidObjectException("map cannot null.");
+            throw new InvalidObjectException("map cannot be null.");
         }
         super.map.putAll(map);
     }
