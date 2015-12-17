@@ -2,6 +2,7 @@ package xyz.hotchpotch.game.reversi.core;
 
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
+import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,10 +32,14 @@ public class StrictBoard extends BaseBoard implements Serializable {
             moves = board.moves;
         }
         
-        private Object readResolve() {
+        private Object readResolve() throws ObjectStreamException {
             Board board = initializedBoard();
-            for (Move move : moves) {
-                board.apply(move);
+            try {
+                for (Move move : moves) {
+                    board.apply(move);
+                }
+            } catch (IllegalArgumentException e) {
+                throw new InvalidObjectException(e.getMessage());
             }
             return board;
         }
@@ -102,6 +107,7 @@ public class StrictBoard extends BaseBoard implements Serializable {
      * 
      * @throws NullPointerException {@code point} が {@code null} の場合
      */
+    // 同期化する（synchronized を付ける）ためにオーバーライドする。
     @Override
     public synchronized Color colorAt(Point point) {
         return super.colorAt(point);
@@ -111,6 +117,7 @@ public class StrictBoard extends BaseBoard implements Serializable {
      * {@inheritDoc}
      */
     @Override
+    // 同期化する（synchronized を付ける）ためにオーバーライドする。
     public synchronized String toStringKindly() {
         return super.toStringKindly();
     }
@@ -118,6 +125,7 @@ public class StrictBoard extends BaseBoard implements Serializable {
     /**
      * {@inheritDoc}
      */
+    // 同期化する（synchronized を付ける）ためにオーバーライドする。
     @Override
     public synchronized String toStringInLine() {
         return super.toStringInLine();
@@ -128,6 +136,7 @@ public class StrictBoard extends BaseBoard implements Serializable {
      * 
      * @see #toStringInLine()
      */
+    // 同期化する（synchronized を付ける）ためにオーバーライドする。
     @Override
     public synchronized String toString() {
         return super.toString();
