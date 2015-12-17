@@ -7,11 +7,13 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({
         BaseBoardTest.class,
+        BoardSnapshotTest.class,
         BoardTest.class,
         ColorTest.class,
         DirectionTest.class,
         MoveTest.class,
-        PointTest.class
+        PointTest.class,
+        StrictBoardTest.class
 })
 public class AllTests {
 }
