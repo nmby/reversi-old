@@ -78,31 +78,36 @@ public class Rule {
         if (board.colorAt(point) != null) {
             return false;
         }
-        return Direction.stream().anyMatch(d -> !reversibles(board, color, point, d).isEmpty());
+        return Direction.stream().anyMatch(d -> canReverse(board, color, point, d));
     }
     
-    private static Set<Point> reversibles(Board board, Color color, Point point, Direction direction) {
+    private static boolean canReverse(Board board, Color color, Point point, Direction direction) {
         assert board != null;
         assert color != null;
         assert point != null;
         assert direction != null;
         assert board.colorAt(point) == null;
         
-        Set<Point> reversibles = new HashSet<>();
-        Point p = point;
+        // ひとつ隣は相手の駒でなければならない
+        if (!point.hasNext(direction)) {
+            return false;
+        }
+        Point p = point.next(direction);
+        if (board.colorAt(p) != color.opposite()) {
+            return false;
+        }
         
+        // 隣のさらに隣以降
         while (p.hasNext(direction)) {
             p = p.next(direction);
             
             if (board.colorAt(p) == color) {
-                return reversibles;
+                return true;
             } else if (board.colorAt(p) == null) {
-                return Collections.emptySet();
+                return false;
             }
-            reversibles.add(p);
         }
-        
-        return Collections.emptySet();
+        return false;
     }
     
     /**
@@ -128,6 +133,30 @@ public class Rule {
         return Direction.stream()
                 .flatMap(d -> reversibles(board, move.color, move.point, d).stream())
                 .collect(Collectors.toSet());
+    }
+    
+    private static Set<Point> reversibles(Board board, Color color, Point point, Direction direction) {
+        assert board != null;
+        assert color != null;
+        assert point != null;
+        assert direction != null;
+        assert board.colorAt(point) == null;
+        
+        Set<Point> reversibles = new HashSet<>();
+        Point p = point;
+        
+        while (p.hasNext(direction)) {
+            p = p.next(direction);
+            
+            if (board.colorAt(p) == color) {
+                return reversibles;
+            } else if (board.colorAt(p) == null) {
+                return Collections.emptySet();
+            }
+            reversibles.add(p);
+        }
+        
+        return Collections.emptySet();
     }
     
     /**
