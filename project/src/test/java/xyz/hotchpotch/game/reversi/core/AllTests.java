@@ -13,6 +13,7 @@ import org.junit.runners.Suite.SuiteClasses;
         DirectionTest.class,
         MoveTest.class,
         PointTest.class,
+        RuleTest.class,
         StrictBoardTest.class
 })
 public class AllTests {
