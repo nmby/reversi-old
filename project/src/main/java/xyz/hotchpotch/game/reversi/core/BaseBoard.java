@@ -10,6 +10,10 @@ import java.util.Objects;
     
     // ++++++++++++++++ static members ++++++++++++++++
     
+    private static final char CHR_BLACK = Color.toString(Color.BLACK).charAt(0);
+    private static final char CHR_WHITE = Color.toString(Color.WHITE).charAt(0);
+    private static final char CHR_SPACE = Color.toString(null).charAt(0);
+    
     // ++++++++++++++++ instance members ++++++++++++++++
     
     protected final Map<Point, Color> map;
@@ -34,6 +38,18 @@ import java.util.Objects;
             for (Point p : Point.values()) {
                 map.put(p, board.colorAt(p));
             }
+        }
+    }
+    
+    protected BaseBoard(String str) {
+        assert str != null;
+        assert str.length() == Point.HEIGHT * Point.WIDTH;
+        assert str.chars().allMatch(c -> c == CHR_BLACK || c == CHR_WHITE || c == CHR_SPACE);
+        
+        map = new HashMap<>();
+        for (Point p : Point.values()) {
+            char c = str.charAt(p.ordinal());
+            map.put(p, c == CHR_BLACK ? Color.BLACK : c == CHR_WHITE ? Color.WHITE : null);
         }
     }
     

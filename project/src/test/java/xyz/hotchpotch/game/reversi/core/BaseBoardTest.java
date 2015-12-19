@@ -26,6 +26,10 @@ public class BaseBoardTest {
             super(board);
         }
         
+        private TestBoard1(String str) {
+            super(str);
+        }
+        
         @Override
         public void apply(Move move) {
             assert move != null;
@@ -160,6 +164,14 @@ public class BaseBoardTest {
         assertThat(new TestBoard1(new TestBoard2(boardStr2)).toStringInLine(), is(boardStr2));
         assertThat(new TestBoard1(new TestBoard2(boardStr3)).toStringInLine(), is(boardStr3));
         assertThat(new TestBoard1(new TestBoard2(boardStr4)).toStringInLine(), is(boardStr4));
+    }
+    
+    @Test
+    public void testBaseBoardString() {
+        assertThat(new TestBoard1(boardStr1).toStringInLine(), is(boardStr1));
+        assertThat(new TestBoard1(boardStr2).toStringInLine(), is(boardStr2));
+        assertThat(new TestBoard1(boardStr3).toStringInLine(), is(boardStr3));
+        assertThat(new TestBoard1(boardStr4).toStringInLine(), is(boardStr4));
     }
     
     @Test
