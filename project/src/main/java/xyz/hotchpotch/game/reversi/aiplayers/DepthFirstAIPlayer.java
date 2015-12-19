@@ -53,9 +53,9 @@ public class DepthFirstAIPlayer implements Player {
         proxy = new RandomAIPlayer(null, gameCondition);
         
         // 動作制御用パラメータの取得
-        margin1 = AIPlayerUtil.getParameter(gameCondition, "margin1", Long::valueOf).filter(v -> 0 < v).orElse(100L);
-        rounds = AIPlayerUtil.getParameter(gameCondition, "rounds", Integer::valueOf).filter(v -> 0 < v).orElse(3);
-        debug = AIPlayerUtil.getParameter(gameCondition, "debug", Boolean::valueOf).orElse(false);
+        margin1 = AIPlayerUtil.getLongParameter(gameCondition, "margin1").filter(v -> 0 < v).orElse(100L);
+        rounds = AIPlayerUtil.getIntParameter(gameCondition, "rounds").filter(v -> 0 < v).orElse(3);
+        debug = AIPlayerUtil.getBooleanParameter(gameCondition, "debug").orElse(false);
     }
     
     /**

@@ -25,7 +25,8 @@ import xyz.hotchpotch.game.reversi.framework.Player;
      * パラメータチェック等を省き必要最小限の機能に絞った、リバーシ盤の軽量な実装です。
      * {@link Player} 実装クラスの思考ロジックでシミュレーションを行う際などに便利です。<br>
      * このクラスのメソッドでは、処理速度を優先するために各種パラメータチェックを省略しています。
-     * 各メソッドの API ドキュメントに従い、正しいパラメータ値のみを渡すようにしてください。<br>
+     * 各メソッドの API ドキュメントに従い、正しいパラメータ値のみを渡すようにしてください。
+     * 違反した場合の処理結果は保証されません。<br>
      * <br>
      * この実装は同期されません。複数のスレッドから同じインスタンスを操作することはしないでください。<br>
      * 
@@ -42,22 +43,16 @@ import xyz.hotchpotch.game.reversi.framework.Player;
          * @param board 新しいリバーシ盤の内容を指定するリバーシ盤
          * @throws NullPointerException {@code board} が {@code null} の場合
          */
-        public LightweightBoard(LightweightBoard board) {
-            assert board != null;
-            map = new HashMap<>(board.map);
-        }
-        
-        /**
-         * 指定された {@code board} と同じ内容を持つ、新しい {@code LightweightBoard} を生成します。<br>
-         * 
-         * @param board 新しいリバーシ盤の内容を指定するリバーシ盤
-         * @throws NullPointerException {@code board} が {@code null} の場合
-         */
         public LightweightBoard(Board board) {
             assert board != null;
-            map = new HashMap<>();
-            for (Point p : Point.values()) {
-                map.put(p, board.colorAt(p));
+            
+            if (board instanceof LightweightBoard) {
+                map = new HashMap<>(((LightweightBoard) board).map);
+            } else {
+                map = new HashMap<>();
+                for (Point p : Point.values()) {
+                    map.put(p, board.colorAt(p));
+                }
             }
         }
         
@@ -131,30 +126,27 @@ import xyz.hotchpotch.game.reversi.framework.Player;
      * @return パラメータ値を格納した {@code Optional} オブジェクト（パラメータ値が存在しない場合は空の {@code Optional} オブジェクト）
      * @throws NullPointerException {@code gameCondition}、{@code key} のいずれかが {@code null} の場合
      */
-    public static Optional<String> getParameter(
-            GameCondition gameCondition,
-            String key) {
-            
+    public static Optional<String> getParameter(GameCondition gameCondition, String key) {
         Objects.requireNonNull(gameCondition);
         Objects.requireNonNull(key);
         
-        Map<String, String> map = gameCondition.getParams();
         Optional<String> caller = Stream.of(Thread.currentThread().getStackTrace())
                 .skip(1)
                 .map(StackTraceElement::getClassName)
                 .filter(s -> !s.equals(AIPlayerUtil.class.getName()))
                 .findFirst();
-        String str;
+        Map<String, String> map = gameCondition.getParams();
+        String value;
         
         if (caller.isPresent() && map.containsKey(caller.get() + "." + key)) {
-            str = map.get(caller.get() + "." + key);
+            value = map.get(caller.get() + "." + key);
         } else if (map.containsKey(key)) {
-            str = map.get(key);
+            value = map.get(key);
         } else {
-            str = null;
+            value = null;
         }
         
-        return Optional.ofNullable(str);
+        return Optional.ofNullable(value);
     }
     
     /**
@@ -170,11 +162,7 @@ import xyz.hotchpotch.game.reversi.framework.Player;
      *         （パラメータ値が存在しない場合や型の変換に失敗した場合は空の {@code Optional} オブジェクト）
      * @throws NullPointerException {@code gameCondition}、{@code key}、{@code converter} のいずれかが {@code null} の場合
      */
-    public static <T> Optional<T> getParameter(
-            GameCondition gameCondition,
-            String key,
-            Function<String, T> converter) {
-        
+    public static <T> Optional<T> getParameter(GameCondition gameCondition, String key, Function<String, T> converter) {
         Objects.requireNonNull(gameCondition);
         Objects.requireNonNull(key);
         Objects.requireNonNull(converter);
@@ -184,6 +172,101 @@ import xyz.hotchpotch.game.reversi.framework.Player;
         } catch (Exception e) {
             return Optional.empty();
         }
+    }
+    
+    /**
+     * {@link Player} 実装クラスのコンストラクタに渡される {@link GameCondition} オブジェクトからパラメータ値を取得し、{@link Integer} 型に変換します。<br>
+     * 次のふたつの呼び出しは同値です。
+     * <pre>
+     *     getIntParameter(gameCondition, key);
+     *     getParameter(gameCondition, key, Integer::valueOf);
+     * </pre>
+     * 詳細は {@link #getParameter(GameCondition, String, Function)} の説明を参照してください。<br>
+     * 
+     * @param gameCondition {@code Player} 実装クラスのコンストラクタに渡されるゲーム実施条件
+     * @param key パラメータのキー
+     * @return {@code Integer} 型パラメータ値を格納した {@code Optional} オブジェクト
+     *         （パラメータ値が存在しない場合や型の変換に失敗した場合は空の {@code Optional} オブジェクト）
+     * @throws NullPointerException {@code gameCondition}、{@code key} のいずれかが {@code null} の場合
+     */
+    public static Optional<Integer> getIntParameter(GameCondition gameCondition, String key) {
+        return getParameter(gameCondition, key, Integer::valueOf);
+    }
+    
+    /**
+     * {@link Player} 実装クラスのコンストラクタに渡される {@link GameCondition} オブジェクトからパラメータ値を取得し、{@link Long} 型に変換します。<br>
+     * 次のふたつの呼び出しは同値です。
+     * <pre>
+     *     getLongParameter(gameCondition, key);
+     *     getParameter(gameCondition, key, Long::valueOf);
+     * </pre>
+     * 詳細は {@link #getParameter(GameCondition, String, Function)} の説明を参照してください。<br>
+     * 
+     * @param gameCondition {@code Player} 実装クラスのコンストラクタに渡されるゲーム実施条件
+     * @param key パラメータのキー
+     * @return {@code Long} 型パラメータ値を格納した {@code Optional} オブジェクト
+     *         （パラメータ値が存在しない場合や型の変換に失敗した場合は空の {@code Optional} オブジェクト）
+     * @throws NullPointerException {@code gameCondition}、{@code key} のいずれかが {@code null} の場合
+     */
+    public static Optional<Long> getLongParameter(GameCondition gameCondition, String key) {
+        return getParameter(gameCondition, key, Long::valueOf);
+    }
+    
+    /**
+     * {@link Player} 実装クラスのコンストラクタに渡される {@link GameCondition} オブジェクトからパラメータ値を取得し、{@link Float} 型に変換します。<br>
+     * 次のふたつの呼び出しは同値です。
+     * <pre>
+     *     getFloatParameter(gameCondition, key);
+     *     getParameter(gameCondition, key, Float::valueOf);
+     * </pre>
+     * 詳細は {@link #getParameter(GameCondition, String, Function)} の説明を参照してください。<br>
+     * 
+     * @param gameCondition {@code Player} 実装クラスのコンストラクタに渡されるゲーム実施条件
+     * @param key パラメータのキー
+     * @return {@code Long} 型パラメータ値を格納した {@code Optional} オブジェクト
+     *         （パラメータ値が存在しない場合や型の変換に失敗した場合は空の {@code Optional} オブジェクト）
+     * @throws NullPointerException {@code gameCondition}、{@code key} のいずれかが {@code null} の場合
+     */
+    public static Optional<Float> getFloatParameter(GameCondition gameCondition, String key) {
+        return getParameter(gameCondition, key, Float::valueOf);
+    }
+    
+    /**
+     * {@link Player} 実装クラスのコンストラクタに渡される {@link GameCondition} オブジェクトからパラメータ値を取得し、{@link Double} 型に変換します。<br>
+     * 次のふたつの呼び出しは同値です。
+     * <pre>
+     *     getDoubleParameter(gameCondition, key);
+     *     getParameter(gameCondition, key, Double::valueOf);
+     * </pre>
+     * 詳細は {@link #getParameter(GameCondition, String, Function)} の説明を参照してください。<br>
+     * 
+     * @param gameCondition {@code Player} 実装クラスのコンストラクタに渡されるゲーム実施条件
+     * @param key パラメータのキー
+     * @return {@code Double} 型パラメータ値を格納した {@code Optional} オブジェクト
+     *         （パラメータ値が存在しない場合や型の変換に失敗した場合は空の {@code Optional} オブジェクト）
+     * @throws NullPointerException {@code gameCondition}、{@code key} のいずれかが {@code null} の場合
+     */
+    public static Optional<Double> getDoubleParameter(GameCondition gameCondition, String key) {
+        return getParameter(gameCondition, key, Double::valueOf);
+    }
+    
+    /**
+     * {@link Player} 実装クラスのコンストラクタに渡される {@link GameCondition} オブジェクトからパラメータ値を取得し、{@link Boolean} 型に変換します。<br>
+     * 次のふたつの呼び出しは同値です。
+     * <pre>
+     *     getBooleanParameter(gameCondition, key);
+     *     getParameter(gameCondition, key, Boolean::valueOf);
+     * </pre>
+     * 詳細は {@link #getParameter(GameCondition, String, Function)} の説明を参照してください。<br>
+     * 
+     * @param gameCondition {@code Player} 実装クラスのコンストラクタに渡されるゲーム実施条件
+     * @param key パラメータのキー
+     * @return {@code Boolean} 型パラメータ値を格納した {@code Optional} オブジェクト
+     *         （パラメータ値が存在しない場合や型の変換に失敗した場合は空の {@code Optional} オブジェクト）
+     * @throws NullPointerException {@code gameCondition}、{@code key} のいずれかが {@code null} の場合
+     */
+    public static Optional<Boolean> getBooleanParameter(GameCondition gameCondition, String key) {
+        return getParameter(gameCondition, key, Boolean::valueOf);
     }
     
     // ++++++++++++++++ instance members ++++++++++++++++

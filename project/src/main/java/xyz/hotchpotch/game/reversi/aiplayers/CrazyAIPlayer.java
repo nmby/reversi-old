@@ -38,7 +38,7 @@ public class CrazyAIPlayer implements Player {
      */
     public CrazyAIPlayer(Color color, GameCondition gameCondition) {
         // デバッグ用にシード値を受け取れるようにしておく。
-        Optional<Long> seed = AIPlayerUtil.getParameter(gameCondition, "seed", Long::valueOf);
+        Optional<Long> seed = AIPlayerUtil.getLongParameter(gameCondition, "seed");
         random = seed.isPresent() ? new Random(seed.get()) : new Random();
     }
     

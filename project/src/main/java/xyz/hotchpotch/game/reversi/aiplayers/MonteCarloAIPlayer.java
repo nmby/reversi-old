@@ -86,9 +86,9 @@ public class MonteCarloAIPlayer implements Player {
         proxy = new RandomAIPlayer(null, gameCondition);
         
         // 動作制御用パラメータの取得
-        margin1 = AIPlayerUtil.getParameter(gameCondition, "margin1", Long::valueOf).filter(v -> 0 < v).orElse(100L);
-        margin2 = AIPlayerUtil.getParameter(gameCondition, "margin2", Long::valueOf).filter(v -> 0 < v).orElse(50L);
-        debug = AIPlayerUtil.getParameter(gameCondition, "debug", Boolean::valueOf).orElse(false);
+        margin1 = AIPlayerUtil.getLongParameter(gameCondition, "margin1").filter(v -> 0 < v).orElse(100L);
+        margin2 = AIPlayerUtil.getLongParameter(gameCondition, "margin2").filter(v -> 0 < v).orElse(50L);
+        debug = AIPlayerUtil.getBooleanParameter(gameCondition, "debug").orElse(false);
     }
     
     /**
