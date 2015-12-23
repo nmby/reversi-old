@@ -8,9 +8,12 @@ import static xyz.hotchpotch.jutaime.throwable.Testee.*;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class BaseBoardTest {
+    
+    // static members ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
     private static class TestBoard1 extends BaseBoard {
         
@@ -33,7 +36,6 @@ public class BaseBoardTest {
         @Override
         public void apply(Move move) {
             assert move != null;
-            
             map.put(move.point, move.color);
         }
     }
@@ -44,7 +46,6 @@ public class BaseBoardTest {
         private TestBoard2(String line) {
             assert line != null;
             assert line.length() == Point.HEIGHT * Point.WIDTH;
-            
             this.line = line;
         }
         
@@ -116,6 +117,22 @@ public class BaseBoardTest {
             + "●●○○○○○○"
             + "●○○○○○○○";
             
+    private static boolean enableAssertions;
+    
+    @BeforeClass
+    public static void init() {
+        // VMオプションに「-ea」が付いているか否かを調べる。
+        // 非常によろしくないことをしているような気がするが、他の方法を知らない...
+        try {
+            assert false;
+            enableAssertions = false;
+        } catch (AssertionError e) {
+            enableAssertions = true;
+        }
+    }
+    
+    // instance members ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    
     @Test
     public void testBaseBoard() {
         assertThat(new TestBoard1().toStringInLine(), is(boardStr1));
@@ -136,7 +153,11 @@ public class BaseBoardTest {
         map4.put(Point.of(0, 0), Color.WHITE);
         assertThat(board4.colorAt(Point.of(0, 0)), is(Color.BLACK));
         
-        assertThat(of(() -> new TestBoard1((Map<Point, Color>) null)), raise(NullPointerException.class));
+        if (enableAssertions) {
+            assertThat(of(() -> new TestBoard1((Map<Point, Color>) null)), raise(AssertionError.class));
+        } else {
+            assertThat(of(() -> new TestBoard1((Map<Point, Color>) null)), raise(NullPointerException.class));
+        }
     }
     
     @Test
@@ -155,7 +176,11 @@ public class BaseBoardTest {
         assertThat(board4.colorAt(Point.of(0, 0)), is(Color.WHITE));
         assertThat(copy.colorAt(Point.of(0, 0)), is(Color.BLACK));
         
-        assertThat(of(() -> new TestBoard1((Board) null)), raise(NullPointerException.class));
+        if (enableAssertions) {
+            assertThat(of(() -> new TestBoard1((Board) null)), raise(AssertionError.class));
+        } else {
+            assertThat(of(() -> new TestBoard1((Board) null)), raise(NullPointerException.class));
+        }
     }
     
     @Test
@@ -172,6 +197,12 @@ public class BaseBoardTest {
         assertThat(new TestBoard1(boardStr2).toStringInLine(), is(boardStr2));
         assertThat(new TestBoard1(boardStr3).toStringInLine(), is(boardStr3));
         assertThat(new TestBoard1(boardStr4).toStringInLine(), is(boardStr4));
+        
+        if (enableAssertions) {
+            assertThat(of(() -> new TestBoard1((String) null)), raise(AssertionError.class));
+        } else {
+            assertThat(of(() -> new TestBoard1((String) null)), raise(NullPointerException.class));
+        }
     }
     
     @Test
