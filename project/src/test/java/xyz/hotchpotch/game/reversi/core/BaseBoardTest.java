@@ -200,8 +200,14 @@ public class BaseBoardTest {
         
         if (enableAssertions) {
             assertThat(of(() -> new TestBoard1((String) null)), raise(AssertionError.class));
+            assertThat(of(() -> new TestBoard1(boardStr1 + "●")), raise(AssertionError.class));
+            assertThat(of(() -> new TestBoard1(boardStr1.substring(1))), raise(AssertionError.class));
+            assertThat(of(() -> new TestBoard1("★" + boardStr1.substring(1))), raise(AssertionError.class));
         } else {
             assertThat(of(() -> new TestBoard1((String) null)), raise(NullPointerException.class));
+            assertThat(of(() -> new TestBoard1(boardStr1 + "●")), raiseNothing());
+            assertThat(of(() -> new TestBoard1(boardStr1.substring(1))), raise(IndexOutOfBoundsException.class));
+            assertThat(of(() -> new TestBoard1("★" + boardStr1.substring(1))), raiseNothing());
         }
     }
     
