@@ -15,18 +15,19 @@ import xyz.hotchpotch.game.reversi.framework.Player;
  * 早晩、時間切れで敗退することでしょう。<br>
  * <br>
  * 動作制御のために、次のオプションパラメータを与えることができます。
- * <ul>
- *   <li>seed : 乱数ジェネレータのシード値（long）</li>
- *   <li>slowest : 思考にかける最大の時間（ミリ秒：int）（0ミリ秒からこの値の間でランダムに選択されます。）</li>
- * </ul>
+ * <table border="1">
+ *   <tr><th>キー</th><th>型</th><th>内容</th><th>デフォルト値</th></tr>
+ *   <tr><td>seed</td><td>long</td><td>乱数ジェネレータのシード値</td><td>（なし）</td></tr>
+ *   <tr><td>slowest</td><td>int</td><td>思考にかける最大の時間（ミリ秒）（0ミリ秒からこの値の間でランダムに選択されます。）</td><td>一手あたりの持ち時間の1.25倍</td></tr>
+ * </table>
  * 
  * @author nmby
  */
 public class SlowpokeAIPlayer implements Player {
     
-    // ++++++++++++++++ static members ++++++++++++++++
+    // [static members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
-    // ++++++++++++++++ instance members ++++++++++++++++
+    // [instance members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
     private final Random random;
     private final int slowest;

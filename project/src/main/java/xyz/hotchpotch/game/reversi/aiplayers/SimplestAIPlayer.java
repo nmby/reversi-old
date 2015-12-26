@@ -14,9 +14,9 @@ import xyz.hotchpotch.game.reversi.framework.Player;
  */
 public class SimplestAIPlayer implements Player {
     
-    // ++++++++++++++++ static members ++++++++++++++++
+    // [static members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
-    // ++++++++++++++++ instance members ++++++++++++++++
+    // [instance members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
     /**
      * {@inheritDoc}

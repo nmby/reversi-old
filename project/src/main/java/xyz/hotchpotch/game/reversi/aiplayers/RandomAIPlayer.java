@@ -14,17 +14,18 @@ import xyz.hotchpotch.game.reversi.framework.Player;
  * ランダムに手を選ぶ {@link Player} の実装です。<br>
  * <br>
  * 動作制御のために、次のオプションパラメータを与えることができます。
- * <ul>
- *   <li>seed : 乱数ジェネレータのシード値（long）</li>
- * </ul>
+ * <table border="1">
+ *   <tr><th>キー</th><th>型</th><th>内容</th><th>デフォルト値</th></tr>
+ *   <tr><td>seed</td><td>long</td><td>乱数ジェネレータのシード値</td><td>（なし）</td></tr>
+ * </table>
  * 
  * @author nmby
  */
 public class RandomAIPlayer implements Player {
     
-    // ++++++++++++++++ static members ++++++++++++++++
+    // [static members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
-    // ++++++++++++++++ instance members ++++++++++++++++
+    // [instance members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
     private final Random random;
     
