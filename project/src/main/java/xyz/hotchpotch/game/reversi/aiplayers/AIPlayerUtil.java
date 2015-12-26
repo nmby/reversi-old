@@ -35,7 +35,7 @@ import xyz.hotchpotch.game.reversi.framework.Player;
     public static class LightweightBoard implements Board {
         
         /** リバーシ盤の実体 */
-        public final Map<Point, Color> map;
+        protected final Map<Point, Color> map;
         
         /**
          * 指定された {@code board} と同じ内容を持つ、新しい {@code LightweightBoard} を生成します。<br>
