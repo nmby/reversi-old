@@ -16,8 +16,12 @@ import xyz.hotchpotch.game.reversi.core.Rule;
 import xyz.hotchpotch.game.reversi.framework.GameCondition;
 import xyz.hotchpotch.game.reversi.framework.Player;
 
-// TODO: テストしたうえで public にする。
-/*package*/ class AIPlayerUtil {
+/**
+ * {@link Player} 実装クラスを作成する際に便利な機能を集めたユーティリティクラスです。<br>
+ * 
+ * @author nmby
+ */
+public class AIPlayerUtil {
     
     // ++++++++++++++++ static members ++++++++++++++++
     
