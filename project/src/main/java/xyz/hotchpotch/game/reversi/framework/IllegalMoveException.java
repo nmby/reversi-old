@@ -1,5 +1,7 @@
 package xyz.hotchpotch.game.reversi.framework;
 
+import java.util.Objects;
+
 import xyz.hotchpotch.game.reversi.core.Board;
 import xyz.hotchpotch.game.reversi.core.BoardSnapshot;
 import xyz.hotchpotch.game.reversi.core.Color;
@@ -12,9 +14,9 @@ import xyz.hotchpotch.game.reversi.core.Move;
  */
 public class IllegalMoveException extends RuleViolationException {
     
-    // ++++++++++++++++ static members ++++++++++++++++
+    // [static members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
-    // ++++++++++++++++ instance members ++++++++++++++++
+    // [instance members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
     /** ルール違反の手 */
     public final Move move;
@@ -29,19 +31,21 @@ public class IllegalMoveException extends RuleViolationException {
      * @param violator ルールに違反したプレーヤーの色
      * @param move ルール違反の手
      * @param board そのときのリバーシ盤
+     * @throws NullPointerException {@code violator}、{@code move}、{@code board} のいずれかが {@code null} の場合
      */
     public IllegalMoveException(String message, Color violator, Move move, Board board) {
-        super(message, violator);
-        this.move = move;
-        this.board = BoardSnapshot.of(board);
+        super(message, Objects.requireNonNull(violator));
+        this.move = Objects.requireNonNull(move);
+        this.board = BoardSnapshot.of(Objects.requireNonNull(board));
     }
     
     /**
      * 例外をコピーして生成します。<br>
      * 
      * @param original 元の例外
+     * @throws NullPointerException {@code original} が {@code null} の場合
      */
-    IllegalMoveException(IllegalMoveException original) {
+    /*package*/ IllegalMoveException(IllegalMoveException original) {
         super(original.getMessage(), original.violator, original.getCause());
         move = original.move;
         board = BoardSnapshot.of(original.board);
