@@ -2,6 +2,7 @@ package xyz.hotchpotch.game.reversi.framework;
 
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
+import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.EnumMap;
@@ -18,7 +19,15 @@ import xyz.hotchpotch.game.reversi.framework.Match.Entrant;
  */
 public class MatchCondition implements Condition<Match>, Serializable {
     
-    // ++++++++++++++++ static members ++++++++++++++++
+    // [static members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    
+    /*package*/ static final String KEY_PLAYER_A = "player.a";
+    /*package*/ static final String KEY_PLAYER_B = "player.b";
+    /*package*/ static final String KEY_MILLIS_PER_TURN = GameCondition.KEY_MILLIS_PER_TURN;
+    /*package*/ static final String KEY_MILLIS_IN_GAME = GameCondition.KEY_MILLIS_IN_GAME;
+    /*package*/ static final String KEY_TIMES = "times";
+    /*package*/ static final String KEY_PRINT_LEVEL = "print.level";
+    /*package*/ static final String KEY_AUTO = "auto";
     
     private static final long serialVersionUID = 1L;
     
@@ -31,8 +40,13 @@ public class MatchCondition implements Condition<Match>, Serializable {
             params = matchCondition.params;
         }
         
-        private Object readResolve() {
-            return of(params);
+        private Object readResolve() throws ObjectStreamException {
+            try {
+                return of(params);
+            } catch (RuntimeException e) {
+                throw new InvalidObjectException(
+                        String.format("%s: %s", e.getClass().getSimpleName(), e.getMessage()));
+            }
         }
     }
     
@@ -61,7 +75,7 @@ public class MatchCondition implements Condition<Match>, Serializable {
     
     /**
      * 個々の必須パラメータと追加のパラメータを指定してマッチ実施条件を生成します。<br>
-     * {@code params} に必須パラメータが含まれる場合は、個別に引数で指定された値が優先されます。<br>
+     * {@code params} に必須パラメータが含まれる場合は、個別に引数で指定した値が優先されます。<br>
      * 
      * @param playerA プレーヤーAのクラス
      * @param playerB プレーヤーBのクラス
@@ -94,11 +108,11 @@ public class MatchCondition implements Condition<Match>, Serializable {
         }
         
         Map<String, String> copy = new HashMap<>(params);
-        copy.put("player.a", playerA.getName());
-        copy.put("player.b", playerB.getName());
-        copy.put("givenMillisPerTurn", String.valueOf(givenMillisPerTurn));
-        copy.put("givenMillisInGame", String.valueOf(givenMillisInGame));
-        copy.put("times", String.valueOf(times));
+        copy.put(KEY_PLAYER_A, playerA.getName());
+        copy.put(KEY_PLAYER_B, playerB.getName());
+        copy.put(KEY_MILLIS_PER_TURN, String.valueOf(givenMillisPerTurn));
+        copy.put(KEY_MILLIS_IN_GAME, String.valueOf(givenMillisInGame));
+        copy.put(KEY_TIMES, String.valueOf(times));
         
         return new MatchCondition(
                 playerA,
@@ -112,29 +126,30 @@ public class MatchCondition implements Condition<Match>, Serializable {
     /**
      * パラメータを一括指定してマッチ実施条件を生成します。<br>
      * {@code params} は以下の必須パラメータを含む必要があります。<br>
-     * <ul>
-     *   <li>{@code player.a} ： プレーヤーAの完全修飾クラス名</li>
-     *   <li>{@code player.b} ： プレーヤーBの完全修飾クラス名</li>
-     *   <li>{@code givenMillisPerTurn} ： 一手あたりの制限時間（ミリ秒）</li>
-     *   <li>{@code givenMillisInGame} ： ゲーム全体での持ち時間（ミリ秒）</li>
-     *   <li>{@code times} ： 対戦回数</li>
-     * </ul>
+     * <table border="1">
+     *   <tr><th>パラメータ名</th><th>内容</th><th>例</th></tr>
+     *   <tr><td>{@code player.a}</td><td>プレーヤーAの完全修飾クラス名</td><td>{@code xyz.hotchpotch.game.reversi.aiplayers.SimplestAIPlayer}</td></tr>
+     *   <tr><td>{@code player.b}</td><td>プレーヤーBの完全修飾クラス名</td><td>{@code xyz.hotchpotch.game.reversi.aiplayers.RandomAIPlayer}</td></tr>
+     *   <tr><td>{@code givenMillisPerTurn}</td><td>一手あたりの制限時間（ミリ秒）</td><td>1000</td></tr>
+     *   <tr><td>{@code givenMillisInGame}</td><td>ゲーム全体での持ち時間（ミリ秒）</td><td>15000</td></tr>
+     *   <tr><td>{@code times}</td><td>対戦回数</td><td>10</td></tr>
+     * </table>
      * 
      * @param params パラメータが格納された {@code Map}
      * @return マッチ実施条件
      * @throws NullPointerException {@code params} が {@code null} の場合
-     * @throws IllegalArgumentException 各パラメータの設定内容が不正な場合
+     * @throws IllegalArgumentException 必須パラメータが設定されていない場合や各パラメータの設定内容が不正な場合
      */
     public static MatchCondition of(Map<String, String> params) {
         Objects.requireNonNull(params);
         
         Map<String, String> copy = new HashMap<>(params);
         
-        Class<? extends Player> playerA = ConditionUtil.getPlayerClass(copy, "player.a");
-        Class<? extends Player> playerB = ConditionUtil.getPlayerClass(copy, "player.b");
-        long givenMillisPerTurn = ConditionUtil.getLongPositiveValue(copy, "givenMillisPerTurn");
-        long givenMillisInGame = ConditionUtil.getLongPositiveValue(copy, "givenMillisInGame");
-        int times = (int) ConditionUtil.getLongPositiveValue(copy, "times");
+        Class<? extends Player> playerA = ConditionUtil.getPlayerClass(copy, KEY_PLAYER_A);
+        Class<? extends Player> playerB = ConditionUtil.getPlayerClass(copy, KEY_PLAYER_B);
+        long givenMillisPerTurn = ConditionUtil.getLongPositiveValue(copy, KEY_MILLIS_PER_TURN);
+        long givenMillisInGame = ConditionUtil.getLongPositiveValue(copy, KEY_MILLIS_IN_GAME);
+        int times = (int) ConditionUtil.getLongPositiveValue(copy, KEY_TIMES);
         
         return new MatchCondition(
                 playerA,
@@ -145,7 +160,7 @@ public class MatchCondition implements Condition<Match>, Serializable {
                 copy);
     }
     
-    // ++++++++++++++++ instance members ++++++++++++++++
+    // [instance members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
     // 不変なメンバ変数は直接公開してしまう。
     // http://www.ibm.com/developerworks/jp/java/library/j-ft4/
@@ -175,6 +190,13 @@ public class MatchCondition implements Condition<Match>, Serializable {
             int times,
             Map<String, String> params) {
             
+        assert playerClassA != null;
+        assert playerClassB != null;
+        assert 0 < givenMillisPerTurn;
+        assert 0 < givenMillisInGame;
+        assert 0 < times;
+        assert params != null;
+        
         Map<Entrant, Class<? extends Player>> playerClasses = new EnumMap<>(Entrant.class);
         playerClasses.put(Entrant.A, playerClassA);
         playerClasses.put(Entrant.B, playerClassB);
@@ -186,11 +208,11 @@ public class MatchCondition implements Condition<Match>, Serializable {
         
         Map<String, String> gameParams = new HashMap<>(params);
         
-        if (!gameParams.containsKey("print.level")) {
-            gameParams.put("print.level", "MATCH");
+        if (!gameParams.containsKey(KEY_PRINT_LEVEL)) {
+            gameParams.put(KEY_PRINT_LEVEL, "MATCH");
         }
-        if (!gameParams.containsKey("auto")) {
-            gameParams.put("auto", "true");
+        if (!gameParams.containsKey(KEY_AUTO)) {
+            gameParams.put(KEY_AUTO, "true");
         }
         
         GameCondition gameConditionA = GameCondition.of(

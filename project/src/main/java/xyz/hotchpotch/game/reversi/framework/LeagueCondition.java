@@ -2,6 +2,7 @@ package xyz.hotchpotch.game.reversi.framework;
 
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
+import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,7 +20,14 @@ import xyz.hotchpotch.game.reversi.framework.League.Pair;
  */
 public class LeagueCondition implements Condition<League>, Serializable {
     
-    // ++++++++++++++++ static members ++++++++++++++++
+    // [static members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    
+    /*package*/ static final String KEY_PLAYER_N = "player.";
+    /*package*/ static final String KEY_MILLIS_PER_TURN = MatchCondition.KEY_MILLIS_PER_TURN;
+    /*package*/ static final String KEY_MILLIS_IN_GAME = MatchCondition.KEY_MILLIS_IN_GAME;
+    /*package*/ static final String KEY_TIMES = MatchCondition.KEY_TIMES;
+    /*package*/ static final String KEY_PRINT_LEVEL = MatchCondition.KEY_PRINT_LEVEL;
+    /*package*/ static final String KEY_AUTO = MatchCondition.KEY_AUTO;
     
     private static final long serialVersionUID = 1L;
     
@@ -32,8 +40,13 @@ public class LeagueCondition implements Condition<League>, Serializable {
             params = leagueCondition.params;
         }
         
-        private Object readResolve() {
-            return of(params);
+        private Object readResolve() throws ObjectStreamException {
+            try {
+                return of(params);
+            } catch (RuntimeException e) {
+                throw new InvalidObjectException(
+                        String.format("%s: %s", e.getClass().getSimpleName(), e.getMessage()));
+            }
         }
     }
     
@@ -60,7 +73,7 @@ public class LeagueCondition implements Condition<League>, Serializable {
     
     /**
      * 個々の必須パラメータと追加のパラメータを指定してリーグ実施条件を生成します。<br>
-     * {@code params} に必須パラメータが含まれる場合は、個別に引数で指定された値が優先されます。<br>
+     * {@code params} に必須パラメータが含まれる場合は、個別に引数で指定した値が優先されます。<br>
      * 
      * @param players リーグに参加するプレーヤークラスのリスト
      * @param givenMillisPerTurn 一手あたりの制限時間（ミリ秒）
@@ -90,11 +103,11 @@ public class LeagueCondition implements Condition<League>, Serializable {
         
         Map<String, String> copy = new HashMap<>(params);
         for (int i = 0; i < players.size(); i++) {
-            copy.put("player." + (i + 1), players.get(i).getName());
+            copy.put(KEY_PLAYER_N + (i + 1), players.get(i).getName());
         }
-        copy.put("givenMillisPerTurn", String.valueOf(givenMillisPerTurn));
-        copy.put("givenMillisInGame", String.valueOf(givenMillisInGame));
-        copy.put("times", String.valueOf(times));
+        copy.put(KEY_MILLIS_PER_TURN, String.valueOf(givenMillisPerTurn));
+        copy.put(KEY_MILLIS_IN_GAME, String.valueOf(givenMillisInGame));
+        copy.put(KEY_TIMES, String.valueOf(times));
         
         return new LeagueCondition(
                 new ArrayList<>(players),
@@ -107,17 +120,18 @@ public class LeagueCondition implements Condition<League>, Serializable {
     /**
      * パラメータを一括指定してリーグ実施条件を生成します。<br>
      * {@code params} は以下の必須パラメータを含む必要があります。<br>
-     * <ul>
-     *   <li>{@code player.?} ： プレーヤーの完全修飾クラス名（{@code ?} 部分は一意な数字）</li>
-     *   <li>{@code givenMillisPerTurn} ： 一手あたりの制限時間（ミリ秒）</li>
-     *   <li>{@code givenMillisInGame} ： ゲーム全体での持ち時間（ミリ秒）</li>
-     *   <li>{@code times} ： それぞれの組み合わせにおける対戦回数</li>
-     * </ul>
+     * <table border="1">
+     *   <tr><th>パラメータ名</th><th>内容</th><th>例</th></tr>
+     *   <tr><td>{@code player.?}</td><td>プレーヤーの完全修飾クラス名（{@code ?} 部分は一意な数字）</td><td>{@code xyz.hotchpotch.game.reversi.aiplayers.SimplestAIPlayer}</td></tr>
+     *   <tr><td>{@code givenMillisPerTurn}</td><td>一手あたりの制限時間（ミリ秒）</td><td>1000</td></tr>
+     *   <tr><td>{@code givenMillisInGame}</td><td>ゲーム全体での持ち時間（ミリ秒）</td><td>15000</td></tr>
+     *   <tr><td>{@code times}</td><td>それぞれの組み合わせにおける対戦回数</td><td>10</td></tr>
+     * </table>
      * 
      * @param params パラメータが格納された {@code Map}
      * @return リーグ実施条件
      * @throws NullPointerException {@code params} が {@code null} の場合
-     * @throws IllegalArgumentException 各パラメータの設定内容が不正な場合
+     * @throws IllegalArgumentException 必須パラメータが設定されていない場合や各パラメータの設定内容が不正な場合
      */
     public static LeagueCondition of(Map<String, String> params) {
         Objects.requireNonNull(params);
@@ -126,7 +140,7 @@ public class LeagueCondition implements Condition<League>, Serializable {
         
         List<String> playerClassNames = new ArrayList<>();
         for (String key : copy.keySet()) {
-            if (key.matches("player.\\d+")) {
+            if (key.matches(KEY_PLAYER_N + "\\d+")) {
                 playerClassNames.add(copy.get(key));
             }
         }
@@ -141,9 +155,9 @@ public class LeagueCondition implements Condition<League>, Serializable {
             players.add(player);
         }
         
-        long givenMillisPerTurn = ConditionUtil.getLongPositiveValue(copy, "givenMillisPerTurn");
-        long givenMillisInGame = ConditionUtil.getLongPositiveValue(copy, "givenMillisInGame");
-        int times = (int) ConditionUtil.getLongPositiveValue(copy, "times");
+        long givenMillisPerTurn = ConditionUtil.getLongPositiveValue(copy, KEY_MILLIS_PER_TURN);
+        long givenMillisInGame = ConditionUtil.getLongPositiveValue(copy, KEY_MILLIS_IN_GAME);
+        int times = (int) ConditionUtil.getLongPositiveValue(copy, KEY_TIMES);
         
         return new LeagueCondition(
                 players,
@@ -153,7 +167,7 @@ public class LeagueCondition implements Condition<League>, Serializable {
                 copy);
     }
     
-    // ++++++++++++++++ instance members ++++++++++++++++
+    // [instance members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
     // 不変なメンバ変数は直接公開してしまう。
     // http://www.ibm.com/developerworks/jp/java/library/j-ft4/
@@ -182,6 +196,13 @@ public class LeagueCondition implements Condition<League>, Serializable {
             int times,
             Map<String, String> params) {
             
+        assert playerClasses != null;
+        assert 2 <= playerClasses.size();
+        assert 0 < givenMillisPerTurn;
+        assert 0 < givenMillisInGame;
+        assert 0 < times;
+        assert params != null;
+        
         this.playerClasses = Collections.unmodifiableList(playerClasses);
         this.givenMillisPerTurn = givenMillisPerTurn;
         this.givenMillisInGame = givenMillisInGame;
@@ -190,11 +211,11 @@ public class LeagueCondition implements Condition<League>, Serializable {
         
         Map<String, String> matchParams = new HashMap<>(params);
         
-        if (!matchParams.containsKey("print.level")) {
-            matchParams.put("print.level", "LEAGUE");
+        if (!matchParams.containsKey(KEY_PRINT_LEVEL)) {
+            matchParams.put(KEY_PRINT_LEVEL, "LEAGUE");
         }
-        if (!matchParams.containsKey("auto")) {
-            matchParams.put("auto", "true");
+        if (!matchParams.containsKey(KEY_AUTO)) {
+            matchParams.put(KEY_AUTO, "true");
         }
         
         Map<Pair, MatchCondition> matchConditions = new HashMap<>();

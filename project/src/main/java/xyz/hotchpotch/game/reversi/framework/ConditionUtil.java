@@ -2,11 +2,14 @@ package xyz.hotchpotch.game.reversi.framework;
 
 import java.util.Map;
 
-class ConditionUtil {
+/*package*/ class ConditionUtil {
     
-    // ++++++++++++++++ static members ++++++++++++++++
+    // [static members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
-    static String getValue(Map<String, String> map, String key) {
+    /*package*/ static String getValue(Map<String, String> map, String key) {
+        assert map != null;
+        assert key != null;
+        
         String value = map.get(key);
         if (value == null) {
             throw new IllegalArgumentException(String.format(
@@ -15,13 +18,20 @@ class ConditionUtil {
         return value;
     }
     
-    static Class<? extends Player> getPlayerClass(Map<String, String> map, String key) {
+    /*package*/ static Class<? extends Player> getPlayerClass(Map<String, String> map, String key) {
+        assert map != null;
+        assert key != null;
+        
         String playerClassName = getValue(map, key);
+        assert playerClassName != null;
+        
         return getPlayerClass(playerClassName);
     }
     
     @SuppressWarnings("unchecked")
-    static Class<? extends Player> getPlayerClass(String playerClassName) {
+    /*package*/ static Class<? extends Player> getPlayerClass(String playerClassName) {
+        assert playerClassName != null;
+        
         try {
             return (Class<? extends Player>) Class.forName(playerClassName);
             
@@ -35,7 +45,10 @@ class ConditionUtil {
         }
     }
     
-    static long getLongPositiveValue(Map<String, String> map, String key) {
+    /*package*/ static long getLongPositiveValue(Map<String, String> map, String key) {
+        assert map != null;
+        assert key != null;
+        
         String str = getValue(map, key);
         long value;
         
@@ -53,7 +66,7 @@ class ConditionUtil {
         return value;
     }
     
-    // ++++++++++++++++ instance members ++++++++++++++++
+    // [instance members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
     private ConditionUtil() {
     }
