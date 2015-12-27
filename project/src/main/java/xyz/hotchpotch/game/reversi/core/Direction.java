@@ -10,7 +10,7 @@ import java.util.stream.Stream;
  */
 public enum Direction {
     
-    // ++++++++++++++++ static members ++++++++++++++++
+    // [static members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
     /** 上 */
     UPPER(-1, 0),
@@ -54,7 +54,7 @@ public enum Direction {
         return Arrays.stream(values()).parallel();
     }
     
-    // ++++++++++++++++ instance members ++++++++++++++++
+    // [instance members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
     /*package*/ final int di;
     /*package*/ final int dj;

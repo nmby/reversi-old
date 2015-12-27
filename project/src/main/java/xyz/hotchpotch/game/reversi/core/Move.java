@@ -20,7 +20,7 @@ import java.util.Objects;
  */
 public class Move implements Serializable {
     
-    // ++++++++++++++++ static members ++++++++++++++++
+    // [static members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
     private static final long serialVersionUID = 1L;
     
@@ -53,7 +53,7 @@ public class Move implements Serializable {
         return new Move(color, null);
     }
     
-    // ++++++++++++++++ instance members ++++++++++++++++
+    // [instance members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
     // メンバ変数を public で公開するのに抵抗を感じるかもしれないが、
     // その変数参照や変数インスタンス自体が不変である場合、デメリットは少ない。

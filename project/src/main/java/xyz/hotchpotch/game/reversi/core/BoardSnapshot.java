@@ -17,7 +17,7 @@ import java.util.Objects;
  */
 public class BoardSnapshot extends BaseBoard implements Serializable {
     
-    // ++++++++++++++++ static members ++++++++++++++++
+    // [static members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
     private static final long serialVersionUID = 1L;
     
@@ -33,7 +33,7 @@ public class BoardSnapshot extends BaseBoard implements Serializable {
         return new BoardSnapshot(board);
     }
     
-    // ++++++++++++++++ instance members ++++++++++++++++
+    // [instance members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
     private BoardSnapshot(Board board) {
         super(board);

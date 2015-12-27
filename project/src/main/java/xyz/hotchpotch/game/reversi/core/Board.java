@@ -10,9 +10,9 @@ import java.util.stream.Collectors;
  */
 public interface Board {
     
-    // ++++++++++++++++ static members ++++++++++++++++
+    // [static members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
-    // ++++++++++++++++ instance members ++++++++++++++++
+    // [instance members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
     /**
      * 指定された位置の駒の色を返します。

@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
  */
 public class Rule {
     
-    // ++++++++++++++++ static members ++++++++++++++++
+    // [static members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
     /**
      * ゲームが継続中か（黒か白の少なくともどちらかが駒を置ける場所があるか）を返します。<br>
@@ -186,7 +186,7 @@ public class Rule {
         }
     }
     
-    // ++++++++++++++++ instance members ++++++++++++++++
+    // [instance members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
     private Rule() {
     }

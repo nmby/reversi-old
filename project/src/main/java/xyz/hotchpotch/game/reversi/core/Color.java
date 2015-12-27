@@ -10,7 +10,7 @@ import java.util.stream.Stream;
  */
 public enum Color {
     
-    // ++++++++++++++++ static members ++++++++++++++++
+    // [static members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
     /** 黒 */
     BLACK("●"),
@@ -47,7 +47,7 @@ public enum Color {
         return color == null ? "・" : color.toString();
     }
     
-    // ++++++++++++++++ instance members ++++++++++++++++
+    // [instance members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
     private final String symbol;
     

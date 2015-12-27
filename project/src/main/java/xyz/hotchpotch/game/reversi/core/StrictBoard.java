@@ -19,7 +19,7 @@ import java.util.Set;
  */
 public class StrictBoard extends BaseBoard implements Serializable {
     
-    // ++++++++++++++++ static members ++++++++++++++++
+    // [static members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
     private static final long serialVersionUID = 1L;
     
@@ -54,7 +54,7 @@ public class StrictBoard extends BaseBoard implements Serializable {
         return new StrictBoard();
     }
     
-    // ++++++++++++++++ instance members ++++++++++++++++
+    // [instance members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
     private transient Color next;
     private transient final List<Move> moves;

@@ -8,13 +8,13 @@ import java.util.Objects;
 // 自分の現状の理解では無理なので、今回は止める。
 /*package*/ abstract class BaseBoard implements Board {
     
-    // ++++++++++++++++ static members ++++++++++++++++
+    // [static members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
     private static final char CHR_BLACK = Color.toString(Color.BLACK).charAt(0);
     private static final char CHR_WHITE = Color.toString(Color.WHITE).charAt(0);
     private static final char CHR_SPACE = Color.toString(null).charAt(0);
     
-    // ++++++++++++++++ instance members ++++++++++++++++
+    // [instance members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
     protected final Map<Point, Color> map;
     

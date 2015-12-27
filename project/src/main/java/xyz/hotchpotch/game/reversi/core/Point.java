@@ -20,7 +20,7 @@ import java.util.stream.Stream;
 // お勉強のため普通のクラスとして実装した。
 public class Point implements Serializable {
     
-    // ++++++++++++++++ static members ++++++++++++++++
+    // [static members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
     private static final long serialVersionUID = 1L;
     
@@ -40,7 +40,7 @@ public class Point implements Serializable {
             try {
                 return of(i, j);
             } catch (IndexOutOfBoundsException e) {
-                throw new InvalidObjectException("IndexOutOfBounds: " + desc(i,  j));
+                throw new InvalidObjectException("IndexOutOfBounds: " + desc(i, j));
             }
         }
     }
@@ -135,7 +135,7 @@ public class Point implements Serializable {
         return WIDTH * i + j;
     }
     
-    // ++++++++++++++++ instance members ++++++++++++++++
+    // [instance members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
     // メンバ変数を public で公開するのに抵抗を感じるかもしれないが、
     // その変数参照や変数インスタンス自体が不変である場合、デメリットは少ない。
