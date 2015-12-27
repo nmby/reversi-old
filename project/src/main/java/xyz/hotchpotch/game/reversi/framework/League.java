@@ -12,12 +12,14 @@ import java.util.Objects;
  */
 public interface League extends Playable {
     
-    // ++++++++++++++++ static members ++++++++++++++++
+    // [static members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
     /**
      * リーグにおける個々のマッチの組み合わせを表すための不変クラスです。<br>
+     * 
+     * @author nmby
      */
-    static class Pair {
+    public static class Pair {
         
         /**
          * @param idxA リーグ参加プレーヤーのリストにおける、プレーヤーAのインデックス
@@ -28,8 +30,8 @@ public interface League extends Playable {
             return new Pair(idxA, idxB);
         }
         
-        final int idxA;
-        final int idxB;
+        /*package*/ final int idxA;
+        /*package*/ final int idxB;
         
         private Pair(int idxA, int idxB) {
             this.idxA = idxA;
@@ -61,5 +63,4 @@ public interface League extends Playable {
     }
     
     // ++++++++++++++++ instance members ++++++++++++++++
-    
 }

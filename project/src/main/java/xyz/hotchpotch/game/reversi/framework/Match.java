@@ -10,12 +10,14 @@ package xyz.hotchpotch.game.reversi.framework;
  */
 public interface Match extends Playable {
     
-    // ++++++++++++++++ static members ++++++++++++++++
+    // [static members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
     /**
      * マッチの対戦者を表す列挙型です。<br>
+     * 
+     * @author nmby
      */
-    static enum Entrant {
+    public static enum Entrant {
         
         /** 対戦者A */
         A,
@@ -33,6 +35,5 @@ public interface Match extends Playable {
         }
     }
     
-    // ++++++++++++++++ instance members ++++++++++++++++
-    
+    // [instance members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++
 }
