@@ -11,14 +11,14 @@ import xyz.hotchpotch.game.reversi.framework.Result;
  */
 public interface ConsolePlayable<P extends Playable> extends Playable {
     
-    // ++++++++++++++++ static members ++++++++++++++++
+    // [static members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
-    // ++++++++++++++++ instance members ++++++++++++++++
+    // [instance members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
     /**
      * 実行し、結果を返します。<br>
      * 
      * @return 実行結果
      */
-    Result<P> play();
+    public Result<P> play();
 }

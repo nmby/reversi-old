@@ -23,7 +23,7 @@ import xyz.hotchpotch.util.ConsoleScanner;
  */
 public class ConsoleMatch implements ConsolePlayable<Match> {
     
-    // ++++++++++++++++ static members ++++++++++++++++
+    // [static members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
     /**
      * マッチ実施条件を指定してマッチ実行クラスを生成します。<br>
@@ -62,21 +62,22 @@ public class ConsoleMatch implements ConsolePlayable<Match> {
         return MatchCondition.of(playerA, playerB, givenMillisPerTurn, givenMillisInGame, times, params);
     }
     
-    // ++++++++++++++++ instance members ++++++++++++++++
+    // [instance members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
     private final MatchCondition matchCondition;
     private final ConsolePrinter printer;
     private final ConsoleScanner<String> waiter = ConsoleScanner.waiter();
     
     private ConsoleMatch(MatchCondition matchCondition) {
+        assert matchCondition != null;
+        
         this.matchCondition = matchCondition;
         
         Level level = CommonUtil.getParameter(
                 matchCondition,
                 "print.level",
-                s -> Enum.valueOf(Level.class, s),
+                Level::valueOf,
                 Level.MATCH);
-        
         printer = ConsolePrinter.of(level);
     }
     

@@ -9,12 +9,14 @@ import java.util.Objects;
  */
 // MEMO: java.util.logging の仲間たちについて要お勉強
 // ここでは車輪の再発明をしちゃう。許して。
-public class ConsolePrinter {
+/*package*/ class ConsolePrinter {
     
-    // ++++++++++++++++ static members ++++++++++++++++
+    // [static members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
     /**
      * ログ出力レベルを表す列挙型です。<br>
+     * 
+     * @author nmby
      */
     public static enum Level {
         /** ゲームで出力すべきレベル */
@@ -42,12 +44,14 @@ public class ConsolePrinter {
         return new ConsolePrinter(Objects.requireNonNull(level));
     }
     
-    // ++++++++++++++++ instance members ++++++++++++++++
+    // [instance members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
     /** このロガーのログ出力レベル */
     public final Level level;
     
     private ConsolePrinter(Level level) {
+        assert level != null;
+        
         this.level = level;
     }
     

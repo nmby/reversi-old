@@ -19,13 +19,13 @@ import xyz.hotchpotch.game.reversi.framework.Condition;
 import xyz.hotchpotch.game.reversi.framework.Player;
 import xyz.hotchpotch.util.ConsoleScanner;
 
-class CommonUtil {
+/*package*/ class CommonUtil {
     
-    // ++++++++++++++++ static members ++++++++++++++++
+    // [static members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
     private static final String BR = System.lineSeparator();
     
-    static List<Class<? extends Player>> playerClasses() {
+    /*package*/ static List<Class<? extends Player>> playerClasses() {
         // TODO: このバカチョン実装はそのうちどうにかしたい...
         return Arrays.asList(
                 ConsolePlayer.class,
@@ -37,56 +37,9 @@ class CommonUtil {
                 CrazyAIPlayer.class);
     }
     
-    static List<Class<? extends Player>> arrangePlayerClassList() {
-        List<Class<? extends Player>> playerClasses = new ArrayList<>(playerClasses());
-        Set<Integer> selected = new TreeSet<>();
+    /*package*/ static Class<? extends Player> arrangePlayerClass(String str) {
+        assert str != null;
         
-        while (true) {
-            StringBuilder prompt = new StringBuilder();
-            prompt.append("選択するプレーヤーを番号で指定してください。"
-                    + "選択済みのものを再度指定した場合は、選択を解除します。\n"
-                    + "選択を終了する場合は -1 を入力してください。")
-                    .append(BR);
-                    
-            for (int i = 0; i < playerClasses.size(); i++) {
-                prompt.append(String.format("\t%s[%d] %s",
-                        selected.contains(i) ? "選択済み " : "",
-                        i + 1,
-                        playerClasses.get(i).getName()))
-                        .append(BR);
-            }
-            prompt.append(String.format("\t[0] その他（自作クラス）")).append(BR);
-            prompt.append("> ");
-            
-            ConsoleScanner<Integer> scIdx = ConsoleScanner
-                    .intBuilder(-1, playerClasses.size())
-                    .prompt(prompt.toString())
-                    .build();
-            int idx = scIdx.get();
-            
-            if (idx == -1) {
-                break;
-            } else if (idx == 0) {
-                Class<? extends Player> customPlayer = arrangeCustomPlayerClass();
-                playerClasses.add(customPlayer);
-                selected.add(playerClasses.size() - 1);
-            } else {
-                if (selected.contains(idx - 1)) {
-                    selected.remove(idx - 1);
-                } else {
-                    selected.add(idx - 1);
-                }
-            }
-        }
-        
-        List<Class<? extends Player>> selectedPlayers = new ArrayList<>();
-        for (int idx : selected) {
-            selectedPlayers.add(playerClasses.get(idx));
-        }
-        return selectedPlayers;
-    }
-    
-    static Class<? extends Player> arrangePlayerClass(String str) {
         List<Class<? extends Player>> playerClasses = playerClasses();
         StringBuilder prompt = new StringBuilder();
         prompt.append(String.format("%sを番号で選択してください。", str)).append(BR);
@@ -135,7 +88,58 @@ class CommonUtil {
         return scPlayerClass.get();
     }
     
-    static long arrangeGivenMillisPerTurn() {
+    /*package*/ static List<Class<? extends Player>> arrangePlayerClassList() {
+        List<Class<? extends Player>> playerClasses = new ArrayList<>(playerClasses());
+        Set<Integer> selected = new TreeSet<>();
+        
+        while (true) {
+            StringBuilder prompt = new StringBuilder();
+            prompt.append("選択するプレーヤーを番号で指定してください。選択済みのものを再度指定した場合は、選択を解除します。").append(BR)
+                    .append("選択を終了する場合は -1 を入力してください。").append(BR);
+                    
+            for (int i = 0; i < playerClasses.size(); i++) {
+                prompt.append(String.format("\t%s[%d] %s",
+                        selected.contains(i) ? "★選択済み " : "",
+                        i + 1,
+                        playerClasses.get(i).getName())).append(BR);
+            }
+            prompt.append(String.format("\t[0] その他（自作クラス）")).append(BR);
+            prompt.append("> ");
+            
+            ConsoleScanner<Integer> scIdx = ConsoleScanner
+                    .intBuilder(-1, playerClasses.size())
+                    .prompt(prompt.toString())
+                    .build();
+            int idx = scIdx.get();
+            
+            if (idx == -1) {
+                if (2 <= selected.size()) {
+                    break;
+                } else {
+                    System.out.println("2つ以上のプレーヤーを選択してください。");
+                    System.out.println();
+                }
+            } else if (idx == 0) {
+                Class<? extends Player> customPlayer = arrangeCustomPlayerClass();
+                playerClasses.add(customPlayer);
+                selected.add(playerClasses.size() - 1);
+            } else {
+                if (selected.contains(idx - 1)) {
+                    selected.remove(idx - 1);
+                } else {
+                    selected.add(idx - 1);
+                }
+            }
+        }
+        
+        List<Class<? extends Player>> selectedPlayers = new ArrayList<>();
+        for (int idx : selected) {
+            selectedPlayers.add(playerClasses.get(idx));
+        }
+        return selectedPlayers;
+    }
+    
+    /*package*/ static long arrangeGivenMillisPerTurn() {
         return ConsoleScanner
                 .longBuilder(1, 60000)
                 .prompt("一手あたりの制限時間（ミリ秒）を 1～60000（1分） の範囲で指定してください" + BR + "> ")
@@ -143,7 +147,7 @@ class CommonUtil {
                 .get();
     }
     
-    static long arrangeGivenMillisInGame() {
+    /*package*/ static long arrangeGivenMillisInGame() {
         return ConsoleScanner
                 .longBuilder(1, 1800000)
                 .prompt("ゲーム内での持ち時間（ミリ秒）を 1～1800000（30分） の範囲で指定してください" + BR + "> ")
@@ -151,7 +155,7 @@ class CommonUtil {
                 .get();
     }
     
-    static int arrangeTimes() {
+    /*package*/ static int arrangeTimes() {
         return ConsoleScanner
                 .intBuilder(1, 100)
                 .prompt("対戦回数を 1～100 の範囲で指定してください" + BR + "> ")
@@ -159,7 +163,7 @@ class CommonUtil {
                 .get();
     }
     
-    static boolean arrangeAuto() {
+    /*package*/ static boolean arrangeAuto() {
         int selected = ConsoleScanner
                 .intBuilder(1, 2)
                 .prompt("ゲームの進行方法を番号で選んでください（1: 自動進行, 2: 対話的逐次進行）" + BR + "> ")
@@ -168,7 +172,7 @@ class CommonUtil {
         return selected == 1;
     }
     
-    static boolean arrangeDispDetail() {
+    /*package*/ static boolean arrangeDispDetail() {
         int selected = ConsoleScanner
                 .intBuilder(1, 2)
                 .prompt("表示の詳細度を番号で選んでください（1: サマリのみ, 2: 詳細表示あり）" + BR + "> ")
@@ -177,7 +181,9 @@ class CommonUtil {
         return selected == 2;
     }
     
-    static Map<String, String> arrangeAdditionalParams(Map<String, String> params) {
+    /*package*/ static Map<String, String> arrangeAdditionalParams(Map<String, String> params) {
+        assert params != null;
+        
         ConsoleScanner<String> sc = ConsoleScanner
                 .stringBuilder("[^=]+=.+|^$")
                 .prompt("追加のデバッグ用パラメータが必要な場合は key=value 形式で入力してください。" + BR
@@ -191,18 +197,25 @@ class CommonUtil {
                 break;
             }
             String[] keyValue = str.split("=", 2);
-            params.put(keyValue[0], keyValue[1]);
+            params.put(keyValue[0].trim(), keyValue[1].trim());
         }
         
         return params;
     }
     
-    static <T> T getParameter(
+    /*package*/ static <T> T getParameter(
             Condition<?> condition,
             String key,
             Function<String, T> converter,
             T defaultValue) {
             
+        assert condition != null;
+        assert key != null;
+        assert converter != null;
+        
+        if (!condition.getParams().containsKey(key)) {
+            return defaultValue;
+        }
         String str = condition.getParam(key);
         try {
             return converter.apply(str);
@@ -211,7 +224,7 @@ class CommonUtil {
         }
     }
     
-    // ++++++++++++++++ instance members ++++++++++++++++
+    // [instance members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
     private CommonUtil() {
     }

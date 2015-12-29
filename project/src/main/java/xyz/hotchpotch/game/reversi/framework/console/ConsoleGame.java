@@ -38,7 +38,7 @@ import xyz.hotchpotch.util.ConsoleScanner;
  */
 public class ConsoleGame implements ConsolePlayable<Game> {
     
-    // ++++++++++++++++ static members ++++++++++++++++
+    // [static members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
     /**
      * ゲーム実施条件を指定してゲーム実行クラスを生成します。<br>
@@ -74,7 +74,7 @@ public class ConsoleGame implements ConsolePlayable<Game> {
         return GameCondition.of(playerBlack, playerWhite, givenMillisPerTurn, givenMillisInGame, params);
     }
     
-    // ++++++++++++++++ instance members ++++++++++++++++
+    // [instance members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
     private final GameCondition gameCondition;
     private final ConsolePrinter printer;
@@ -87,16 +87,16 @@ public class ConsoleGame implements ConsolePlayable<Game> {
     private Map<Color, Long> remainingMillisInGame;
     
     private ConsoleGame(GameCondition gameCondition) {
+        assert gameCondition != null;
+        
         this.gameCondition = gameCondition;
         
         Level level = CommonUtil.getParameter(
                 gameCondition,
                 "print.level",
-                s -> Enum.valueOf(Level.class, s),
+                Level::valueOf,
                 Level.GAME);
-        
         printer = ConsolePrinter.of(level);
-        
         auto = CommonUtil.getParameter(gameCondition, "auto", Boolean::valueOf, false);
     }
     
@@ -142,10 +142,8 @@ public class ConsoleGame implements ConsolePlayable<Game> {
             gameResult = GameResult.of(gameCondition, board, remainingMillisInGame);
             
         } catch (RuleViolationException e) {
-            
             printer.println(Level.GAME, "");
             gameResult = GameResult.of(gameCondition, board, remainingMillisInGame, e);
-            
         }
         
         if (printer.level != Level.GAME) {
@@ -161,6 +159,7 @@ public class ConsoleGame implements ConsolePlayable<Game> {
         }
         printer.println(Level.MATCH, "");
         
+        cleanUp();
         return gameResult;
     }
     
@@ -180,9 +179,16 @@ public class ConsoleGame implements ConsolePlayable<Game> {
         currColor = Color.BLACK;
         
         remainingMillisInGame = new EnumMap<>(Color.class);
-        Color.stream().forEach(c -> {
-            remainingMillisInGame.put(c, gameCondition.givenMillisInGame);
-        });
+        remainingMillisInGame.put(Color.BLACK, gameCondition.givenMillisInGame);
+        remainingMillisInGame.put(Color.WHITE, gameCondition.givenMillisInGame);
+    }
+    
+    private void cleanUp() {
+        // なんかVBAのコードみたいだ... orz
+        players = null;
+        board = null;
+        currColor = null;
+        remainingMillisInGame = null;
     }
     
     private Point getPoint() throws RuleViolationException {
@@ -241,6 +247,8 @@ public class ConsoleGame implements ConsolePlayable<Game> {
     }
     
     private void applyMove(Move move) throws RuleViolationException {
+        assert move != null;
+        
         if (!Rule.canApply(board, move)) {
             if (move.point == null) {
                 throw new IllegalMoveException("指せる位置があるのにパスが選択されました。", currColor, move, board);

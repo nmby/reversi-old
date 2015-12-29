@@ -5,14 +5,14 @@ import java.util.function.Supplier;
 import xyz.hotchpotch.util.ConsoleScanner;
 
 /**
- * このアプリケーションのメニューを表す列挙型です。<br>
+ * このアプリケーションのメニューを表す列挙型です。
  * このアプリケーションのエントリ・ポイントです。<br>
  * 
  * @author nmby
  */
 public enum Menu {
     
-    // ++++++++++++++++ static members ++++++++++++++++
+    // [static members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
     /** ゲーム：2プレーヤーで1回対戦します。 */
     GAME("2プレーヤーで1回対戦します。", ConsoleGame::arrange),
@@ -44,7 +44,7 @@ public enum Menu {
         }
     }
     
-    // ++++++++++++++++ instance members ++++++++++++++++
+    // [instance members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
     private final String description;
     private final Supplier<ConsolePlayable<?>> arranger;

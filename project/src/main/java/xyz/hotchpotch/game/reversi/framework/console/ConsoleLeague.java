@@ -22,7 +22,7 @@ import xyz.hotchpotch.util.ConsoleScanner;
  */
 public class ConsoleLeague implements ConsolePlayable<League> {
     
-    // ++++++++++++++++ static members ++++++++++++++++
+    // [static members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
     /**
      * リーグ実施条件を指定してリーグ実行クラスを生成します。<br>
@@ -60,21 +60,22 @@ public class ConsoleLeague implements ConsolePlayable<League> {
         return LeagueCondition.of(players, givenMillisPerTurn, givenMillisInGame, times, params);
     }
     
-    // ++++++++++++++++ instance members ++++++++++++++++
+    // [instance members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
     private final LeagueCondition leagueCondition;
     private final ConsolePrinter printer;
     private final ConsoleScanner<String> waiter = ConsoleScanner.waiter();
     
     private ConsoleLeague(LeagueCondition leagueCondition) {
+        assert leagueCondition != null;
+        
         this.leagueCondition = leagueCondition;
         
         Level level = CommonUtil.getParameter(
                 leagueCondition,
                 "print.level",
-                s -> Enum.valueOf(Level.class, s),
+                Level::valueOf,
                 Level.LEAGUE);
-        
         printer = ConsolePrinter.of(level);
     }
     
@@ -94,7 +95,7 @@ public class ConsoleLeague implements ConsolePlayable<League> {
         
         Map<Pair, MatchResult> matchResults = new HashMap<>();
         
-        final int num = leagueCondition.playerClasses.size();
+        int num = leagueCondition.playerClasses.size();
         for (int idx1 = 0; idx1 < num - 1; idx1++) {
             for (int idx2 = idx1 + 1; idx2 < num; idx2++) {
                 MatchCondition matchCondition = leagueCondition.matchConditions.get(Pair.of(idx1, idx2));

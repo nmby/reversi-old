@@ -1,5 +1,6 @@
 package xyz.hotchpotch.game.reversi.framework.console;
 
+import xyz.hotchpotch.game.reversi.aiplayers.AIPlayerUtil;
 import xyz.hotchpotch.game.reversi.core.Board;
 import xyz.hotchpotch.game.reversi.core.Color;
 import xyz.hotchpotch.game.reversi.core.Move;
@@ -16,9 +17,9 @@ import xyz.hotchpotch.util.ConsoleScanner;
  */
 public class ConsolePlayer implements Player {
     
-    // ++++++++++++++++ static members ++++++++++++++++
+    // [static members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
-    // ++++++++++++++++ instance members ++++++++++++++++
+    // [instance members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
     private final boolean safety;
     
@@ -34,13 +35,7 @@ public class ConsolePlayer implements Player {
      * @param gameCondition ゲーム実施条件
      */
     public ConsolePlayer(Color color, GameCondition gameCondition) {
-        String keySafety = getClass().getName() + ".safety";
-        String strSafety = gameCondition.getParam(keySafety);
-        if (strSafety == null) {
-            safety = true;
-        } else {
-            safety = Boolean.valueOf(strSafety);
-        }
+        safety = AIPlayerUtil.getBooleanParameter(gameCondition, "safety").orElse(true);
     }
     
     /**
