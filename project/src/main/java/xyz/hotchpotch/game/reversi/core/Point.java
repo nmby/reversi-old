@@ -13,12 +13,21 @@ import java.util.stream.Stream;
 /**
  * 盤上の位置を表す不変クラスです。<br>
  * 同じ位置を表す {@code Point} インスタンスは同一であることが保証されます。<br>
+ * <br>
+ * {@code Point} オブジェクトは次の順に順序付けされます。
+ * <pre>
+ *     Point.of(0, 0), Point.of(0, 1), Point.of(0, 2), ... Point.of(7, 6), Point.of(7, 7)
+ * </pre>
+ * または、
+ * <pre>
+ *     Point.of("a1"), Point.of("b1"), Point.of("c1"), ... Point.of("g8"), Point.of("h8")
+ * </pre>
  * 
  * @author nmby
  */
 // Point は本質的には列挙なので、64 個の要素を持つ enum としてもよいのだが、
 // お勉強のため普通のクラスとして実装した。
-public class Point implements Serializable {
+public class Point implements Serializable, Comparable<Point> {
     
     // [static members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
@@ -187,6 +196,26 @@ public class Point implements Serializable {
     
     /*package*/ int ordinal() {
         return ordinal(i, j);
+    }
+    
+    /**
+     * この {@code Point} オブジェクトを指定された {@code Point} オブジェクトと比較します。<br>
+     * 
+     * @param p 比較対象の {@code Point} オブジェクト
+     * @return この {@code Point} が {@code p} より小さい場合は {@code -1}、等しい場合は {@code 0}、大きい場合は {@code 1}
+     * @throws NullPointerException {@code p} が {@code null} の場合
+     */
+    @Override
+    public int compareTo(Point p) {
+        Objects.requireNonNull(p);
+        
+        if (this == p) {
+            return 0;
+        } else if (ordinal() < p.ordinal()) {
+            return -1;
+        } else {
+            return 1;
+        }
     }
     
     /**

@@ -148,6 +148,18 @@ public class PointTest {
     }
     
     @Test
+    public void testCompareTo() {
+        Point[] points = Point.values();
+        IntStream.range(0, points.length).forEach(n -> {
+            IntStream.range(0, n).forEach(o -> assertThat(points[n].compareTo(points[o]), is(1)));
+            assertThat(points[n].compareTo(points[n]), is(0));
+            IntStream.range(n + 1, points.length).forEach(o -> assertThat(points[n].compareTo(points[o]), is(-1)));
+        });
+        
+        assertThat(of(() -> Point.of("a1").compareTo(null)), raise(NullPointerException.class));
+    }
+    
+    @Test
     public void testToString() {
         IntStream.range(0, Point.HEIGHT).forEach(i -> IntStream.range(0, Point.WIDTH).forEach(j -> {
             assertThat(Point.of(i, j).toString(), is(String.format("(%d, %d)", i, j)));
