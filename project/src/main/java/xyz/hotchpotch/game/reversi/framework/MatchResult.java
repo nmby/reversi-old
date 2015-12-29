@@ -17,19 +17,31 @@ import xyz.hotchpotch.game.reversi.framework.Match.Entrant;
  */
 public class MatchResult implements Result<Match> {
     
-    // ++++++++++++++++ static members ++++++++++++++++
+    // [static members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
     /**
-     * マッチ実施条件とゲーム結果からマッチ結果を生成します。<br>
+     * マッチ実施条件と個々のゲーム結果からマッチ結果を生成します。<br>
      * 
      * @param matchCondition マッチ実施条件
-     * @param gameResults ゲーム実施条件A, Bそれぞれにおけるゲーム結果が格納された {@code Map}
+     * @param gameResults ゲーム実施条件A, Bそれぞれにおけるゲーム結果のリストが格納された {@code Map}
      * @return マッチ結果
      * @throws NullPointerException {@code matchCondition}、{@code gameResults} のいずれかが {@code null} の場合
+     * @throws IllegalArgumentException {@code gameResults} の内容が不正な場合
      */
     public static MatchResult of(MatchCondition matchCondition, Map<Entrant, List<GameResult>> gameResults) {
         Objects.requireNonNull(matchCondition);
         Objects.requireNonNull(gameResults);
+        
+        if (!gameResults.containsKey(Entrant.A) || !gameResults.containsKey(Entrant.B)) {
+            throw new IllegalArgumentException(String.format(
+                    "ゲーム結果が格納されていません。contains key? A:%b, B:%b",
+                    gameResults.containsKey(Entrant.A), gameResults.containsKey(Entrant.B)));
+        }
+        if (gameResults.get(Entrant.A).size() + gameResults.get(Entrant.B).size() != matchCondition.times) {
+            throw new IllegalArgumentException(String.format(
+                    "ゲーム結果の数が不正です。times=%d, resultA.size=%d, resultB.size=%d",
+                    matchCondition.times, gameResults.get(Entrant.A).size(), gameResults.get(Entrant.B).size()));
+        }
         
         Map<Entrant, List<GameResult>> copy = new EnumMap<>(Entrant.class);
         copy.put(Entrant.A, new ArrayList<>(gameResults.get(Entrant.A)));
@@ -37,7 +49,10 @@ public class MatchResult implements Result<Match> {
         return new MatchResult(matchCondition, copy);
     }
     
-    // ++++++++++++++++ instance members ++++++++++++++++
+    // [instance members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    
+    // 不変なメンバ変数は直接公開してしまう。
+    // http://www.ibm.com/developerworks/jp/java/library/j-ft4/
     
     /** マッチ実施条件 */
     public final MatchCondition matchCondition;
@@ -51,6 +66,12 @@ public class MatchResult implements Result<Match> {
     private final String description;
     
     private MatchResult(MatchCondition matchCondition, Map<Entrant, List<GameResult>> gameResults) {
+        assert matchCondition != null;
+        assert gameResults != null;
+        assert gameResults.containsKey(Entrant.A);
+        assert gameResults.containsKey(Entrant.B);
+        assert gameResults.get(Entrant.A).size() + gameResults.get(Entrant.B).size() == matchCondition.times;
+        
         this.matchCondition = matchCondition;
         
         Map<Entrant, ResultCount> resultCounts = new EnumMap<>(Entrant.class);
@@ -64,12 +85,18 @@ public class MatchResult implements Result<Match> {
                     + (int) whiteResults.stream().filter(r -> r.winner == null).count();
             int lose = (int) blackResults.stream().filter(r -> r.winner == Color.WHITE).count()
                     + (int) whiteResults.stream().filter(r -> r.winner == Color.BLACK).count();
-            
+                    
             resultCounts.put(entrant, new ResultCount(win, draw, lose));
         }
         this.resultCounts = Collections.unmodifiableMap(resultCounts);
         
         ResultCount countA = resultCounts.get(Entrant.A);
+        ResultCount countB = resultCounts.get(Entrant.B);
+        assert countA.win + countA.draw + countA.lose == matchCondition.times;
+        assert countA.win == countB.lose;
+        assert countA.lose == countB.win;
+        assert countA.draw == countB.draw;
+        
         if (countA.lose < countA.win) {
             winner = Entrant.A;
         } else if (countA.win < countA.lose) {

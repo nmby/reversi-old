@@ -60,6 +60,14 @@ public interface League extends Playable {
         public int hashCode() {
             return Objects.hash(idxA, idxB);
         }
+        
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public String toString() {
+            return String.format("(%d, %d)", idxA, idxB);
+        }
     }
     
     // ++++++++++++++++ instance members ++++++++++++++++

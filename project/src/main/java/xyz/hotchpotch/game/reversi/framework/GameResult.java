@@ -19,7 +19,7 @@ import xyz.hotchpotch.game.reversi.core.Rule;
  */
 public class GameResult implements Result<Game> {
     
-    // ++++++++++++++++ static members ++++++++++++++++
+    // [static members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
     /**
      * ルール違反なくゲームが正常終了した場合のゲーム結果を生成します。<br>
@@ -30,6 +30,7 @@ public class GameResult implements Result<Game> {
      * @return ゲーム結果
      * @throws NullPointerException {@code gameCondition}、{@code board}、{@code remainingMillisInGame}
      *                              のいずれかが {@code null} の場合
+     * @throws IllegalArgumentException {@code board} がゲーム終了状態にない場合
      */
     public static GameResult of(
             GameCondition gameCondition,
@@ -39,6 +40,10 @@ public class GameResult implements Result<Game> {
         Objects.requireNonNull(gameCondition);
         Objects.requireNonNull(board);
         Objects.requireNonNull(remainingMillisInGame);
+        
+        if (Rule.isGameOngoing(board)) {
+            throw new IllegalArgumentException("ゲームが終了していません。board=" + board.toStringInLine());
+        }
         
         return new GameResult(
                 gameCondition,
@@ -76,6 +81,8 @@ public class GameResult implements Result<Game> {
     }
     
     private static RuleViolationException copyOf(RuleViolationException original) {
+        assert original != null;
+        
         // このクラスを不変にするために、インスタンス生成時には防御的コピーをとり、クライアントへはコピーを返す。
         // 出来るだけ violation インスタンスの実際の型が備えるコピーコンストラクタを利用し、
         // 失敗した場合は RuleViolationException のコピーコンストラクタを利用する。
@@ -91,7 +98,10 @@ public class GameResult implements Result<Game> {
         }
     }
     
-    // ++++++++++++++++ instance members ++++++++++++++++
+    // [instance members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    
+    // 不変なメンバ変数は直接公開してしまう。
+    // http://www.ibm.com/developerworks/jp/java/library/j-ft4/
     
     /** ゲーム実施条件 */
     public final GameCondition gameCondition;
@@ -108,11 +118,17 @@ public class GameResult implements Result<Game> {
     private final RuleViolationException violation;
     private final String description;
     
+    // ルール違反なくゲームが正常終了した場合のコンストラクタ
     private GameResult(
             GameCondition gameCondition,
             Board board,
             Map<Color, Long> remainingMillisInGame) {
             
+        assert gameCondition != null;
+        assert board != null;
+        assert !Rule.isGameOngoing(board);
+        assert remainingMillisInGame != null;
+        
         // 防御的コピーをとるのは static メソッドのレイヤ、public で公開するために不変化ラップするのはコンストラクタのレイヤとする。
         this.gameCondition = gameCondition;
         this.board = board;
@@ -120,8 +136,8 @@ public class GameResult implements Result<Game> {
         this.violation = null;
         
         winner = Rule.winner(this.board);
-        int black = (int) Point.stream().filter(p -> this.board.colorAt(p) == Color.BLACK).count();
-        int white = (int) Point.stream().filter(p -> this.board.colorAt(p) == Color.WHITE).count();
+        int black = (int) Point.stream().map(this.board::colorAt).filter(c -> c == Color.BLACK).count();
+        int white = (int) Point.stream().map(this.board::colorAt).filter(c -> c == Color.WHITE).count();
         
         description = String.format("%s %s:%d（残り %d ms）, %s:%d（残り %d ms）",
                 winner == null ? "引き分けです。" : String.format("%s:%s の勝ちです。",
@@ -130,12 +146,18 @@ public class GameResult implements Result<Game> {
                 Color.WHITE, white, this.remainingMillisInGame.get(Color.WHITE));
     }
     
+    // ルール違反によりゲームが終了した場合のコンストラクタ
     private GameResult(
             GameCondition gameCondition,
             Board board,
             Map<Color, Long> remainingMillisInGame,
             RuleViolationException violation) {
             
+        assert gameCondition != null;
+        assert board != null;
+        assert remainingMillisInGame != null;
+        assert violation != null;
+        
         this.gameCondition = gameCondition;
         this.board = board;
         this.remainingMillisInGame = Collections.unmodifiableMap(remainingMillisInGame);

@@ -8,10 +8,12 @@ package xyz.hotchpotch.game.reversi.framework;
  */
 public interface Result<P extends Playable> {
     
-    // ++++++++++++++++ static members ++++++++++++++++
+    // [static members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
     /**
      * 対戦成績を表す不変クラスです。<br>
+     * 
+     * @author nmby
      */
     public static class ResultCount {
         
@@ -24,17 +26,16 @@ public interface Result<P extends Playable> {
         /** 負け数 */
         public final int lose;
         
-        ResultCount(int win, int draw, int lose) {
+        /*package*/ ResultCount(int win, int draw, int lose) {
             this.win = win;
             this.draw = draw;
             this.lose = lose;
         }
         
-        ResultCount sum(ResultCount count2) {
+        /*package*/ ResultCount sum(ResultCount count2) {
             return new ResultCount(win + count2.win, draw + count2.draw, lose + count2.lose);
         }
     }
     
-    // ++++++++++++++++ instance members ++++++++++++++++
-    
+    // [instance members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++
 }
