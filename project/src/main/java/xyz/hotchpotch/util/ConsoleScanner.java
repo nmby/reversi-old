@@ -1,9 +1,11 @@
 package xyz.hotchpotch.util;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.Scanner;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -30,15 +32,15 @@ import java.util.regex.PatternSyntaxException;
  * カスタマイズすることができます。<br>
  * 詳細は各メソッドの説明を参照してください。<br>
  * <br>
- * このクラスのオブジェクトはスレッドセーフではありません。<br>
- * このクラスのオブジェクトを複数のスレッドで共有しないでください。<br>
+ * このクラスのオブジェクトはスレッドセーフではありません。
+ * このクラスのオブジェクトを複数のスレッドで利用しないでください。<br>
  * 
  * @param <T> 最終的にクライアント・アプリケーションに返却されるデータの型
  * @author nmby
  */
 public class ConsoleScanner<T> implements Supplier<T> {
     
-    // ++++++++++++++++ static members ++++++++++++++++
+    // [static members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
     private static final String BR = System.lineSeparator();
     
@@ -50,20 +52,29 @@ public class ConsoleScanner<T> implements Supplier<T> {
      */
     public static class Builder<T> {
         private final Predicate<String> judge;
-        private final Function<String, T> converter;
+        private final Function<String, ? extends T> converter;
         private String prompt;
         private String complaint;
+        private Function<Exception, ? extends T> emergencyMeasure;
         
         private Builder(
                 Predicate<String> judge,
-                Function<String, T> converter,
+                Function<String, ? extends T> converter,
                 String prompt,
-                String complaint) {
+                String complaint,
+                Function<Exception, ? extends T> emergencyMeasure) {
                 
+            assert judge != null;
+            assert converter != null;
+            assert prompt != null;
+            assert complaint != null;
+            assert emergencyMeasure != null;
+            
             this.judge = judge;
             this.converter = converter;
             this.prompt = prompt;
             this.complaint = complaint;
+            this.emergencyMeasure = emergencyMeasure;
         }
         
         /**
@@ -91,6 +102,23 @@ public class ConsoleScanner<T> implements Supplier<T> {
         }
         
         /**
+         * 割り込みや入出力例外が発生した際の対処方法を指定します。<br>
+         * {@link ConsoleScanner#get()} の実行中に入出力例外や他のスレッドからの割り込みが発生した場合、
+         * 発生した例外オブジェクト {@code e} をパラメータとして {@code emergencyMeasure.apply(e)} が実行され、
+         * その戻り値が {@code ConsoleScanner#get()} の呼び出し元に返されます。<br>
+         * {@code emergencyMeasure.apply()} は何らかの値を返すこともできますし、実行時例外をスローすることもできます。<br>
+         * 明示的に指定しない場合のデフォルトでは、{@code emergencyMeasure.apply(e)} は単に {@code null} を返します。<br>
+         * 
+         * @param emergencyMeasure 割り込みや入出力例外が発生した場合の対処方法
+         * @return この {@code Builder} オブジェクト
+         * @throws NullPointerException {@code emergencyMeasure} が {@code null} の場合
+         */
+        public Builder<T> emergencyMeasure(Function<Exception, ? extends T> emergencyMeasure) {
+            this.emergencyMeasure = Objects.requireNonNull(emergencyMeasure);
+            return this;
+        }
+        
+        /**
          * 現在設定されているプロンプト文字列を返します。<br>
          * 
          * @return 現在設定されているプロンプト文字列
@@ -114,7 +142,7 @@ public class ConsoleScanner<T> implements Supplier<T> {
          * @return {@code ConsoleScanner} オブジェクト
          */
         public ConsoleScanner<T> build() {
-            return new ConsoleScanner<>(judge, converter, prompt, complaint);
+            return new ConsoleScanner<>(judge, converter, prompt, complaint, emergencyMeasure);
         }
     }
     
@@ -131,7 +159,8 @@ public class ConsoleScanner<T> implements Supplier<T> {
                 judge,
                 Function.identity(),
                 "> ",
-                "入力形式が不正です。再入力してください ");
+                "入力形式が不正です。再入力してください ",
+                e -> null);
     }
     
     /**
@@ -183,7 +212,7 @@ public class ConsoleScanner<T> implements Supplier<T> {
         Function<String, Integer> converter = Integer::valueOf;
         String prompt = String.format("%d～%dの範囲の値を指定してください > ", lower, upper);
         String complaint = "入力値が不正です。";
-        return new Builder<>(judge, converter, prompt, complaint);
+        return new Builder<>(judge, converter, prompt, complaint, e -> null);
     }
     
     /**
@@ -209,7 +238,7 @@ public class ConsoleScanner<T> implements Supplier<T> {
         Function<String, Long> converter = Long::valueOf;
         String prompt = String.format("%d～%dの範囲の値を指定してください > ", lower, upper);
         String complaint = "入力値が不正です。";
-        return new Builder<>(judge, converter, prompt, complaint);
+        return new Builder<>(judge, converter, prompt, complaint, e -> null);
     }
     
     /**
@@ -221,9 +250,9 @@ public class ConsoleScanner<T> implements Supplier<T> {
      * @throws NullPointerException {@code list} が {@code null} の場合
      * @throws IllegalArgumentException {@code list} の要素数が {@code 0} の場合
      */
-    public static <T> Builder<T> listBuilder(List<T> list) {
+    public static <T> Builder<T> listBuilder(List<? extends T> list) {
         Objects.requireNonNull(list);
-        if (list.size() == 0) {
+        if (list.isEmpty()) {
             throw new IllegalArgumentException("list is empty.");
         }
         
@@ -246,7 +275,7 @@ public class ConsoleScanner<T> implements Supplier<T> {
         }
         prompt.append("> ");
         String complaint = "入力値が不正です。";
-        return new Builder<>(judge, converter, prompt.toString(), complaint);
+        return new Builder<>(judge, converter, prompt.toString(), complaint, e -> null);
     }
     
     /**
@@ -264,6 +293,11 @@ public class ConsoleScanner<T> implements Supplier<T> {
     
     /**
      * 任意の型の入力を取得するための {@code ConsoleScanner} のビルダーを返します。<br>
+     * 次の2つの呼び出しは同値です。
+     * <pre>
+     *     builder(judge, converter, prompt, complaint);
+     *     builder(judge, converter, prompt, complaint, e -> null);
+     * </pre>
      * 
      * @param <T> 最終的にクライアント・アプリケーションに返却されるデータの型
      * @param judge ユーザ入力値が要求形式に合致するかを判定する {@link Predicate}
@@ -276,7 +310,7 @@ public class ConsoleScanner<T> implements Supplier<T> {
      */
     public static <T> Builder<T> builder(
             Predicate<String> judge,
-            Function<String, T> converter,
+            Function<String, ? extends T> converter,
             String prompt,
             String complaint) {
             
@@ -284,7 +318,37 @@ public class ConsoleScanner<T> implements Supplier<T> {
                 Objects.requireNonNull(judge),
                 Objects.requireNonNull(converter),
                 Objects.requireNonNull(prompt),
-                Objects.requireNonNull(complaint));
+                Objects.requireNonNull(complaint),
+                e -> null);
+    }
+    
+    /**
+     * 任意の型の入力を取得するための {@code ConsoleScanner} のビルダーを返します。<br>
+     * 
+     * @param <T> 最終的にクライアント・アプリケーションに返却されるデータの型
+     * @param judge ユーザ入力値が要求形式に合致するかを判定する {@link Predicate}
+     * @param converter ユーザ入力文字列を {@code T} 型に変換するための {@link Function}
+     * @param prompt 標準出力に表示するプロンプト文字列
+     * @param complaint ユーザが要求とは異なる形式で入力した場合に標準出力に表示するエラー文字列
+     * @param emergencyMeasure 割り込みや入出力例外が発生した場合の対処方法
+     *                         （詳細は {@link Builder#emergencyMeasure(Function)} の説明を参照してください）
+     * @return {@link Builder} オブジェクト
+     * @throws NullPointerException {@code judge}、{@code converter}、{@code prompt}、{@code complaint}、{@code emergencyMeasure}
+     *                              のいずれかが {@code null} の場合
+     */
+    public static <T> Builder<T> builder(
+            Predicate<String> judge,
+            Function<String, ? extends T> converter,
+            String prompt,
+            String complaint,
+            Function<Exception, ? extends T> emergencyMeasure) {
+            
+        return new Builder<>(
+                Objects.requireNonNull(judge),
+                Objects.requireNonNull(converter),
+                Objects.requireNonNull(prompt),
+                Objects.requireNonNull(complaint),
+                Objects.requireNonNull(emergencyMeasure));
     }
     
     /**
@@ -311,26 +375,35 @@ public class ConsoleScanner<T> implements Supplier<T> {
      */
     public static ConsoleScanner<String> waiter(String prompt) {
         Objects.requireNonNull(prompt);
-        return new Builder<String>(s -> true, Function.identity(), prompt, null).build();
+        return new Builder<String>(s -> true, Function.identity(), prompt, "", e -> null).build();
     }
     
-    // ++++++++++++++++ instance members ++++++++++++++++
+    // [instance members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
     private final Predicate<String> judge;
-    private final Function<String, T> converter;
+    private final Function<String, ? extends T> converter;
     private final String prompt;
     private final String complaint;
+    private final Function<Exception, ? extends T> emergencyMeasure;
     
     private ConsoleScanner(
             Predicate<String> judge,
-            Function<String, T> converter,
+            Function<String, ? extends T> converter,
             String prompt,
-            String complaint) {
+            String complaint,
+            Function<Exception, ? extends T> emergencyMeasure) {
             
+        assert judge != null;
+        assert converter != null;
+        assert prompt != null;
+        assert complaint != null;
+        assert emergencyMeasure != null;
+        
         this.judge = judge;
         this.converter = converter;
         this.prompt = prompt;
         this.complaint = complaint;
+        this.emergencyMeasure = emergencyMeasure;
     }
     
     /**
@@ -341,18 +414,34 @@ public class ConsoleScanner<T> implements Supplier<T> {
      */
     @Override
     public T get() {
-        // System.in をクローズしてはダメ。
-        @SuppressWarnings("resource")
-        Scanner sc = new Scanner(System.in);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        boolean isFirst = true;
+        String str;
         
-        System.out.print(prompt);
-        String str = sc.nextLine();
-        
-        while (!judge.test(str)) {
-            System.out.print(complaint);
-            System.out.print(prompt);
-            str = sc.nextLine();
+        try {
+            do {
+                if (isFirst) {
+                    isFirst = false;
+                } else {
+                    System.out.print(complaint);
+                }
+                System.out.print(prompt);
+                
+                // スレッド間の割り込み制御だとか入出力ストリーム処理だとかが理解できていない... orz
+                // TODO: 要お勉強
+                while (!reader.ready()) {
+                    Thread.sleep(100);
+                }
+                str = reader.readLine();
+                if (Thread.currentThread().isInterrupted()) {
+                    throw new InterruptedException();
+                }
+            } while (!judge.test(str));
+            
+        } catch (InterruptedException | IOException e) {
+            return emergencyMeasure.apply(e);
         }
+        
         return converter.apply(str);
     }
 }

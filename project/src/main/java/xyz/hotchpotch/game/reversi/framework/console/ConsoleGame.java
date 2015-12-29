@@ -230,8 +230,11 @@ public class ConsoleGame implements ConsolePlayable<Game> {
             elapsed = Long.min(timeLimit3, Duration.between(start, end).toMillis());
             remainingMillisInGame.put(currColor, timeLimit2 - elapsed);
             
-            // MEMO: java.util.concurrent.ExecutorService 周りがよく分かってないので要お勉強
+            // TODO: java.util.concurrent.ExecutorService 周りがよく分かってないので要お勉強
             // これで良いのか？？
+            if (!task.isDone()) {
+                task.cancel(true);
+            }
             if (!executor.isShutdown()) {
                 executor.shutdown();
             }

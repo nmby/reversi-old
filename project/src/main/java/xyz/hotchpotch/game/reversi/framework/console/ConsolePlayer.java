@@ -45,14 +45,24 @@ public class ConsolePlayer implements Player {
      */
     @Override
     public Point decide(Board board, Color color, long givenMillisPerTurn, long remainingMillisInGame) {
-        String strPoint = sc.get();
-        Point point = "PASS".equals(strPoint) ? null : Point.of(strPoint);
+        boolean isFirst = true;
+        Point point;
         
-        while (safety && !Rule.canApply(board, Move.of(color, point))) {
-            System.out.print("不正な手です。");
-            strPoint = sc.get();
+        do {
+            if (isFirst) {
+                isFirst = false;
+            } else {
+                System.out.print("不正な手です。");
+            }
+            String strPoint = sc.get();
             point = "PASS".equals(strPoint) ? null : Point.of(strPoint);
-        }
+            
+            if (Thread.currentThread().isInterrupted()) {
+                return null;
+            }
+            
+        } while (safety && !Rule.canApply(board, Move.of(color, point)));
+        
         return point;
     }
 }
