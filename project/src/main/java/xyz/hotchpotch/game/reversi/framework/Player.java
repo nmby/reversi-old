@@ -21,12 +21,15 @@ import xyz.hotchpotch.game.reversi.core.Point;
  * ゲーム実行フレームワークから {@code Player} 実装クラスに伝えられます。
  * {@code Player} 実装クラスはこれらの情報を自身の戦略に役立ててもよいですし、単に無視しても構いません。<br>
  * <br>
- * ゲームの間中、同じプレーヤーインスタンスが利用され、ゲームの終了とともに破棄されます。
- * <br>
- * {@code Player} は、自身の番になるたびに、ゲーム実行フレームワークからの要求に応じて打つ手を返さなければなりません。
+ * このプレーヤーの番になるたびに、ゲーム実行フレームワークは {@link #decide(Board, Color, long, long)} を呼び出します。
+ * {@code Player} 実装クラスは打つ手を返さなければなりません。
  * 打てる手がない場合は、正しくパスを宣言しなければなりません。<br>
  * ルール違反の手を指定したり持ち時間をオーバーしたりした場合は、その時点で負けとなります。<br>
  * <br>
+ * ゲームが終了すると、ゲーム実行フレームワークは {@link #notifyOfResult(GameResult)} を呼び出します。
+ * {@code Player} 実装クラスは、ゲーム結果を記録して今後の戦略に役立ててもよいですし、単に無視しても構いません。<br>
+ * <br>
+ * ゲームの間中、同じプレーヤーインスタンスが利用され、ゲームの終了とともに破棄されます。<br>
  * ゲーム実行フレームワークがひとつの {@code Player} インスタンスを複数のスレッドから操作することはありません。<br>
  * 
  * @author nmby
@@ -97,4 +100,18 @@ public interface Player {
      * @return 駒を打つ位置（パスの場合は {@code null}）
      */
     public Point decide(Board board, Color color, long givenMillisPerTurn, long remainingMillisInGame);
+    
+    /**
+     * ゲーム実行フレームワークがゲームの結果をプレーヤーに通知するためのメソッドです。<br>
+     * 正常に終了したかどちらかのプレーヤーのルール違反により終了したかを問わず、
+     * ゲームが終了すると、ゲーム実行フレームワークはこのメソッドを呼び出します。<br>
+     * {@code Player} 実装クラスはゲーム結果をクラス変数や永続ストレージに記録して今後の戦略に役立ててもよいですし、
+     * 単に無視しても構いません。<br>
+     * <br>
+     * デフォルト実装においては、ゲーム結果を無視し、何も行いません。<br>
+     * 
+     * @param result ゲーム結果
+     */
+    public default void notifyOfResult(GameResult result) {
+    }
 }

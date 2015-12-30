@@ -146,6 +146,16 @@ public class ConsoleGame implements ConsolePlayable<Game> {
             gameResult = GameResult.of(gameCondition, board, remainingMillisInGame, e);
         }
         
+        // ゲーム結果を各プレーヤーに通知する。
+        try {
+            players.get(Color.BLACK).notifyOfResult(gameResult);
+        } catch (RuntimeException e) {
+        }
+        try {
+            players.get(Color.WHITE).notifyOfResult(gameResult);
+        } catch (RuntimeException e) {
+        }
+        
         if (printer.level != Level.GAME) {
             printer.println(Level.MATCH, board.toStringKindly());
         }
