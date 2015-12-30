@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -23,7 +22,7 @@ import xyz.hotchpotch.game.reversi.framework.Player;
  */
 public class AIPlayerUtil {
     
-    // ++++++++++++++++ static members ++++++++++++++++
+    // [static members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
     /**
      * パラメータチェック等を省き必要最小限の機能に絞った、リバーシ盤の軽量な実装です。
@@ -55,7 +54,7 @@ public class AIPlayerUtil {
                 colors = Arrays.copyOf(lBoard.colors, Point.HEIGHT * Point.WIDTH);
             } else {
                 colors = new Color[Point.HEIGHT * Point.WIDTH];
-                Point.stream().forEach(p -> {
+                Point.parallelStream().forEach(p -> {
                     colors[p.ordinal()] = board.colorAt(p);
                 });
             }
@@ -70,7 +69,7 @@ public class AIPlayerUtil {
         public LightweightBoard(Map<Point, Color> map) {
             assert map != null;
             colors = new Color[Point.HEIGHT * Point.WIDTH];
-            Point.stream().forEach(p -> {
+            Point.parallelStream().forEach(p -> {
                 colors[p.ordinal()] = map.get(p);
             });
         }
@@ -105,10 +104,7 @@ public class AIPlayerUtil {
             assert move.point != null;
             assert Rule.canApply(this, move);
             
-            Set<Point> reversibles = Rule.reversibles(this, move);
-            for (Point p : reversibles) {
-                colors[p.ordinal()] = move.color;
-            }
+            Rule.reversibles(this, move).forEach(p -> colors[p.ordinal()] = move.color);
             colors[move.point.ordinal()] = move.color;
         }
         
@@ -302,7 +298,7 @@ public class AIPlayerUtil {
         return getParameter(gameCondition, key, Boolean::valueOf);
     }
     
-    // ++++++++++++++++ instance members ++++++++++++++++
+    // [instance members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
     private AIPlayerUtil() {
     }
