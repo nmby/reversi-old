@@ -194,7 +194,13 @@ public class Point implements Serializable, Comparable<Point> {
         }
     }
     
-    /*package*/ int ordinal() {
+    /**
+     * この {@code Point} の序数を返します。<br>
+     * 
+     * @return この {@code Point} の序数
+     * @see Enum#ordinal()
+     */
+    public int ordinal() {
         return ordinal(i, j);
     }
     
