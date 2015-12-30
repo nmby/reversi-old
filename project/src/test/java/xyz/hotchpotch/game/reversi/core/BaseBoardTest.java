@@ -5,15 +5,17 @@ import static org.junit.Assert.*;
 import static xyz.hotchpotch.jutaime.throwable.RaiseMatchers.*;
 import static xyz.hotchpotch.jutaime.throwable.Testee.*;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.IntFunction;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class BaseBoardTest {
     
-    // static members ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    // [static members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
     private static class TestBoard1 extends BaseBoard {
         
@@ -131,7 +133,7 @@ public class BaseBoardTest {
         }
     }
     
-    // instance members ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    // [instance members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
     @Test
     public void testBaseBoard() {
@@ -243,5 +245,33 @@ public class BaseBoardTest {
         assertThat(board2.toString(), is(board2.toStringInLine()));
         assertThat(board3.toString(), is(board3.toStringInLine()));
         assertThat(board4.toString(), is(board4.toStringInLine()));
+    }
+    
+    @Test
+    public void testEquals() {
+        Board board1 = new TestBoard1(lineToMap(boardStr1));
+        Board board4 = new TestBoard1(lineToMap(boardStr4));
+        
+        assertThat(board1.equals(board1), is(true));
+        assertThat(board4.equals(board4), is(true));
+        assertThat(board1.equals(board4), is(false));
+        assertThat(board4.equals(board1), is(false));
+        
+        assertThat(board1.equals(null), is(false));
+        assertThat(board1.equals(Point.of("a1")), is(false));
+    }
+    
+    @Test
+    public void testHashCode() {
+        IntFunction<Color> converter = (c -> c == '●' ? Color.BLACK : c == '○' ? Color.WHITE : null);
+        Color[] array1 = boardStr1.chars().<Color> mapToObj(converter).toArray(Color[]::new);
+        Color[] array2 = boardStr2.chars().<Color> mapToObj(converter).toArray(Color[]::new);
+        Color[] array3 = boardStr3.chars().<Color> mapToObj(converter).toArray(Color[]::new);
+        Color[] array4 = boardStr4.chars().<Color> mapToObj(converter).toArray(Color[]::new);
+        
+        assertThat(new TestBoard1(boardStr1).hashCode(), is(Arrays.hashCode(array1)));
+        assertThat(new TestBoard1(boardStr2).hashCode(), is(Arrays.hashCode(array2)));
+        assertThat(new TestBoard1(boardStr3).hashCode(), is(Arrays.hashCode(array3)));
+        assertThat(new TestBoard1(boardStr4).hashCode(), is(Arrays.hashCode(array4)));
     }
 }

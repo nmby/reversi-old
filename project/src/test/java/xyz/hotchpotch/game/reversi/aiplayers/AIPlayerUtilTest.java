@@ -89,7 +89,7 @@ public class AIPlayerUtilTest {
         if (enableAssertions) {
             assertThat(of(() -> test.colorAt(null)), raise(AssertionError.class));
         } else {
-            assertThat(of(() -> test.colorAt(null)), raiseNothing());
+            assertThat(of(() -> test.colorAt(null)), raise(NullPointerException.class));
         }
     }
     
@@ -108,6 +108,32 @@ public class AIPlayerUtilTest {
         original.apply(Move.of(Color.BLACK, Point.of("d3")));
         test1.apply(Move.of(Color.BLACK, Point.of("d3")));
         assertThat(test1.toStringInLine(), is(original.toStringInLine()));
+    }
+    
+    @Test
+    public void testLightweightBoardEquals() {
+        Board original = StrictBoard.initializedBoard();
+        Board test1 = new LightweightBoard(original);
+        Board test2 = new LightweightBoard(test1);
+        
+        assertThat(test1.equals(test1), is(true));
+        assertThat(test1.equals(test2), is(true));
+        assertThat(test1.equals(original), is(true));
+        
+        assertThat(test1.equals(null), is(false));
+        assertThat(test1.equals(Point.of("a1")), is(false));
+    }
+    
+    @Test
+    public void testLightweightBoardHashCode() {
+        Board original = StrictBoard.initializedBoard();
+        Board test1 = new LightweightBoard(original);
+        
+        assertThat(test1.hashCode(), is(Board.hashCode(test1)));
+        
+        test1.apply(Move.of(Color.BLACK, Point.of("c4")));
+        test1.apply(Move.of(Color.WHITE, Point.of("e3")));
+        assertThat(test1.hashCode(), is(Board.hashCode(test1)));
     }
     
     @Test

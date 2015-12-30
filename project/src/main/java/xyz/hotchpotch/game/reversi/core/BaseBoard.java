@@ -75,4 +75,26 @@ import java.util.Objects;
     public String toString() {
         return toStringInLine();
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o instanceof Board) {
+            return Board.equals(this, (Board) o);
+        }
+        return false;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+        return Board.hashCode(this);
+    }
 }

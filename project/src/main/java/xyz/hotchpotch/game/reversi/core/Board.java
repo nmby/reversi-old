@@ -1,6 +1,8 @@
 package xyz.hotchpotch.game.reversi.core;
 
+import java.util.Arrays;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -11,6 +13,40 @@ import java.util.stream.Collectors;
 public interface Board {
     
     // [static members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    
+    /**
+     * 2つのリバーシ盤が等しいかを返します。<br>
+     * 各マスの駒の状態が同じであるとき、もしくは2つのリバーシ盤がともに {@code null} のとき、2つのリバーシ盤は等しいと評価されます。<br>
+     * 
+     * @param board1 リバーシ盤1
+     * @param board2 リバーシ盤2
+     * @return 2つのリバーシ盤が等しいとき {@code true}
+     * @see Objects#equals(Object)
+     */
+    public static boolean equals(Board board1, Board board2) {
+        if (board1 == null && board2 == null) {
+            return true;
+        }
+        if (board1 == null || board2 == null) {
+            return false;
+        }
+        return Point.stream().allMatch(p -> board1.colorAt(p) == board2.colorAt(p));
+    }
+    
+    /**
+     * リバーシ盤のハッシュコードを返します。<br>
+     * {@code board} が {@code null} の場合は {@code 0} を返します。<br>
+     * 
+     * @param board リバーシ盤
+     * @return {@code board} のハッシュコード（{@code null} の場合は {@code 0}）
+     * @see Arrays#hashCode(Object[])
+     */
+    public static int hashCode(Board board) {
+        if (board == null) {
+            return 0;
+        }
+        return Arrays.hashCode(Point.stream().sorted().map(board::colorAt).toArray(Color[]::new));
+    }
     
     // [instance members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
@@ -84,4 +120,25 @@ public interface Board {
     default String toStringInLine() {
         return Point.stream().map(p -> Color.toString(colorAt(p))).collect(Collectors.joining());
     }
+    
+    /**
+     * 指定されたオブジェクトがこのリバーシ盤と等しいかを返します。<br>
+     * 指定されたオブジェクトもリバーシ盤であり、2つのリバーシ盤の各マスの駒の状態が同じであるとき、2つのリバーシ盤は等しいと評価されます。<br>
+     * 
+     * @param o 比較対象のオブジェクト
+     * @return 指定されたオブジェクトがこのリバーシ盤と等しい場合は {@code true}
+     * @see #equals(Board, Board)
+     */
+    @Override
+    boolean equals(Object o);
+    
+    /**
+     * このリバーシ盤のハッシュコードを返します。<br>
+     * リバーシ盤のハッシュコードは、全てのマスの駒（null を含む）を格納した一次元配列（{@link Color}[]）のハッシュコードとして定義されます。<br>
+     * 
+     * @return このリバーシ盤のハッシュコード
+     * @see #hashCode(Board)
+     */
+    @Override
+    int hashCode();
 }

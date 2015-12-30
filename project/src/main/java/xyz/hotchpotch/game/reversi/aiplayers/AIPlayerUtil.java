@@ -1,6 +1,6 @@
 package xyz.hotchpotch.game.reversi.aiplayers;
 
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -36,10 +36,10 @@ public class AIPlayerUtil {
      * 
      * @author nmby
      */
-    public static class LightweightBoard implements Board {
+    public static final class LightweightBoard implements Board {
         
         /** リバーシ盤の実体 */
-        protected final Map<Point, Color> map;
+        protected final Color[] colors;
         
         /**
          * 指定された {@code board} と同じ内容を持つ、新しい {@code LightweightBoard} を生成します。<br>
@@ -51,12 +51,13 @@ public class AIPlayerUtil {
             assert board != null;
             
             if (board instanceof LightweightBoard) {
-                map = new HashMap<>(((LightweightBoard) board).map);
+                LightweightBoard lBoard = (LightweightBoard) board;
+                colors = Arrays.copyOf(lBoard.colors, Point.HEIGHT * Point.WIDTH);
             } else {
-                map = new HashMap<>();
-                for (Point p : Point.values()) {
-                    map.put(p, board.colorAt(p));
-                }
+                colors = new Color[Point.HEIGHT * Point.WIDTH];
+                Point.stream().forEach(p -> {
+                    colors[p.ordinal()] = board.colorAt(p);
+                });
             }
         }
         
@@ -68,7 +69,10 @@ public class AIPlayerUtil {
          */
         public LightweightBoard(Map<Point, Color> map) {
             assert map != null;
-            this.map = new HashMap<>(map);
+            colors = new Color[Point.HEIGHT * Point.WIDTH];
+            Point.stream().forEach(p -> {
+                colors[p.ordinal()] = map.get(p);
+            });
         }
         
         /**
@@ -80,7 +84,7 @@ public class AIPlayerUtil {
         @Override
         public Color colorAt(Point point) {
             assert point != null;
-            return map.get(point);
+            return colors[point.ordinal()];
         }
         
         /**
@@ -103,9 +107,34 @@ public class AIPlayerUtil {
             
             Set<Point> reversibles = Rule.reversibles(this, move);
             for (Point p : reversibles) {
-                map.put(p, move.color);
+                colors[p.ordinal()] = move.color;
             }
-            map.put(move.point, move.color);
+            colors[move.point.ordinal()] = move.color;
+        }
+        
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o instanceof LightweightBoard) {
+                return Arrays.equals(colors, ((LightweightBoard) o).colors);
+            }
+            if (o instanceof Board) {
+                return Board.equals(this, (Board) o);
+            }
+            return false;
+        }
+        
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public int hashCode() {
+            return Arrays.hashCode(colors);
         }
     }
     
