@@ -9,6 +9,7 @@ import java.util.TreeSet;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import xyz.hotchpotch.game.reversi.aiplayers.BreadthFirstAIPlayer;
 import xyz.hotchpotch.game.reversi.aiplayers.CrazyAIPlayer;
 import xyz.hotchpotch.game.reversi.aiplayers.DepthFirstAIPlayer;
 import xyz.hotchpotch.game.reversi.aiplayers.MonteCarloAIPlayer;
@@ -32,6 +33,7 @@ import xyz.hotchpotch.util.ConsoleScanner;
                 SimplestAIPlayer.class,
                 RandomAIPlayer.class,
                 DepthFirstAIPlayer.class,
+                BreadthFirstAIPlayer.class,
                 MonteCarloAIPlayer.class,
                 SlowpokeAIPlayer.class,
                 CrazyAIPlayer.class);
