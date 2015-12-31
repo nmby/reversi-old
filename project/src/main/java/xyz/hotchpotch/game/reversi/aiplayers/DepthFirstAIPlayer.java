@@ -17,6 +17,7 @@ import xyz.hotchpotch.game.reversi.framework.Player;
  * <br>
  * 動作制御のために、次のオプションパラメータを与えることができます。<br>
  * <table border="1">
+ *   <caption>指定可能なオプションパラメータ</caption>
  *   <tr><th>キー</th><th>型</th><th>内容</th><th>デフォルト値</th></tr>
  *   <tr><td>seed</td><td>long</td><td>乱数ジェネレータのシード値</td><td>（なし）</td></tr>
  *   <tr><td>margin1</td><td>long</td><td>探索を実施する最少の残り持ち時間（ミリ秒）</td><td>100</td></tr>

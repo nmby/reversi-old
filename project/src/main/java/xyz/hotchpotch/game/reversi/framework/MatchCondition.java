@@ -134,6 +134,7 @@ public class MatchCondition implements Condition<Match>, Serializable {
      * パラメータを一括指定してマッチ実施条件を生成します。<br>
      * {@code params} は以下の必須パラメータを含む必要があります。<br>
      * <table border="1">
+     *   <caption>必須パラメータ</caption>
      *   <tr><th>パラメータ名</th><th>内容</th><th>例</th></tr>
      *   <tr><td>{@code player.a}</td><td>プレーヤーAの完全修飾クラス名</td><td>{@code xyz.hotchpotch.game.reversi.aiplayers.SimplestAIPlayer}</td></tr>
      *   <tr><td>{@code player.b}</td><td>プレーヤーBの完全修飾クラス名</td><td>{@code xyz.hotchpotch.game.reversi.aiplayers.RandomAIPlayer}</td></tr>

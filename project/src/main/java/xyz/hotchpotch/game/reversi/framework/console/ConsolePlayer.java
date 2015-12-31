@@ -15,6 +15,7 @@ import xyz.hotchpotch.util.ConsoleScanner;
  * <br>
  * 動作制御のために、次のオプションパラメータを与えることができます。
  * <table border="1">
+ *   <caption>指定可能なオプションパラメータ</caption>
  *   <tr><th>キー</th><th>型</th><th>内容</th><th>デフォルト値</th></tr>
  *   <tr><td>safety</td><td>boolean</td><td>ユーザがルール違反の手を指定した際に再入力を求めるか</td><td>true</td></tr>
  * </table>

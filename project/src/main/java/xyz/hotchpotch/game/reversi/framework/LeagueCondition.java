@@ -128,6 +128,7 @@ public class LeagueCondition implements Condition<League>, Serializable {
      * パラメータを一括指定してリーグ実施条件を生成します。<br>
      * {@code params} は以下の必須パラメータを含む必要があります。<br>
      * <table border="1">
+     *   <caption>必須パラメータ</caption>
      *   <tr><th>パラメータ名</th><th>内容</th><th>例</th></tr>
      *   <tr><td>{@code player.?}</td><td>プレーヤーの完全修飾クラス名（{@code ?} 部分は一意な数字）</td><td>{@code xyz.hotchpotch.game.reversi.aiplayers.SimplestAIPlayer}</td></tr>
      *   <tr><td>{@code givenMillisPerTurn}</td><td>一手あたりの制限時間（ミリ秒）</td><td>1000</td></tr>

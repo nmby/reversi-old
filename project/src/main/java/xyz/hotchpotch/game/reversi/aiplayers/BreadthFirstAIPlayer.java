@@ -28,6 +28,7 @@ import xyz.hotchpotch.game.reversi.framework.Player;
  * <br>
  * 動作制御のために、次のオプションパラメータを与えることができます。<br>
  * <table border="1">
+ *   <caption>指定可能なオプションパラメータ</caption>
  *   <tr><th>キー</th><th>型</th><th>内容</th><th>デフォルト値</th></tr>
  *   <tr><td>evaluator</td><td>String</td><td>リバーシ盤に対する評価関数のクラス名<br>
  *           （{@link ToIntBiFunction}{@code <LightweightBoard, Color>} 実装クラス名）</td><td>（なし）</td></tr>

@@ -123,6 +123,7 @@ public class GameCondition implements Condition<Game>, Serializable {
      * パラメータを一括指定してゲーム実施条件を生成します。<br>
      * {@code params} は以下の必須パラメータを含む必要があります。<br>
      * <table border="1">
+     *   <caption>必須パラメータ</caption>
      *   <tr><th>パラメータ名</th><th>内容</th><th>例</th></tr>
      *   <tr><td>{@code player.black}</td><td>黒プレーヤーの完全修飾クラス名</td><td>{@code xyz.hotchpotch.game.reversi.aiplayers.SimplestAIPlayer}</td></tr>
      *   <tr><td>{@code player.white}</td><td>白プレーヤーの完全修飾クラス名</td><td>{@code xyz.hotchpotch.game.reversi.aiplayers.RandomAIPlayer}</td></tr>

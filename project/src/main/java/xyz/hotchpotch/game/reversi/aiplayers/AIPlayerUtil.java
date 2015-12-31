@@ -186,6 +186,7 @@ public class AIPlayerUtil {
      * このメソッドは、取得したパラメータ値を {@code converter} によって {@code String} から任意の型に変換します。<br>
      * 変換できた場合はその値を格納した {@code Optional} オブジェクトを、変換に失敗した場合は空の {@code Optional} オブジェクトを返します。<br>
      * 
+     * @param <T> パラメータの変換後の型
      * @param gameCondition {@code Player} 実装クラスのコンストラクタに渡されるゲーム実施条件
      * @param key パラメータのキー
      * @param converter パラメータ値の型を変換する関数
