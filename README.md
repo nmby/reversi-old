@@ -7,6 +7,7 @@
 * [SimplestAIPlayer](https://github.com/nmby/reversi/blob/master/project/src/main/java/xyz/hotchpotch/game/reversi/aiplayers/SimplestAIPlayer.java) ： 盤上を左上から順に走査するAIプレーヤーです。  
 * [RandomAIPlayer](https://github.com/nmby/reversi/blob/master/project/src/main/java/xyz/hotchpotch/game/reversi/aiplayers/RandomAIPlayer.java) ： ランダムに手を選択するAIプレーヤーです。  
 * [DepthFirstAIPlayer](https://github.com/nmby/reversi/blob/master/project/src/main/java/xyz/hotchpotch/game/reversi/aiplayers/DepthFirstAIPlayer.java) ： 深さ優先探索で必勝手を探索するAIプレーヤーです。  
+* [BreadthFirstAIPlayer](https://github.com/nmby/reversi/blob/master/project/src/main/java/xyz/hotchpotch/game/reversi/aiplayers/BreadthFirstAIPlayer.java) ： 幅優先探索で最善手を探索するAIプレーヤーです。  
 * [MonteCarloAIPlayer](https://github.com/nmby/reversi/blob/master/project/src/main/java/xyz/hotchpotch/game/reversi/aiplayers/MonteCarloAIPlayer.java) ： モンテカルロ・シミュレーションにより最善手を選択するAIプレーヤーです。  
 
 AIプレーヤーを自作することも簡単です。
@@ -15,6 +16,10 @@ AIプレーヤーを自作することも簡単です。
   
 詳細は [Qiita内の紹介ページ](http://qiita.com/nmby/items/bd44e28d937108fa3eb0)
 および [javadoc](http://nmby.github.io/reversi/api-docs/index.html) を参照してください。  
+  
+## 更新履歴
+#### Version 1.0.0 (2016/01/01)
+* 正式版初版リリース
   
 ## ライセンス
 Licensed under the MIT License, see LICENSE.txt.  
