@@ -6,8 +6,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-        xyz.hotchpotch.game.reversi.aiplayers.AllTests.class,
-        xyz.hotchpotch.game.reversi.core.AllTests.class
+        AIPlayerUtilTest.class
 })
 public class AllTests {
 }
