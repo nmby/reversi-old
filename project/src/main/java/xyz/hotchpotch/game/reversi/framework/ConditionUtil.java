@@ -2,6 +2,12 @@ package xyz.hotchpotch.game.reversi.framework;
 
 import java.util.Map;
 
+/**
+ * {@link Condition} に関係する共通的な処理を集めたユーティリティクラスです。<br>
+ * 
+ * @since 1.0.0
+ * @author nmby
+ */
 /*package*/ class ConditionUtil {
     
     // [static members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++++

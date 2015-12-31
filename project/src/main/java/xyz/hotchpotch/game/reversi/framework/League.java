@@ -8,6 +8,7 @@ import java.util.Objects;
  * 
  * @see Game
  * @see Match
+ * @since 1.0.0
  * @author nmby
  */
 public interface League extends Playable {
@@ -17,6 +18,7 @@ public interface League extends Playable {
     /**
      * リーグにおける個々のマッチの組み合わせを表すための不変クラスです。<br>
      * 
+     * @since 1.0.0
      * @author nmby
      */
     public static class Pair {

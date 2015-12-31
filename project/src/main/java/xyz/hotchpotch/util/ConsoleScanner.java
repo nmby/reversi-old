@@ -33,9 +33,13 @@ import java.util.regex.PatternSyntaxException;
  * 詳細は各メソッドの説明を参照してください。<br>
  * <br>
  * このクラスのオブジェクトはスレッドセーフではありません。
- * このクラスのオブジェクトを複数のスレッドで利用しないでください。<br>
+ * このクラスのオブジェクトを複数のスレッドから利用することは避けてください。<br>
+ * ただし、このクラスのオブジェクトが {@link #get()} を実行しユーザからの入力を待機しているときに、他のスレッドから割り込みを行うことができます。<br>
+ * オブジェクトは、割り込みを検知すると入力待機を解除し、標準では {@code null} を返却して速やかに終了します。<br>
+ * 割り込みを検知した際の動作はカスタマイズすることが可能です。詳細は {@link Builder#emergencyMeasure(Function)} の説明を参照してください。<br>
  * 
  * @param <T> 最終的にクライアント・アプリケーションに返却されるデータの型
+ * @since 1.0.0
  * @author nmby
  */
 public class ConsoleScanner<T> implements Supplier<T> {
@@ -48,6 +52,7 @@ public class ConsoleScanner<T> implements Supplier<T> {
      * {@link ConsoleScanner} オブジェクトを構築するためのビルダーです。
      * 
      * @param <T> 最終的にクライアント・アプリケーションに返却されるデータの型
+     * @since 1.0.0
      * @author nmby
      */
     public static class Builder<T> {

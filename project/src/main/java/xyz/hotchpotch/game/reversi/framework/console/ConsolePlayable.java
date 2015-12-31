@@ -7,6 +7,7 @@ import xyz.hotchpotch.game.reversi.framework.Result;
  * 標準入出力を用いた実行クラスを表します。<br>
  * 
  * @param <P> ターゲット {@link Playable}
+ * @since 1.0.0
  * @author nmby
  */
 public interface ConsolePlayable<P extends Playable> extends Playable {

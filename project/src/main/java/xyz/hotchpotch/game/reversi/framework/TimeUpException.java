@@ -7,6 +7,7 @@ import xyz.hotchpotch.game.reversi.core.Color;
 /**
  * プレーヤーの思考時間が制限時間を超過したことを表す例外です。<br>
  * 
+ * @since 1.0.0
  * @author nmby
  */
 public class TimeUpException extends RuleViolationException {

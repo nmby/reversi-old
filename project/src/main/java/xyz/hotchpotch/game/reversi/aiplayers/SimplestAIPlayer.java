@@ -10,6 +10,7 @@ import xyz.hotchpotch.game.reversi.framework.Player;
  * リバーシ盤を左上から順に走査して最初に見つかった置ける位置を選択する {@link Player} の実装です。<br>
  * 恐らくは最も単純な {@code Player} の実装でしょう。<br>
  * 
+ * @since 1.0.0
  * @author nmby
  */
 public class SimplestAIPlayer implements Player {

@@ -7,6 +7,7 @@ import xyz.hotchpotch.game.reversi.core.Color;
 /**
  * リバーシのルールに違反したことを表す基底例外です。<br>
  * 
+ * @since 1.0.0
  * @author nmby
  */
 public class RuleViolationException extends Exception {

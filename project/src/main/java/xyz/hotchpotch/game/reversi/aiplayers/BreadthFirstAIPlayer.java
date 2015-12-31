@@ -36,6 +36,7 @@ import xyz.hotchpotch.game.reversi.framework.Player;
  *   <tr><td>debug</td><td>boolean</td><td>デバッグ出力の有無</td><td>false</td></tr>
  * </table>
  * 
+ * @since 1.0.0
  * @author nmby
  */
 public class BreadthFirstAIPlayer implements Player {
@@ -57,6 +58,7 @@ public class BreadthFirstAIPlayer implements Player {
     };
     
     /** {@link #evaluator1} と {@link #evaluator2} による評価値を単純加算する評価関数です。 */
+    @SuppressWarnings("unused")
     private static final ToIntBiFunction<LightweightBoard, Color> evaluator3 = (b, c) -> {
         return evaluator1.applyAsInt(b, c) + evaluator2.applyAsInt(b, c);
     };
@@ -259,6 +261,7 @@ public class BreadthFirstAIPlayer implements Player {
     /**
      * 探索ツリーを構成するノードです。<br>
      * 
+     * @since 1.0.0
      * @author nmby
      */
     private class Node {

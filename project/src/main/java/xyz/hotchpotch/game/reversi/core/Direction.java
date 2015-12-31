@@ -6,6 +6,7 @@ import java.util.stream.Stream;
 /**
  * リバーシ盤上における8方向（上、右上、右、右下、下、左下、左、左上）を表す列挙型です。<br>
  * 
+ * @since 1.0.0
  * @author nmby
  */
 public enum Direction {

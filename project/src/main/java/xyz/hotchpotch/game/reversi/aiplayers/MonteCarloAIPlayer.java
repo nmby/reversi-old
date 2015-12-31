@@ -30,12 +30,19 @@ import xyz.hotchpotch.game.reversi.framework.Player;
  *   <tr><td>debug</td><td>boolean</td><td>デバッグ出力の有無</td><td>false</td></tr>
  * </table>
  * 
+ * @since 1.0.0
  * @author nmby
  */
 public class MonteCarloAIPlayer implements Player {
     
     // [static members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
+    /**
+     * ある候補手についての試行結果を保持するためのクラスです。<br>
+     * 
+     * @since 1.0.0
+     * @author nmby
+     */
     private static class Record {
         private final Color myColor;
         private final Point candidate;

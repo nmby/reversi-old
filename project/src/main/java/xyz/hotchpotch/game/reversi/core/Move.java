@@ -16,6 +16,7 @@ import java.util.Objects;
  * {@code Move} は値ベースのクラスです。
  * 同値性を確認するときは {@code Move.}{@link #equals(Object)} メソッドを使用してください。<br>
  * 
+ * @since 1.0.0
  * @author nmby
  */
 public class Move implements Serializable {

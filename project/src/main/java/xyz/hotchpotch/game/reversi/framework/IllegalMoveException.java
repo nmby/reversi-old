@@ -10,6 +10,7 @@ import xyz.hotchpotch.game.reversi.core.Move;
 /**
  * ルールに反する手が指定されたことを表す例外です。<br>
  * 
+ * @since 1.0.0
  * @author nmby
  */
 public class IllegalMoveException extends RuleViolationException {

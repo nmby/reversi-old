@@ -18,6 +18,7 @@ import xyz.hotchpotch.util.ConsoleScanner;
 /**
  * 標準入出力を用いたリーグ実行クラスです。<br>
  * 
+ * @since 1.0.0
  * @author nmby
  */
 public class ConsoleLeague implements ConsolePlayable<League> {

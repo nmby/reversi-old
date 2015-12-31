@@ -21,6 +21,7 @@ import xyz.hotchpotch.game.reversi.framework.Player;
  *   <tr><td>seed</td><td>long</td><td>乱数ジェネレータのシード値</td><td>（なし）</td></tr>
  * </table>
  * 
+ * @since 1.0.0
  * @author nmby
  */
 public class CrazyAIPlayer implements Player {

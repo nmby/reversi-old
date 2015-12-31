@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
  * {@link Playable} の実施条件を表します。<br>
  * 
  * @param <P> ターゲット {@code Playable}
+ * @since 1.0.0
  * @author nmby
  */
 public interface Condition<P extends Playable> {

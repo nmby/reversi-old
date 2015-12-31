@@ -16,6 +16,7 @@ import xyz.hotchpotch.game.reversi.framework.League.Pair;
 /**
  * リーグの実施条件を表す不変クラスです。<br>
  * 
+ * @since 1.0.0
  * @author nmby
  */
 public class LeagueCondition implements Condition<League>, Serializable {
@@ -31,6 +32,12 @@ public class LeagueCondition implements Condition<League>, Serializable {
     
     private static final long serialVersionUID = 1L;
     
+    /**
+     * {@link LeagueCondition} のシリアライゼーションプロキシです。<br>
+     * 
+     * @since 1.0.0
+     * @author nmby
+     */
     private static class SerializationProxy implements Serializable {
         private static final long serialVersionUID = 1L;
         

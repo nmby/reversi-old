@@ -12,7 +12,14 @@ import xyz.hotchpotch.util.ConsoleScanner;
 
 /**
  * 標準入力からの入力により手を指定する {@link Player} の実装です。<br>
+ * <br>
+ * 動作制御のために、次のオプションパラメータを与えることができます。
+ * <table border="1">
+ *   <tr><th>キー</th><th>型</th><th>内容</th><th>デフォルト値</th></tr>
+ *   <tr><td>safety</td><td>boolean</td><td>ユーザがルール違反の手を指定した際に再入力を求めるか</td><td>true</td></tr>
+ * </table>
  * 
+ * @since 1.0.0
  * @author nmby
  */
 public class ConsolePlayer implements Player {
@@ -42,6 +49,7 @@ public class ConsolePlayer implements Player {
      * {@inheritDoc}
      * <br>
      * この実装は、標準入力からの入力により手を選びます。<br>
+     * 他スレッドからの割り込みが検知された場合は {@code null} を返して終了します。<br>
      */
     @Override
     public Point decide(Board board, Color color, long givenMillisPerTurn, long remainingMillisInGame) {
@@ -60,7 +68,6 @@ public class ConsolePlayer implements Player {
             if (Thread.currentThread().isInterrupted()) {
                 return null;
             }
-            
         } while (safety && !Rule.canApply(board, Move.of(color, point)));
         
         return point;

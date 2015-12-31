@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 /**
  * リバーシ盤を表すインタフェースです。<br>
  * 
+ * @since 1.0.0
  * @author nmby
  */
 public interface Board {

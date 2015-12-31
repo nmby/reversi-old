@@ -21,6 +21,7 @@ import xyz.hotchpotch.game.reversi.framework.Player;
  *   <tr><td>slowest</td><td>int</td><td>思考にかける最大の時間（ミリ秒）（0ミリ秒からこの値の間でランダムに選択されます。）</td><td>一手あたりの持ち時間の1.25倍</td></tr>
  * </table>
  * 
+ * @since 1.0.0
  * @author nmby
  */
 public class SlowpokeAIPlayer implements Player {

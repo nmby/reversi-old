@@ -4,6 +4,7 @@ package xyz.hotchpotch.game.reversi.framework;
  * {@link Playable} の実行結果を表します。<br>
  * 
  * @param <P> ターゲット {@code Playable}
+ * @since 1.0.0
  * @author nmby
  */
 public interface Result<P extends Playable> {
@@ -13,6 +14,7 @@ public interface Result<P extends Playable> {
     /**
      * 対戦成績を表す不変クラスです。<br>
      * 
+     * @since 1.0.0
      * @author nmby
      */
     public static class ResultCount {

@@ -13,6 +13,7 @@ import java.util.Objects;
  * 元のリバーシ盤の内容が変更されても、スナップショットの内容は変更されません。<br>
  * このクラスは不変です。変更オペレーションはサポートされません。<br>
  * 
+ * @since 1.0.0
  * @author nmby
  */
 public class BoardSnapshot extends BaseBoard implements Serializable {

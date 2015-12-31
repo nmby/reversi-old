@@ -15,6 +15,7 @@ import xyz.hotchpotch.game.reversi.core.Color;
 /**
  * ゲームの実施条件を表す不変クラスです。<br>
  * 
+ * @since 1.0.0
  * @author nmby
  */
 public class GameCondition implements Condition<Game>, Serializable {
@@ -28,6 +29,12 @@ public class GameCondition implements Condition<Game>, Serializable {
     
     private static final long serialVersionUID = 1L;
     
+    /**
+     * {@link GameCondition} のシリアライゼーションプロキシです。<br>
+     * 
+     * @since 1.0.0
+     * @author nmby
+     */
     private static class SerializationProxy implements Serializable {
         private static final long serialVersionUID = 1L;
         

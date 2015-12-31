@@ -6,6 +6,7 @@ package xyz.hotchpotch.game.reversi.framework;
  * 
  * @see Game
  * @see League
+ * @since 1.0.0
  * @author nmby
  */
 public interface Match extends Playable {
@@ -15,6 +16,7 @@ public interface Match extends Playable {
     /**
      * マッチの対戦者を表す列挙型です。<br>
      * 
+     * @since 1.0.0
      * @author nmby
      */
     public static enum Entrant {

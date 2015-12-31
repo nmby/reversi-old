@@ -24,12 +24,19 @@ import xyz.hotchpotch.game.reversi.framework.Player;
  *   <tr><td>debug</td><td>boolean</td><td>デバッグ出力の有無</td><td>false</td></tr>
  * </table>
  * 
+ * @since 1.0.0
  * @author nmby
  */
 public class DepthFirstAIPlayer implements Player {
     
     // [static members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
+    /**
+     * 試行時間切れを表す例外です。<br>
+     * 
+     * @since 1.0.0
+     * @author nmby
+     */
     private static class TimeUpException extends RuntimeException {
     }
     

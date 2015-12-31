@@ -19,6 +19,7 @@ import xyz.hotchpotch.util.ConsoleScanner;
 /**
  * 標準入出力を用いたマッチ実行クラスです。<br>
  * 
+ * @since 1.0.0
  * @author nmby
  */
 public class ConsoleMatch implements ConsolePlayable<Match> {

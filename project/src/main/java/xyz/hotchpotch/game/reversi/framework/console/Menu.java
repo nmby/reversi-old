@@ -8,6 +8,7 @@ import xyz.hotchpotch.util.ConsoleScanner;
  * このアプリケーションのメニューを表す列挙型です。
  * このアプリケーションのエントリ・ポイントです。<br>
  * 
+ * @since 1.0.0
  * @author nmby
  */
 public enum Menu {

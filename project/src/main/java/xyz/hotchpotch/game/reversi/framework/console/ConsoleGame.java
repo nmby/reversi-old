@@ -34,6 +34,7 @@ import xyz.hotchpotch.util.ConsoleScanner;
 /**
  * 標準入出力を用いたゲーム実行クラスです。<br>
  * 
+ * @since 1.0.0
  * @author nmby
  */
 public class ConsoleGame implements ConsolePlayable<Game> {

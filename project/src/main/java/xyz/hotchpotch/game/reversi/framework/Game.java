@@ -5,6 +5,7 @@ package xyz.hotchpotch.game.reversi.framework;
  * 
  * @see Match
  * @see League
+ * @since 1.0.0
  * @author nmby
  */
 public interface Game extends Playable {

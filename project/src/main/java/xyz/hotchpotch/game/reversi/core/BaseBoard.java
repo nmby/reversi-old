@@ -4,6 +4,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * {@link Board} の読み取り機能およびコンストラクタに関する実装を提供します。<br>
+ * 書き込み機能である {@link Board#apply(Move)} についてはサブクラスで実装する必要があります。<br>
+ * 
+ * この実装は同期化されません。
+ * 同期化が必要な場合は、本クラスが提供するすべてのメソッドをサブクラスでオーバーライドして同期化するか、
+ * {@code Board} を直接実装するようにしてください。<br>
+ * 
+ * @since 1.0.0
+ * @author nmby
+ */
 // このクラスを Serializable にしてみようかとも思ったが、
 // 自分の現状の理解では無理なので、今回は止める。
 /*package*/ abstract class BaseBoard implements Board {

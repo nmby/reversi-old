@@ -11,6 +11,7 @@ import xyz.hotchpotch.game.reversi.framework.Match.Entrant;
 /**
  * リーグの結果を表す不変クラスです。<br>
  * 
+ * @since 1.0.0
  * @author nmby
  */
 public class LeagueResult implements Result<League> {

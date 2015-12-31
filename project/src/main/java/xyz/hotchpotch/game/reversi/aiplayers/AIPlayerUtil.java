@@ -18,6 +18,7 @@ import xyz.hotchpotch.game.reversi.framework.Player;
 /**
  * {@link Player} 実装クラスを作成する際に便利な機能を集めたユーティリティクラスです。<br>
  * 
+ * @since 1.0.0
  * @author nmby
  */
 public class AIPlayerUtil {
@@ -33,6 +34,7 @@ public class AIPlayerUtil {
      * <br>
      * この実装は同期されません。複数のスレッドから同じインスタンスを操作することはしないでください。<br>
      * 
+     * @since 1.0.0
      * @author nmby
      */
     public static final class LightweightBoard implements Board {

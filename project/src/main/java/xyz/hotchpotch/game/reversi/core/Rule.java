@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 /**
  * リバーシのルールに基づく各種判定メソッドを提供するユーティリティクラスです。<br>
  * 
+ * @since 1.0.0
  * @author nmby
  */
 public class Rule {

@@ -5,6 +5,7 @@ import java.util.Objects;
 /**
  * 標準出力への簡易ロガーです。<br>
  * 
+ * @since 1.0.0
  * @author nmby
  */
 // MEMO: java.util.logging の仲間たちについて要お勉強
@@ -16,6 +17,7 @@ import java.util.Objects;
     /**
      * ログ出力レベルを表す列挙型です。<br>
      * 
+     * @since 1.0.0
      * @author nmby
      */
     public static enum Level {

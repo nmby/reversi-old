@@ -15,6 +15,7 @@ import xyz.hotchpotch.game.reversi.core.Rule;
 /**
  * ゲームの結果を表す不変クラスです。<br>
  * 
+ * @since 1.0.0
  * @author nmby
  */
 public class GameResult implements Result<Game> {

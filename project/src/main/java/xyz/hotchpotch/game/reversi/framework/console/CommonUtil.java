@@ -20,6 +20,12 @@ import xyz.hotchpotch.game.reversi.framework.Condition;
 import xyz.hotchpotch.game.reversi.framework.Player;
 import xyz.hotchpotch.util.ConsoleScanner;
 
+/**
+ * パッケージ内の共通的な処理を集めたユーティリティクラスです。<br>
+ * 
+ * @since 1.0.0
+ * @author nmby
+ */
 /*package*/ class CommonUtil {
     
     // [static members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++++

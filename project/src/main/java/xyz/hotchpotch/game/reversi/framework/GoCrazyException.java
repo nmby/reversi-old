@@ -7,6 +7,7 @@ import xyz.hotchpotch.game.reversi.core.Color;
 /**
  * {@link Player} 実装クラスにより実行時例外がスローされたことを表す例外です。<br>
  * 
+ * @since 1.0.0
  * @author nmby
  */
 public class GoCrazyException extends RuleViolationException {

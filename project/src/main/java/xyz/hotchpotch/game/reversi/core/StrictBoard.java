@@ -15,6 +15,7 @@ import java.util.Set;
  * <br>
  * この実装はスレッドセーフです。<br>
  * 
+ * @since 1.0.0
  * @author nmby
  */
 public class StrictBoard extends BaseBoard implements Serializable {
@@ -23,6 +24,12 @@ public class StrictBoard extends BaseBoard implements Serializable {
     
     private static final long serialVersionUID = 1L;
     
+    /**
+     * {@link StrictBoard} のシリアライゼーションプロキシです。<br>
+     * 
+     * @since 1.0.0
+     * @author nmby
+     */
     private static class SerializationProxy implements Serializable {
         private static final long serialVersionUID = 1L;
         

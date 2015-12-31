@@ -32,6 +32,7 @@ import xyz.hotchpotch.game.reversi.core.Point;
  * ゲームの間中、同じプレーヤーインスタンスが利用され、ゲームの終了とともに破棄されます。<br>
  * ゲーム実行フレームワークがひとつの {@code Player} インスタンスを複数のスレッドから操作することはありません。<br>
  * 
+ * @since 1.0.0
  * @author nmby
  */
 public interface Player {

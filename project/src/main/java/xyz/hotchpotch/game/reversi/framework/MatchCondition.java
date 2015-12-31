@@ -15,6 +15,7 @@ import xyz.hotchpotch.game.reversi.framework.Match.Entrant;
 /**
  * マッチの実施条件を表す不変クラスです。<br>
  * 
+ * @since 1.0.0
  * @author nmby
  */
 public class MatchCondition implements Condition<Match>, Serializable {
@@ -31,6 +32,12 @@ public class MatchCondition implements Condition<Match>, Serializable {
     
     private static final long serialVersionUID = 1L;
     
+    /**
+     * {@link MatchCondition} のシリアライゼーションプロキシです。<br>
+     * 
+     * @since 1.0.0
+     * @author nmby
+     */
     private static class SerializationProxy implements Serializable {
         private static final long serialVersionUID = 1L;
         

@@ -23,6 +23,7 @@ import java.util.stream.Stream;
  *     Point.of("a1"), Point.of("b1"), Point.of("c1"), ... Point.of("g8"), Point.of("h8")
  * </pre>
  * 
+ * @since 1.0.0
  * @author nmby
  */
 // Point は本質的には列挙なので、64 個の要素を持つ enum としてもよいのだが、
@@ -33,6 +34,12 @@ public class Point implements Serializable, Comparable<Point> {
     
     private static final long serialVersionUID = 1L;
     
+    /**
+     * {@link Point} のシリアライゼーションプロキシです。<br>
+     * 
+     * @since 1.0.0
+     * @author nmby
+     */
     // 同値オブジェクトの単一性を保証するためにシリアライズプロキシパターンを採用する。
     private static class SerializationProxy implements Serializable {
         private static final long serialVersionUID = 1L;

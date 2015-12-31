@@ -6,6 +6,7 @@ import java.util.stream.Stream;
 /**
  * 駒の色を表す列挙型です。<br>
  * 
+ * @since 1.0.0
  * @author nmby
  */
 public enum Color {
