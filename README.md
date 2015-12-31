@@ -11,7 +11,8 @@
 * [MonteCarloAIPlayer](https://github.com/nmby/reversi/blob/master/project/src/main/java/xyz/hotchpotch/game/reversi/aiplayers/MonteCarloAIPlayer.java) ： モンテカルロ・シミュレーションにより最善手を選択するAIプレーヤーです。  
 
 AIプレーヤーを自作することも簡単です。
-[Player インタフェース](http://nmby.github.io/reversi/api-docs/xyz/hotchpotch/game/reversi/framework/Player.html) を実装し、Player#decide メソッドをオーバーライドするだけです。  
+[Player インタフェース](http://nmby.github.io/reversi/api-docs/xyz/hotchpotch/game/reversi/framework/Player.html) を実装し、
+[Player#decide メソッド](http://nmby.github.io/reversi/api-docs/xyz/hotchpotch/game/reversi/framework/Player.html#decide-xyz.hotchpotch.game.reversi.core.Board-xyz.hotchpotch.game.reversi.core.Color-long-long-) をオーバーライドするだけです。  
 自作したAIプレーヤーと標準AIプレーヤーを対戦させることもできます。  
   
 詳細は [Qiita内の紹介ページ](http://qiita.com/nmby/items/bd44e28d937108fa3eb0)
