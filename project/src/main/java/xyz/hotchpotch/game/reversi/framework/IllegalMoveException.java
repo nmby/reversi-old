@@ -31,7 +31,7 @@ public class IllegalMoveException extends RuleViolationException {
      * @param message 詳細メッセージ
      * @param violator ルールに違反したプレーヤーの色
      * @param move ルール違反の手
-     * @param board そのときのリバーシ盤
+     * @param board ルール違反が発生した際のリバーシ盤
      * @throws NullPointerException {@code violator}、{@code move}、{@code board} のいずれかが {@code null} の場合
      */
     public IllegalMoveException(String message, Color violator, Move move, Board board) {

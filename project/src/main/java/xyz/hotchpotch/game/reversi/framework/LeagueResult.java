@@ -128,9 +128,9 @@ public class LeagueResult implements Result<League> {
     }
     
     /**
-     * このマッチ結果の文字列表現を返します。<br>
+     * このリーグ結果の文字列表現を返します。<br>
      * 
-     * @return このマッチ結果の文字列表現
+     * @return このリーグ結果の文字列表現
      */
     @Override
     public String toString() {

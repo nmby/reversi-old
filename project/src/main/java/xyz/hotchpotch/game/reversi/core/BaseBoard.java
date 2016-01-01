@@ -27,6 +27,7 @@ import java.util.Objects;
     
     // [instance members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
+    /** リバーシ盤の実体 */
     protected final Map<Point, Color> map;
     
     protected BaseBoard() {

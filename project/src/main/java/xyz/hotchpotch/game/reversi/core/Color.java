@@ -68,7 +68,7 @@ public enum Color {
     /**
      * このオブジェクトの文字列表現を返します。<br>
      * 
-     * return このオブジェクトの文字列表現（{@code "●"} または {@code "○"}）
+     * @return このオブジェクトの文字列表現（{@code "●"} または {@code "○"}）
      */
     @Override
     public String toString() {

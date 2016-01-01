@@ -21,7 +21,7 @@ public class GoCrazyException extends RuleViolationException {
      * 
      * @param message 詳細メッセージ
      * @param violator ルールに違反したプレーヤーの色
-     * @param cause プレーヤーが投げた例外
+     * @param cause {@link Player} 実装クラスがスローした例外
      * @throws NullPointerException {@code violator}、{@code cause} のいずれかが {@code null} の場合
      */
     public GoCrazyException(String message, Color violator, Throwable cause) {

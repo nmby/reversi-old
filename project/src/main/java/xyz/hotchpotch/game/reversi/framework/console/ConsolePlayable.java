@@ -5,6 +5,7 @@ import xyz.hotchpotch.game.reversi.framework.Result;
 
 /**
  * 標準入出力を用いた実行クラスを表します。<br>
+ * {@link ConsoleGame}､{@link ConsoleMatch}､{@link ConsoleLeague} の基底インタフェースです。<br>
  * 
  * @param <P> ターゲット {@link Playable}
  * @since 1.0.0

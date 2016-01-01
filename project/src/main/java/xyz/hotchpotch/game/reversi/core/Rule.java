@@ -51,7 +51,7 @@ public class Rule {
      * リバーシ盤に指定した色の駒を置けるか（パスではないか）を返します。<br>
      * 
      * @param board リバーシ盤
-     * @param color 置く駒の色
+     * @param color 駒の色
      * @return いずれかの位置に駒を置ける場合は {@code true}
      * @throws NullPointerException {@code board}, {@code color} のいずれかが {@code null} の場合
      */
@@ -66,7 +66,7 @@ public class Rule {
      * リバーシ盤の指定した位置に指定した色の駒を置けるかを返します。<br>
      * 
      * @param board リバーシ盤
-     * @param color 置く駒の色
+     * @param color 駒の色
      * @param point 駒を置く位置
      * @return 駒を置ける場合は {@code true}
      * @throws NullPointerException {@code board}, {@code color}, {@code point} のいずれかが {@code null} の場合

@@ -17,12 +17,13 @@ public interface Board {
     
     /**
      * 2つのリバーシ盤が等しいかを返します。<br>
-     * 各マスの駒の状態が同じであるとき、もしくは2つのリバーシ盤がともに {@code null} のとき、2つのリバーシ盤は等しいと評価されます。<br>
+     * 各マスの駒の状態が同じであるとき、もしくは2つのリバーシ盤がともに {@code null} のとき、2つのリバーシ盤は等しいと判定されます。<br>
      * 
      * @param board1 リバーシ盤1
      * @param board2 リバーシ盤2
      * @return 2つのリバーシ盤が等しいとき {@code true}
-     * @see Objects#equals(Object)
+     * @see #equals(Object)
+     * @see Objects#equals(Object, Object)
      */
     public static boolean equals(Board board1, Board board2) {
         if (board1 == null && board2 == null) {
@@ -36,10 +37,13 @@ public interface Board {
     
     /**
      * リバーシ盤のハッシュコードを返します。<br>
+     * リバーシ盤のハッシュコードは、{@link Point} クラスの自然順序付けに従って全てのマスの駒（null を含む）を格納した一次元配列（{@link Color}[]）
+     * のハッシュコードとして定義されます。<br>
      * {@code board} が {@code null} の場合は {@code 0} を返します。<br>
      * 
      * @param board リバーシ盤
      * @return {@code board} のハッシュコード（{@code null} の場合は {@code 0}）
+     * @see #hashCode()
      * @see Arrays#hashCode(Object[])
      */
     public static int hashCode(Board board) {
@@ -64,7 +68,7 @@ public interface Board {
      * このリバーシ盤に指定された手を適用します。<br>
      * <br>
      * 適用のされ方は実装に依存します。
-     * すなわち、リバーシのルールに従い周囲の駒をひっくりかえす実装もあり得れば、
+     * すなわち、リバーシのルールに従い周囲の駒をひっくり返す実装もあり得れば、
      * 単に {@link Map#put(Object, Object) Map.put(key, value)} のように振る舞う実装もあり得ます。<br>
      * 
      * @param move 適用する手
@@ -124,7 +128,7 @@ public interface Board {
     
     /**
      * 指定されたオブジェクトがこのリバーシ盤と等しいかを返します。<br>
-     * 指定されたオブジェクトもリバーシ盤であり、2つのリバーシ盤の各マスの駒の状態が同じであるとき、2つのリバーシ盤は等しいと評価されます。<br>
+     * 指定されたオブジェクトもリバーシ盤であり、2つのリバーシ盤の各マスの駒の状態が同じであるとき、2つのリバーシ盤は等しいと判定されます。<br>
      * 
      * @param o 比較対象のオブジェクト
      * @return 指定されたオブジェクトがこのリバーシ盤と等しい場合は {@code true}
@@ -135,7 +139,8 @@ public interface Board {
     
     /**
      * このリバーシ盤のハッシュコードを返します。<br>
-     * リバーシ盤のハッシュコードは、全てのマスの駒（null を含む）を格納した一次元配列（{@link Color}[]）のハッシュコードとして定義されます。<br>
+     * リバーシ盤のハッシュコードは、{@link Point} クラスの自然順序付けに従って全てのマスの駒（null を含む）を格納した一次元配列（{@link Color}[]）
+     * のハッシュコードとして定義されます。<br>
      * 
      * @return このリバーシ盤のハッシュコード
      * @see #hashCode(Board)

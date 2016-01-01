@@ -40,7 +40,7 @@ public class AIPlayerUtil {
     public static final class LightweightBoard implements Board {
         
         /** リバーシ盤の実体 */
-        protected final Color[] colors;
+        /*package*/ final Color[] colors;
         
         /**
          * 指定された {@code board} と同じ内容を持つ、新しい {@code LightweightBoard} を生成します。<br>
@@ -89,14 +89,14 @@ public class AIPlayerUtil {
         }
         
         /**
-         * このリバーシ盤に指定された手を適用し、周囲の駒をひっくりかえします。<br>
+         * このリバーシ盤に指定された手を適用し、周囲の駒をひっくり返します。<br>
          * <br>
          * このメソッドでは、ルールに照らした手の妥当性チェックを行いません。次の規約を守ってください。
          * <ul>
          *   <li>ルールに反する手は指定しないでください。</li>
          *   <li>パスの手は指定しないでください。</li>
          * </ul>
-         * これらの規約に反した場合の動作は保証されません。<br>
+         * これらの規約に反した場合の挙動は保証されません。<br>
          * 
          * @throws NullPointerException {@code move} が {@code null} の場合
          */
@@ -137,22 +137,24 @@ public class AIPlayerUtil {
     }
     
     /**
-     * {@link Player} 実装クラスのコンストラクタに渡される {@link GameCondition} オブジェクトからパラメータ値を取得します。<br>
+     * {@link GameCondition} オブジェクトからパラメータ値を取得して返します。<br>
      * <br>
      * このメソッドは、次の優先順で {@code gameCondition} オブジェクトからパラメータ値の取得を試みます。
      * <ol>
      *   <li>"<i>呼出元完全修飾クラス名.key</i>" というキーに紐付くパラメータ値</li>
      *   <li>"<i>key</i>" というキーに紐付くパラメータ値</li>
      * </ol>
+     * <br>
      * 例えば、{@code xyz.hotchpotch.game.reversi.aiplayers.RandomAIPlayer} というクラスのコンストラクタ内で
      * {@code getParameter(gameCondition, "seed")} という呼び出しを実行した場合、このメソッドは次の順でパラメータの取得を試みます。
      * <ol>
      *   <li>"xyz.hotchpotch.game.reversi.aiplayers.RandomAIPlayer.seed" というキーに紐付くパラメータ値</li>
      *   <li>"seed" というキーに紐付くパラメータ値</li>
      * </ol>
+     * <br>
      * パラメータ値が見つかった場合はその値を格納した {@code Optional} オブジェクトを、見つからなかった場合は空の {@code Optional} オブジェクトを返します。<br>
      * 
-     * @param gameCondition {@code Player} 実装クラスのコンストラクタに渡されるゲーム実施条件
+     * @param gameCondition ゲーム実施条件
      * @param key パラメータのキー
      * @return パラメータ値を格納した {@code Optional} オブジェクト（パラメータ値が存在しない場合は空の {@code Optional} オブジェクト）
      * @throws NullPointerException {@code gameCondition}、{@code key} のいずれかが {@code null} の場合
@@ -181,20 +183,24 @@ public class AIPlayerUtil {
     }
     
     /**
-     * {@link Player} 実装クラスのコンストラクタに渡される {@link GameCondition} オブジェクトからパラメータ値を取得し、任意の型に変換します。<br>
+     * {@link GameCondition} オブジェクトからパラメータ値を取得し、任意の型に変換して返します。<br>
      * パラメータ値の取得に関しては {@link #getParameter(GameCondition, String)} の説明を参照してください。<br>
      * このメソッドは、取得したパラメータ値を {@code converter} によって {@code String} から任意の型に変換します。<br>
      * 変換できた場合はその値を格納した {@code Optional} オブジェクトを、変換に失敗した場合は空の {@code Optional} オブジェクトを返します。<br>
      * 
      * @param <T> パラメータの変換後の型
-     * @param gameCondition {@code Player} 実装クラスのコンストラクタに渡されるゲーム実施条件
+     * @param gameCondition ゲーム実施条件
      * @param key パラメータのキー
      * @param converter パラメータ値の型を変換する関数
      * @return 任意の型に変換されたパラメータ値を格納した {@code Optional} オブジェクト
      *         （パラメータ値が存在しない場合や型の変換に失敗した場合は空の {@code Optional} オブジェクト）
      * @throws NullPointerException {@code gameCondition}、{@code key}、{@code converter} のいずれかが {@code null} の場合
      */
-    public static <T> Optional<T> getParameter(GameCondition gameCondition, String key, Function<String, T> converter) {
+    public static <T> Optional<T> getParameter(
+            GameCondition gameCondition,
+            String key,
+            Function<String, ? extends T> converter) {
+            
         Objects.requireNonNull(gameCondition);
         Objects.requireNonNull(key);
         Objects.requireNonNull(converter);
@@ -207,7 +213,7 @@ public class AIPlayerUtil {
     }
     
     /**
-     * {@link Player} 実装クラスのコンストラクタに渡される {@link GameCondition} オブジェクトからパラメータ値を取得し、{@link Integer} 型に変換します。<br>
+     * {@link GameCondition} オブジェクトからパラメータ値を取得し、{@link Integer} 型に変換して返します。<br>
      * 次のふたつの呼び出しは同値です。
      * <pre>
      *     getIntParameter(gameCondition, key);
@@ -215,7 +221,7 @@ public class AIPlayerUtil {
      * </pre>
      * 詳細は {@link #getParameter(GameCondition, String, Function)} の説明を参照してください。<br>
      * 
-     * @param gameCondition {@code Player} 実装クラスのコンストラクタに渡されるゲーム実施条件
+     * @param gameCondition ゲーム実施条件
      * @param key パラメータのキー
      * @return {@code Integer} 型パラメータ値を格納した {@code Optional} オブジェクト
      *         （パラメータ値が存在しない場合や型の変換に失敗した場合は空の {@code Optional} オブジェクト）
@@ -226,7 +232,7 @@ public class AIPlayerUtil {
     }
     
     /**
-     * {@link Player} 実装クラスのコンストラクタに渡される {@link GameCondition} オブジェクトからパラメータ値を取得し、{@link Long} 型に変換します。<br>
+     * {@link GameCondition} オブジェクトからパラメータ値を取得し、{@link Long} 型に変換して返します。<br>
      * 次のふたつの呼び出しは同値です。
      * <pre>
      *     getLongParameter(gameCondition, key);
@@ -234,7 +240,7 @@ public class AIPlayerUtil {
      * </pre>
      * 詳細は {@link #getParameter(GameCondition, String, Function)} の説明を参照してください。<br>
      * 
-     * @param gameCondition {@code Player} 実装クラスのコンストラクタに渡されるゲーム実施条件
+     * @param gameCondition ゲーム実施条件
      * @param key パラメータのキー
      * @return {@code Long} 型パラメータ値を格納した {@code Optional} オブジェクト
      *         （パラメータ値が存在しない場合や型の変換に失敗した場合は空の {@code Optional} オブジェクト）
@@ -245,7 +251,7 @@ public class AIPlayerUtil {
     }
     
     /**
-     * {@link Player} 実装クラスのコンストラクタに渡される {@link GameCondition} オブジェクトからパラメータ値を取得し、{@link Float} 型に変換します。<br>
+     * {@link GameCondition} オブジェクトからパラメータ値を取得し、{@link Float} 型に変換して返します。<br>
      * 次のふたつの呼び出しは同値です。
      * <pre>
      *     getFloatParameter(gameCondition, key);
@@ -253,9 +259,9 @@ public class AIPlayerUtil {
      * </pre>
      * 詳細は {@link #getParameter(GameCondition, String, Function)} の説明を参照してください。<br>
      * 
-     * @param gameCondition {@code Player} 実装クラスのコンストラクタに渡されるゲーム実施条件
+     * @param gameCondition ゲーム実施条件
      * @param key パラメータのキー
-     * @return {@code Long} 型パラメータ値を格納した {@code Optional} オブジェクト
+     * @return {@code Float} 型パラメータ値を格納した {@code Optional} オブジェクト
      *         （パラメータ値が存在しない場合や型の変換に失敗した場合は空の {@code Optional} オブジェクト）
      * @throws NullPointerException {@code gameCondition}、{@code key} のいずれかが {@code null} の場合
      */
@@ -264,7 +270,7 @@ public class AIPlayerUtil {
     }
     
     /**
-     * {@link Player} 実装クラスのコンストラクタに渡される {@link GameCondition} オブジェクトからパラメータ値を取得し、{@link Double} 型に変換します。<br>
+     * {@link GameCondition} オブジェクトからパラメータ値を取得し、{@link Double} 型に変換して返します。<br>
      * 次のふたつの呼び出しは同値です。
      * <pre>
      *     getDoubleParameter(gameCondition, key);
@@ -272,7 +278,7 @@ public class AIPlayerUtil {
      * </pre>
      * 詳細は {@link #getParameter(GameCondition, String, Function)} の説明を参照してください。<br>
      * 
-     * @param gameCondition {@code Player} 実装クラスのコンストラクタに渡されるゲーム実施条件
+     * @param gameCondition ゲーム実施条件
      * @param key パラメータのキー
      * @return {@code Double} 型パラメータ値を格納した {@code Optional} オブジェクト
      *         （パラメータ値が存在しない場合や型の変換に失敗した場合は空の {@code Optional} オブジェクト）
@@ -283,7 +289,7 @@ public class AIPlayerUtil {
     }
     
     /**
-     * {@link Player} 実装クラスのコンストラクタに渡される {@link GameCondition} オブジェクトからパラメータ値を取得し、{@link Boolean} 型に変換します。<br>
+     * {@link GameCondition} オブジェクトからパラメータ値を取得し、{@link Boolean} 型に変換して返します。<br>
      * 次のふたつの呼び出しは同値です。
      * <pre>
      *     getBooleanParameter(gameCondition, key);
@@ -291,7 +297,7 @@ public class AIPlayerUtil {
      * </pre>
      * 詳細は {@link #getParameter(GameCondition, String, Function)} の説明を参照してください。<br>
      * 
-     * @param gameCondition {@code Player} 実装クラスのコンストラクタに渡されるゲーム実施条件
+     * @param gameCondition ゲーム実施条件
      * @param key パラメータのキー
      * @return {@code Boolean} 型パラメータ値を格納した {@code Optional} オブジェクト
      *         （パラメータ値が存在しない場合や型の変換に失敗した場合は空の {@code Optional} オブジェクト）

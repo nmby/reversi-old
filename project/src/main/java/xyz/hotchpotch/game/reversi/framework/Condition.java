@@ -21,7 +21,7 @@ public interface Condition<P extends Playable> {
      * 指定されたパラメータの値を返します。<br>
      * 
      * @param key パラメータ名
-     * @return パラメータ値
+     * @return パラメータ値（パラメータが存在しない場合は {@code null}）
      * @throws NullPointerException {@code key} が {@code null} の場合
      */
     public default String getParam(String key) {

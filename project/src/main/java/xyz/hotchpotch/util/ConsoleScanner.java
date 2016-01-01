@@ -19,9 +19,9 @@ import java.util.regex.PatternSyntaxException;
  * 正しい形式の入力が得られたら、それを必要な形式（数値、クラス、列挙型等）に変換し、
  * クライアント・アプリケーションに返却します。<br>
  * <br>
- * 次の例では、0～12の範囲の整数を標準入力から対話的に取得します。
+ * 次の例では、1～12の範囲の整数を標準入力から対話的に取得します。
  * <pre>
- *     int n = ConsoleScanner.intBuilder(0, 12).build().get();
+ *     int n = ConsoleScanner.intBuilder(1, 12).build().get();
  * </pre>
  * 次の例では、列挙型 {@code MyEnum} の要素の中のひとつを選択するようユーザに要求し、選択された要素を取得します。<br>
  * <pre>
@@ -109,9 +109,9 @@ public class ConsoleScanner<T> implements Supplier<T> {
         /**
          * 割り込みや入出力例外が発生した際の対処方法を指定します。<br>
          * {@link ConsoleScanner#get()} の実行中に入出力例外や他のスレッドからの割り込みが発生した場合、
-         * 発生した例外オブジェクト {@code e} をパラメータとして {@code emergencyMeasure.apply(e)} が実行され、
+         * 捕捉された例外オブジェクト {@code e} をパラメータとして {@code emergencyMeasure.apply(e)} が実行され、
          * その戻り値が {@code ConsoleScanner#get()} の呼び出し元に返されます。<br>
-         * {@code emergencyMeasure.apply()} は何らかの値を返すこともできますし、実行時例外をスローすることもできます。<br>
+         * {@code emergencyMeasure.apply(e)} は何らかの値を返すこともできますし、実行時例外をスローすることもできます。<br>
          * 明示的に指定しない場合のデフォルトでは、{@code emergencyMeasure.apply(e)} は単に {@code null} を返します。<br>
          * 
          * @param emergencyMeasure 割り込みや入出力例外が発生した場合の対処方法
@@ -152,7 +152,7 @@ public class ConsoleScanner<T> implements Supplier<T> {
     }
     
     /**
-     * {@code String} 型の入力を取得するための {@code ConsoleScanner} のビルダーを返します。<br>
+     * {@code String} 型の入力値を取得するための {@code ConsoleScanner} のビルダーを返します。<br>
      * 
      * @param judge ユーザ入力値が要求形式に合致するかを判定する {@link Predicate}
      * @return {@link Builder} オブジェクト
@@ -169,7 +169,7 @@ public class ConsoleScanner<T> implements Supplier<T> {
     }
     
     /**
-     * {@code String} 型の入力を取得するための {@code ConsoleScanner} のビルダーを返します。<br>
+     * {@code String} 型の入力値を取得するための {@code ConsoleScanner} のビルダーを返します。<br>
      * 
      * @param pattern ユーザ入力値が要求形式に合致するかを判定する {@link Pattern}
      * @return {@link Builder} オブジェクト
@@ -181,7 +181,7 @@ public class ConsoleScanner<T> implements Supplier<T> {
     }
     
     /**
-     * {@code String} 型の入力を取得するための {@code ConsoleScanner} のビルダーを返します。<br>
+     * {@code String} 型の入力値を取得するための {@code ConsoleScanner} のビルダーを返します。<br>
      * 
      * @param regex ユーザ入力値が要求形式に合致するかを判定する正規表現文字列
      * @return {@link Builder} オブジェクト
@@ -195,7 +195,7 @@ public class ConsoleScanner<T> implements Supplier<T> {
     }
     
     /**
-     * {@code Integer} 型の入力を取得するための {@code ConsoleScanner} のビルダーを返します。<br>
+     * {@code Integer} 型の入力値を取得するための {@code ConsoleScanner} のビルダーを返します。<br>
      * 
      * @param lower 要求する範囲の下限値（この値を範囲に含みます）
      * @param upper 要求する範囲の上限値（この値を範囲に含みます）
@@ -221,7 +221,7 @@ public class ConsoleScanner<T> implements Supplier<T> {
     }
     
     /**
-     * {@code Long} 型の入力を取得するための {@code ConsoleScanner} のビルダーを返します。<br>
+     * {@code Long} 型の入力値を取得するための {@code ConsoleScanner} のビルダーを返します。<br>
      * 
      * @param lower 要求する範囲の下限値（この値を範囲に含みます）
      * @param upper 要求する範囲の上限値（この値を範囲に含みます）
@@ -297,11 +297,11 @@ public class ConsoleScanner<T> implements Supplier<T> {
     }
     
     /**
-     * 任意の型の入力を取得するための {@code ConsoleScanner} のビルダーを返します。<br>
+     * 任意の型の入力値を取得するための {@code ConsoleScanner} のビルダーを返します。<br>
      * 次の2つの呼び出しは同値です。
      * <pre>
      *     builder(judge, converter, prompt, complaint);
-     *     builder(judge, converter, prompt, complaint, e {@code ->} null);
+     *     builder(judge, converter, prompt, complaint, e -&gt null);
      * </pre>
      * 
      * @param <T> 最終的にクライアント・アプリケーションに返却されるデータの型
@@ -328,7 +328,7 @@ public class ConsoleScanner<T> implements Supplier<T> {
     }
     
     /**
-     * 任意の型の入力を取得するための {@code ConsoleScanner} のビルダーを返します。<br>
+     * 任意の型の入力値を取得するための {@code ConsoleScanner} のビルダーを返します。<br>
      * 
      * @param <T> 最終的にクライアント・アプリケーションに返却されるデータの型
      * @param judge ユーザ入力値が要求形式に合致するかを判定する {@link Predicate}
@@ -414,6 +414,10 @@ public class ConsoleScanner<T> implements Supplier<T> {
     /**
      * 標準入力から対話的にユーザ入力値を取得し、目的の型に変換して返します。<br>
      * 要求する形式の入力値が得られるまで、ユーザに何度も再入力を求めます。<br>
+     * <br>
+     * 入力待機中に割り込みを検知した場合は入力待機を解除し、
+     * このオブジェクトの構築時に指定された方法に従って速やかに終了します。
+     * （詳細は {@link Builder#emergencyMeasure(Function)} の説明を参照してください。）<br>
      * 
      * @return ユーザ入力値を変換した {@code T} 型の値
      */

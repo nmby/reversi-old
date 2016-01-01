@@ -94,7 +94,7 @@ public class Move implements Serializable {
     /**
      * このオブジェクトのハッシュコードを返します。<br>
      * 
-     * return このオブジェクトのハッシュコード
+     * @return このオブジェクトのハッシュコード
      */
     @Override
     public int hashCode() {
@@ -105,7 +105,7 @@ public class Move implements Serializable {
     /**
      * このオブジェクトの文字列表現を返します。<br>
      * 
-     * return このオブジェクトの文字列表現
+     * @return このオブジェクトの文字列表現
      */
     @Override
     public String toString() {

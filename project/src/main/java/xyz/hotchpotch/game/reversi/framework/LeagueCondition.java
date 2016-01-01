@@ -131,15 +131,15 @@ public class LeagueCondition implements Condition<League>, Serializable {
      *   <caption>必須パラメータ</caption>
      *   <tr><th>パラメータ名</th><th>内容</th><th>例</th></tr>
      *   <tr><td>{@code player.?}</td><td>プレーヤーの完全修飾クラス名（{@code ?} 部分は一意な数字）</td><td>{@code xyz.hotchpotch.game.reversi.aiplayers.SimplestAIPlayer}</td></tr>
-     *   <tr><td>{@code givenMillisPerTurn}</td><td>一手あたりの制限時間（ミリ秒）</td><td>1000</td></tr>
-     *   <tr><td>{@code givenMillisInGame}</td><td>ゲーム全体での持ち時間（ミリ秒）</td><td>15000</td></tr>
-     *   <tr><td>{@code times}</td><td>それぞれの組み合わせにおける対戦回数</td><td>10</td></tr>
+     *   <tr><td>{@code givenMillisPerTurn}</td><td>一手あたりの制限時間（ミリ秒）</td><td>{@code 1000}</td></tr>
+     *   <tr><td>{@code givenMillisInGame}</td><td>ゲーム全体での持ち時間（ミリ秒）</td><td>{@code 15000}</td></tr>
+     *   <tr><td>{@code times}</td><td>それぞれの組み合わせにおける対戦回数</td><td>{@code 10}</td></tr>
      * </table>
      * 
      * @param params パラメータが格納された {@code Map}
      * @return リーグ実施条件
      * @throws NullPointerException {@code params} が {@code null} の場合
-     * @throws IllegalArgumentException 必須パラメータが設定されていない場合や各パラメータの設定内容が不正な場合
+     * @throws IllegalArgumentException 必須パラメータが設定されていない場合やパラメータ値が不正な場合
      */
     public static LeagueCondition of(Map<String, String> params) {
         Objects.requireNonNull(params);

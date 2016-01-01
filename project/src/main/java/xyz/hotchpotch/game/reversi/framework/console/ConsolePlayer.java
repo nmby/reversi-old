@@ -17,7 +17,7 @@ import xyz.hotchpotch.util.ConsoleScanner;
  * <table border="1">
  *   <caption>指定可能なオプションパラメータ</caption>
  *   <tr><th>キー</th><th>型</th><th>内容</th><th>デフォルト値</th></tr>
- *   <tr><td>safety</td><td>boolean</td><td>ユーザがルール違反の手を指定した際に再入力を求めるか</td><td>true</td></tr>
+ *   <tr><td>{@code safety}</td><td>{@code boolean}</td><td>ユーザがルール違反の手を指定した際に再入力を求めるか</td><td>{@code true}</td></tr>
  * </table>
  * 
  * @since 1.0.0

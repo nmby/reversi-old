@@ -30,11 +30,11 @@ import xyz.hotchpotch.game.reversi.framework.Player;
  * <table border="1">
  *   <caption>指定可能なオプションパラメータ</caption>
  *   <tr><th>キー</th><th>型</th><th>内容</th><th>デフォルト値</th></tr>
- *   <tr><td>evaluator</td><td>String</td><td>リバーシ盤に対する評価関数のクラス名<br>
+ *   <tr><td>{@code evaluator}</td><td>{@code String}</td><td>リバーシ盤に対する評価関数のクラス名<br>
  *           （{@link ToIntBiFunction}{@code <LightweightBoard, Color>} 実装クラス名）</td><td>（なし）</td></tr>
- *   <tr><td>seed</td><td>long</td><td>乱数ジェネレータのシード値</td><td>（なし）</td></tr>
- *   <tr><td>margin1</td><td>long</td><td>探索を切り上げる余裕時間（ミリ秒）</td><td>50</td></tr>
- *   <tr><td>debug</td><td>boolean</td><td>デバッグ出力の有無</td><td>false</td></tr>
+ *   <tr><td>{@code seed}</td><td>{@code long}</td><td>乱数ジェネレータのシード値</td><td>（なし）</td></tr>
+ *   <tr><td>{@code margin1}</td><td>{@code long}</td><td>探索を切り上げる余裕時間（ミリ秒）</td><td>{@code 50}</td></tr>
+ *   <tr><td>{@code debug}</td><td>{@code boolean}</td><td>デバッグ出力の有無</td><td>{@code false}</td></tr>
  * </table>
  * 
  * @since 1.0.0

@@ -68,7 +68,7 @@ public enum Direction {
     /**
      * このオブジェクトの文字列表現を返します。<br>
      * 
-     * return このオブジェクトの文字列表現
+     * @return このオブジェクトの文字列表現
      */
     @Override
     public String toString() {

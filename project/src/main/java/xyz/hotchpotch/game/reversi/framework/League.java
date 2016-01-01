@@ -24,6 +24,8 @@ public interface League extends Playable {
     public static class Pair {
         
         /**
+         * {@code Pair} オブジェクトを生成します。<br>
+         * 
          * @param idxA リーグ参加プレーヤーのリストにおける、プレーヤーAのインデックス
          * @param idxB リーグ参加プレーヤーのリストにおける、プレーヤーBのインデックス
          * @return プレーヤーA, B の組み合わせを表す {@code Pair} オブジェクト
@@ -41,7 +43,11 @@ public interface League extends Playable {
         }
         
         /**
-         * {@inheritDoc}
+         * 指定されたオブジェクトがこのオブジェクトと等しいかを返します。<br>
+         * 指定されたオブジェクトも {@code Pair} であり、ペアの内容が同じであるとき、2つのペアは等しいと判定されます。<br>
+         * 
+         * @param o 比較対象のオブジェクト
+         * @return 指定されたオブジェクトがこのペアと等しい場合は {@code true}
          */
         @Override
         public boolean equals(Object o) {
@@ -56,7 +62,9 @@ public interface League extends Playable {
         }
         
         /**
-         * {@inheritDoc}
+         * このペアのハッシュコードを返します。<br>
+         * 
+         * @return このペアのハッシュコード
          */
         @Override
         public int hashCode() {
@@ -64,7 +72,9 @@ public interface League extends Playable {
         }
         
         /**
-         * {@inheritDoc}
+         * このペアの文字列表現を返します。<br>
+         * 
+         * @return このペアの文字列表現
          */
         @Override
         public String toString() {
@@ -72,5 +82,5 @@ public interface League extends Playable {
         }
     }
     
-    // ++++++++++++++++ instance members ++++++++++++++++
+    // [instance members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++
 }

@@ -113,7 +113,7 @@ public class GameResult implements Result<Game> {
     /** 黒白それぞれの残り持ち時間（ミリ秒）が格納された {@code Map} */
     public final Map<Color, Long> remainingMillisInGame;
     
-    /** 勝者（引き分けの場合は {@code null}） */
+    /** 勝者の色（引き分けの場合は {@code null}） */
     public final Color winner;
     
     private final RuleViolationException violation;

@@ -17,7 +17,7 @@ import xyz.hotchpotch.game.reversi.framework.Player;
  * <table border="1">
  *   <caption>指定可能なオプションパラメータ</caption>
  *   <tr><th>キー</th><th>型</th><th>内容</th><th>デフォルト値</th></tr>
- *   <tr><td>seed</td><td>long</td><td>乱数ジェネレータのシード値</td><td>（なし）</td></tr>
+ *   <tr><td>{@code seed}</td><td>{@code long}</td><td>乱数ジェネレータのシード値</td><td>（なし）</td></tr>
  * </table>
  * 
  * @since 1.0.0

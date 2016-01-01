@@ -11,7 +11,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 /**
- * 盤上の位置を表す不変クラスです。<br>
+ * リバーシ盤上の位置を表す不変クラスです。<br>
  * 同じ位置を表す {@code Point} インスタンスは同一であることが保証されます。<br>
  * <br>
  * {@code Point} オブジェクトは次の順に順序付けされます。
