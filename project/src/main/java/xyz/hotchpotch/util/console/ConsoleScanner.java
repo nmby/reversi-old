@@ -52,7 +52,7 @@ public class ConsoleScanner<T> implements Supplier<T> {
      * {@link ConsoleScanner} オブジェクトを構築するためのビルダーです。
      * 
      * @param <T> 最終的にクライアント・アプリケーションに返却されるデータの型
-     * @since 1.0.0
+     * @since 1.1.0
      * @author nmby
      */
     public static class Builder<T> {

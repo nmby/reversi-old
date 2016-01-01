@@ -15,8 +15,8 @@ import java.util.regex.PatternSyntaxException;
 /**
  * 標準入力から対話的にユーザ入力を取得するためのクラスです。<br>
  * 
- * @deprecated このクラスは {@link xyz.hotchpotch.util.console} パッケージに移動されました。<br>
- *             このクラスの代わりに {@link xyz.hotchpotch.util.console.ConsoleScanner} クラスを使用してください。<br>
+ * @deprecated このクラスは {@link xyz.hotchpotch.util.console} パッケージに移動しました。<br>
+ *             このクラスの代わりに {@link xyz.hotchpotch.util.console.ConsoleScanner xyz.hotchpotch.util.console.ConsoleScanner} クラスを使用してください。<br>
  * @param <T> 最終的にクライアント・アプリケーションに返却されるデータの型
  * @since 1.0.0
  * @author nmby
@@ -31,8 +31,9 @@ public class ConsoleScanner<T> implements Supplier<T> {
     /**
      * {@link ConsoleScanner} オブジェクトを構築するためのビルダーです。
      * 
-     * @deprecated {@link ConsoleScanner} クラスは {@link xyz.hotchpotch.util.console} パッケージに移動されました。<br>
-     *             {@link ConsoleScanner xyz.hotchpotch.util.ConsoleScanner} クラスの代わりに {@link xyz.hotchpotch.util.console.ConsoleScanner} クラスを使用してください。<br>
+     * @deprecated {@link ConsoleScanner} クラスは {@link xyz.hotchpotch.util.console} パッケージに移動しました。<br>
+     *             {@link ConsoleScanner xyz.hotchpotch.util.ConsoleScanner} クラスの代わりに
+     *             {@link xyz.hotchpotch.util.console.ConsoleScanner xyz.hotchpotch.util.console.ConsoleScanner} クラスを使用してください。<br>
      * @param <T> 最終的にクライアント・アプリケーションに返却されるデータの型
      * @since 1.0.0
      * @author nmby
