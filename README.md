@@ -19,6 +19,9 @@ AIプレーヤーを自作することも簡単です。
 および [javadoc](http://nmby.github.io/reversi/api-docs/index.html) を参照してください。  
   
 ## 更新履歴
+##### Version 1.0.1 (2016/01/02)
+* javadocを整備
+  
 #### Version 1.0.0 (2016/01/01)
 * 正式版初版リリース
   
