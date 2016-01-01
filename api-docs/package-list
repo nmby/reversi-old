@@ -3,3 +3,4 @@ xyz.hotchpotch.game.reversi.core
 xyz.hotchpotch.game.reversi.framework
 xyz.hotchpotch.game.reversi.framework.console
 xyz.hotchpotch.util
+xyz.hotchpotch.util.console
