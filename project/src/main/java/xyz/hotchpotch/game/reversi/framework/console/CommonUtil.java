@@ -18,7 +18,7 @@ import xyz.hotchpotch.game.reversi.aiplayers.SimplestAIPlayer;
 import xyz.hotchpotch.game.reversi.aiplayers.SlowpokeAIPlayer;
 import xyz.hotchpotch.game.reversi.framework.Condition;
 import xyz.hotchpotch.game.reversi.framework.Player;
-import xyz.hotchpotch.util.ConsoleScanner;
+import xyz.hotchpotch.util.console.ConsoleScanner;
 
 /**
  * パッケージ内の共通的な処理を集めたユーティリティクラスです。<br>

@@ -13,7 +13,7 @@ import xyz.hotchpotch.game.reversi.framework.MatchCondition;
 import xyz.hotchpotch.game.reversi.framework.MatchResult;
 import xyz.hotchpotch.game.reversi.framework.Player;
 import xyz.hotchpotch.game.reversi.framework.console.ConsolePrinter.Level;
-import xyz.hotchpotch.util.ConsoleScanner;
+import xyz.hotchpotch.util.console.ConsoleScanner;
 
 /**
  * 標準入出力を用いたリーグ実行クラスです。<br>

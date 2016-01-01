@@ -8,7 +8,7 @@ import xyz.hotchpotch.game.reversi.core.Point;
 import xyz.hotchpotch.game.reversi.core.Rule;
 import xyz.hotchpotch.game.reversi.framework.GameCondition;
 import xyz.hotchpotch.game.reversi.framework.Player;
-import xyz.hotchpotch.util.ConsoleScanner;
+import xyz.hotchpotch.util.console.ConsoleScanner;
 
 /**
  * 標準入力からの入力により手を指定する {@link Player} の実装です。<br>

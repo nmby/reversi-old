@@ -1,4 +1,4 @@
-package xyz.hotchpotch.util;
+package xyz.hotchpotch.util.console;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,14 +14,34 @@ import java.util.regex.PatternSyntaxException;
 
 /**
  * 標準入力から対話的にユーザ入力を取得するためのクラスです。<br>
+ * <br>
+ * 求める形式とは異なる入力をユーザが行った場合、{@code ConsoleScanner} はユーザに何度も再入力を求めます。<br>
+ * 正しい形式の入力が得られたら、それを必要な形式（数値、クラス、列挙型等）に変換し、
+ * クライアント・アプリケーションに返却します。<br>
+ * <br>
+ * 次の例では、1～12の範囲の整数を標準入力から対話的に取得します。
+ * <pre>
+ *     int n = ConsoleScanner.intBuilder(1, 12).build().get();
+ * </pre>
+ * 次の例では、列挙型 {@code MyEnum} の要素の中のひとつを選択するようユーザに要求し、選択された要素を取得します。<br>
+ * <pre>
+ *     MyEnum selected = ConsoleScanner.enumBuilder(MyEnum.class).build().get();
+ * </pre>
+ * このほか、正規表現を指定して入力を求めることなども可能です。<br>
+ * 標準出力に表示するプロンプトや、要求とは異なる形式の入力をユーザが行った場合に表示するエラーメッセージを
+ * カスタマイズすることができます。<br>
+ * 詳細は各メソッドの説明を参照してください。<br>
+ * <br>
+ * このクラスのオブジェクトはスレッドセーフではありません。
+ * このクラスのオブジェクトを複数のスレッドから利用することは避けてください。<br>
+ * ただし、このクラスのオブジェクトが {@link #get()} を実行しユーザからの入力を待機しているときに、他のスレッドから割り込みを行うことができます。<br>
+ * オブジェクトは、割り込みを検知すると入力待機を解除し、標準では {@code null} を返却して速やかに終了します。<br>
+ * 割り込みを検知した際の動作はカスタマイズすることが可能です。詳細は {@link Builder#emergencyMeasure(Function)} の説明を参照してください。<br>
  * 
- * @deprecated このクラスは {@link xyz.hotchpotch.util.console} パッケージに移動されました。<br>
- *             このクラスの代わりに {@link xyz.hotchpotch.util.console.ConsoleScanner} クラスを使用してください。<br>
  * @param <T> 最終的にクライアント・アプリケーションに返却されるデータの型
- * @since 1.0.0
+ * @since 1.1.0
  * @author nmby
  */
-@Deprecated
 public class ConsoleScanner<T> implements Supplier<T> {
     
     // [static members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -31,13 +51,10 @@ public class ConsoleScanner<T> implements Supplier<T> {
     /**
      * {@link ConsoleScanner} オブジェクトを構築するためのビルダーです。
      * 
-     * @deprecated {@link ConsoleScanner} クラスは {@link xyz.hotchpotch.util.console} パッケージに移動されました。<br>
-     *             {@link ConsoleScanner xyz.hotchpotch.util.ConsoleScanner} クラスの代わりに {@link xyz.hotchpotch.util.console.ConsoleScanner} クラスを使用してください。<br>
      * @param <T> 最終的にクライアント・アプリケーションに返却されるデータの型
      * @since 1.0.0
      * @author nmby
      */
-    @Deprecated
     public static class Builder<T> {
         private final Predicate<String> judge;
         private final Function<String, ? extends T> converter;

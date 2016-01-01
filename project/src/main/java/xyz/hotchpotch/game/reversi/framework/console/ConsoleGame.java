@@ -29,7 +29,7 @@ import xyz.hotchpotch.game.reversi.framework.Player;
 import xyz.hotchpotch.game.reversi.framework.RuleViolationException;
 import xyz.hotchpotch.game.reversi.framework.TimeUpException;
 import xyz.hotchpotch.game.reversi.framework.console.ConsolePrinter.Level;
-import xyz.hotchpotch.util.ConsoleScanner;
+import xyz.hotchpotch.util.console.ConsoleScanner;
 
 /**
  * 標準入出力を用いたゲーム実行クラスです。<br>

@@ -2,7 +2,7 @@ package xyz.hotchpotch.game.reversi.framework.console;
 
 import java.util.function.Supplier;
 
-import xyz.hotchpotch.util.ConsoleScanner;
+import xyz.hotchpotch.util.console.ConsoleScanner;
 
 /**
  * このアプリケーションのメニューを表す列挙型です。
