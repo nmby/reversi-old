@@ -35,18 +35,28 @@ public class MatchCondition implements Condition<Match>, Serializable {
     /**
      * {@link MatchCondition} のシリアライゼーションプロキシです。<br>
      * 
+     * @serial include
      * @since 1.0.0
      * @author nmby
      */
     private static class SerializationProxy implements Serializable {
         private static final long serialVersionUID = 1L;
         
+        /** @serial 全パラメータが格納されたマップ */
         private final Map<String, String> params;
         
         private SerializationProxy(MatchCondition matchCondition) {
             params = matchCondition.params;
         }
         
+        /**
+         * 復元された {@code SerializationProxy} に対応する {@link MatchCondition} オブジェクトを返します。<br>
+         * 
+         * @serialData 復元された {@link #params} を用いて {@link MatchCondition} オブジェクトを構築して返します。<br>
+         *             {@link MatchCondition} オブジェクト構築の過程で例外が発生した場合は例外をスローして復元を中止します。
+         * @return 復元された {@code SerializationProxy} オブジェクトに対応する {@code MatchCondition} オブジェクト
+         * @throws ObjectStreamException {@link MatchCondition} オブジェクト構築の過程で例外が発生した場合
+         */
         private Object readResolve() throws ObjectStreamException {
             try {
                 return of(params);
@@ -242,10 +252,23 @@ public class MatchCondition implements Condition<Match>, Serializable {
         return params;
     }
     
+    /**
+     * この {@code MatchCondition} オブジェクトの代わりに、{@link SerializationProxy MatchCondition.SerializationProxy} オブジェクトを直列化します。<br>
+     * 
+     * @return この {@code MatchCondition} オブジェクトの代理となる {@link SerializationProxy} オブジェクト
+     */
     private Object writeReplace() {
         return new SerializationProxy(this);
     }
     
+    /**
+     * {@code MatchCondition} オブジェクトを直接復元することはできません。<br>
+     * {@code MatchCondition} オブジェクトの復元は {@link SerializationProxy MatchCondition.SerializationProxy} を通して行う必要があります。<br>
+     * 
+     * @serialData 例外をスローして復元を中止します。
+     * @param stream オブジェクト入力ストリーム
+     * @throws InvalidObjectException 直接 {@code MatchCondition} オブジェクトの復元が試みられた場合
+     */
     private void readObject(ObjectInputStream stream) throws InvalidObjectException {
         throw new InvalidObjectException("Proxy required");
     }

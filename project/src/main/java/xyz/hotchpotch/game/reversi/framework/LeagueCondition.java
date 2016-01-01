@@ -35,18 +35,28 @@ public class LeagueCondition implements Condition<League>, Serializable {
     /**
      * {@link LeagueCondition} のシリアライゼーションプロキシです。<br>
      * 
+     * @serial include
      * @since 1.0.0
      * @author nmby
      */
     private static class SerializationProxy implements Serializable {
         private static final long serialVersionUID = 1L;
         
+        /** @serial 全パラメータが格納されたマップ */
         private final Map<String, String> params;
         
         private SerializationProxy(LeagueCondition leagueCondition) {
             params = leagueCondition.params;
         }
         
+        /**
+         * 復元された {@code SerializationProxy} に対応する {@link LeagueCondition} オブジェクトを返します。<br>
+         * 
+         * @serialData 復元された {@link #params} を用いて {@link LeagueCondition} オブジェクトを構築して返します。<br>
+         *             {@link LeagueCondition} オブジェクト構築の過程で例外が発生した場合は例外をスローして復元を中止します。
+         * @return 復元された {@code SerializationProxy} オブジェクトに対応する {@code LeagueCondition} オブジェクト
+         * @throws ObjectStreamException {@link LeagueCondition} オブジェクト構築の過程で例外が発生した場合
+         */
         private Object readResolve() throws ObjectStreamException {
             try {
                 return of(params);
@@ -252,10 +262,23 @@ public class LeagueCondition implements Condition<League>, Serializable {
         return params;
     }
     
+    /**
+     * この {@code LeagueCondition} オブジェクトの代わりに、{@link SerializationProxy LeagueCondition.SerializationProxy} オブジェクトを直列化します。<br>
+     * 
+     * @return この {@code LeagueCondition} オブジェクトの代理となる {@link SerializationProxy} オブジェクト
+     */
     private Object writeReplace() {
         return new SerializationProxy(this);
     }
     
+    /**
+     * {@code LeagueCondition} オブジェクトを直接復元することはできません。<br>
+     * {@code LeagueCondition} オブジェクトの復元は {@link SerializationProxy LeagueCondition.SerializationProxy} を通して行う必要があります。<br>
+     * 
+     * @serialData 例外をスローして復元を中止します。
+     * @param stream オブジェクト入力ストリーム
+     * @throws InvalidObjectException 直接 {@code LeagueCondition} オブジェクトの復元が試みられた場合
+     */
     private void readObject(ObjectInputStream stream) throws InvalidObjectException {
         throw new InvalidObjectException("Proxy required");
     }

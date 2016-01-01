@@ -27,18 +27,32 @@ public class StrictBoard extends BaseBoard implements Serializable {
     /**
      * {@link StrictBoard} のシリアライゼーションプロキシです。<br>
      * 
+     * @serial include
      * @since 1.0.0
      * @author nmby
      */
     private static class SerializationProxy implements Serializable {
         private static final long serialVersionUID = 1L;
         
+        /**
+         * @serial この {@code SerializationProxy} オブジェクトが代理となる {@link StrictBoard} オブジェクトに適用された手（パスの手も含む）
+         *         が適用順に格納されたリスト
+         */
         private final List<Move> moves;
         
         private SerializationProxy(StrictBoard board) {
             moves = board.moves;
         }
         
+        /**
+         * 復元された {@code SerializationProxy} に対応する {@link StrictBoard} オブジェクトを返します。<br>
+         * 
+         * @serialData ゲーム開始状態の {@code StrictBoard} オブジェクトに対して、
+         *             復元された {@link #moves} に含まれる手を順に適用して返します。<br>
+         *             {@link #moves} に不正な手が含まれる場合は例外をスローして復元を中止します。
+         * @return 復元された {@code SerializationProxy} オブジェクトに対応する {@code StrictBoard} オブジェクト
+         * @throws ObjectStreamException 復元された {@link #moves} に不正な手が含まれる場合
+         */
         private Object readResolve() throws ObjectStreamException {
             Board board = initializedBoard();
             try {
@@ -149,10 +163,23 @@ public class StrictBoard extends BaseBoard implements Serializable {
         return super.toString();
     }
     
+    /**
+     * この {@code StrictBoard} オブジェクトの代わりに、{@link SerializationProxy StrictBoard.SerializationProxy} オブジェクトを直列化します。<br>
+     * 
+     * @return この {@code StrictBoard} オブジェクトの代理となる {@link SerializationProxy StrictBoard.SerializationProxy} オブジェクト
+     */
     private synchronized Object writeReplace() {
         return new SerializationProxy(this);
     }
     
+    /**
+     * {@code StrictBoard} オブジェクトを直接復元することはできません。<br>
+     * {@code StrictBoard} オブジェクトの復元は {@link SerializationProxy StrictBoard.SerializationProxy} を通して行う必要があります。<br>
+     * 
+     * @serialData 例外をスローして復元を中止します。
+     * @param stream オブジェクト入力ストリーム
+     * @throws InvalidObjectException 直接 {@code StrictBoard} オブジェクトの復元が試みられた場合
+     */
     private void readObject(ObjectInputStream stream) throws InvalidObjectException {
         throw new InvalidObjectException("Proxy required");
     }

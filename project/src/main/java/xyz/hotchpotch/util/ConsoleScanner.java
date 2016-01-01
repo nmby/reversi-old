@@ -301,7 +301,7 @@ public class ConsoleScanner<T> implements Supplier<T> {
      * 次の2つの呼び出しは同値です。
      * <pre>
      *     builder(judge, converter, prompt, complaint);
-     *     builder(judge, converter, prompt, complaint, e -&gt null);
+     *     builder(judge, converter, prompt, complaint, e -&gt; null);
      * </pre>
      * 
      * @param <T> 最終的にクライアント・アプリケーションに返却されるデータの型

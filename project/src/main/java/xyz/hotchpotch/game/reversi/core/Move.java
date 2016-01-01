@@ -112,6 +112,16 @@ public class Move implements Serializable {
         return String.format("[%s : %s]", color, point == null ? "PASS" : point.toStringKindly());
     }
     
+    /**
+     * ストリームから {@code Move} インスタンスを復元します。<br>
+     * 
+     * @serialData デフォルトの形式で {@code Move} オブジェクトを復元します。
+     *             {@link #color} が {@code null} の場合は例外をスローして復元を中止します。
+     * @param stream オブジェクト入力ストリーム
+     * @throws ClassNotFoundException 直列化されたオブジェクトのクラスが見つからなかった場合
+     * @throws IOException 入出力例外が発生した場合
+     * @throws InvalidObjectException 復元された {@link #color} が {@code null} の場合
+     */
     // Move オブジェクトの恒等式（color != null）を保証するために readObject を実装する。
     // Color も Point も不変であり、かつそれぞれきちんとシリアライゼーションの制御をしているので、
     // きっとこれだけで大丈夫なはず... シリアライゼーションは難しい...

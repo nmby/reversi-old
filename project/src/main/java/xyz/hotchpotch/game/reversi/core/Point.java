@@ -37,6 +37,7 @@ public class Point implements Serializable, Comparable<Point> {
     /**
      * {@link Point} のシリアライゼーションプロキシです。<br>
      * 
+     * @serial include
      * @since 1.0.0
      * @author nmby
      */
@@ -44,7 +45,10 @@ public class Point implements Serializable, Comparable<Point> {
     private static class SerializationProxy implements Serializable {
         private static final long serialVersionUID = 1L;
         
+        /** @serial 縦座標 */
         private final int i;
+        
+        /** @serial 横座標 */
         private final int j;
         
         private SerializationProxy(Point point) {
@@ -52,6 +56,14 @@ public class Point implements Serializable, Comparable<Point> {
             j = point.j;
         }
         
+        /**
+         * 復元された {@code SerializationProxy} に対応する {@link Point} インスタンスを返します。<br>
+         * 
+         * @serialData 復元された {@code (i, j)} に対応する {@code Point} インスタンスを返します。<br>
+         *             {@code (i, j)} の値が不正な場合は例外をスローして復元を中止します。
+         * @return 復元された {@code SerializationProxy} オブジェクトに対応する {@link Point} インスタンス
+         * @throws ObjectStreamException 復元された {@code (i, j)} の値が不正な場合
+         */
         private Object readResolve() throws ObjectStreamException {
             try {
                 return of(i, j);
@@ -250,10 +262,25 @@ public class Point implements Serializable, Comparable<Point> {
         return String.format("%c%d", 'a' + j, 1 + i);
     }
     
+    /**
+     * この {@code Point} インスタンスの代わりに、{@link SerializationProxy Point.SerializationProxy} オブジェクトを直列化します。<br>
+     * 
+     * @return この {@code Point} インスタンスの代理となる {@link SerializationProxy Point.SerializationProxy} オブジェクト
+     * @see SerializationProxy Point.SerializationProxy
+     */
     private Object writeReplace() {
         return new SerializationProxy(this);
     }
     
+    /**
+     * {@code Point} インスタンスを直接復元することはできません。<br>
+     * {@code Point} インスタンスの復元は {@link SerializationProxy Point.SerializationProxy} を通して行う必要があります。<br>
+     * 
+     * @serialData 例外をスローして復元を中止します。
+     * @param stream オブジェクト入力ストリーム
+     * @throws InvalidObjectException 直接 {@code Point} インスタンスの復元が試みられた場合
+     * @see SerializationProxy Point.SerializationProxy
+     */
     private void readObject(ObjectInputStream stream) throws InvalidObjectException {
         throw new InvalidObjectException("Proxy required");
     }
