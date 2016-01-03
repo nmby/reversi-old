@@ -23,7 +23,6 @@ import xyz.hotchpotch.util.console.ConsoleScanner;
 /**
  * パッケージ内の共通的な処理を集めたユーティリティクラスです。<br>
  * 
- * @since 1.0.0
  * @author nmby
  */
 /*package*/ class CommonUtil {

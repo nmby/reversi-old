@@ -38,7 +38,6 @@ public class Point implements Serializable, Comparable<Point> {
      * {@link Point} のシリアライゼーションプロキシです。<br>
      * 
      * @serial include
-     * @since 1.0.0
      * @author nmby
      */
     // 同値オブジェクトの単一性を保証するためにシリアライズプロキシパターンを採用する。

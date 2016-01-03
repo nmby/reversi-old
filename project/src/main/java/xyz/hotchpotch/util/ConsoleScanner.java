@@ -17,6 +17,7 @@ import java.util.regex.PatternSyntaxException;
  * 
  * @deprecated このクラスは {@link xyz.hotchpotch.util.console} パッケージに移動しました。<br>
  *             このクラスの代わりに {@link xyz.hotchpotch.util.console.ConsoleScanner xyz.hotchpotch.util.console.ConsoleScanner} クラスを使用してください。<br>
+ *             このクラスは将来のリリースで廃止される予定です。<br>
  * @param <T> 最終的にクライアント・アプリケーションに返却されるデータの型
  * @since 1.0.0
  * @author nmby
@@ -34,6 +35,7 @@ public class ConsoleScanner<T> implements Supplier<T> {
      * @deprecated {@link ConsoleScanner} クラスは {@link xyz.hotchpotch.util.console} パッケージに移動しました。<br>
      *             {@link ConsoleScanner xyz.hotchpotch.util.ConsoleScanner} クラスの代わりに
      *             {@link xyz.hotchpotch.util.console.ConsoleScanner xyz.hotchpotch.util.console.ConsoleScanner} クラスを使用してください。<br>
+     *             {@link ConsoleScanner xyz.hotchpotch.util.ConsoleScanner} クラスは将来のリリースで廃止される予定です。<br>
      * @param <T> 最終的にクライアント・アプリケーションに返却されるデータの型
      * @since 1.0.0
      * @author nmby

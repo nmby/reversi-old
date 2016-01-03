@@ -28,7 +28,6 @@ public class StrictBoard extends BaseBoard implements Serializable {
      * {@link StrictBoard} のシリアライゼーションプロキシです。<br>
      * 
      * @serial include
-     * @since 1.0.0
      * @author nmby
      */
     private static class SerializationProxy implements Serializable {

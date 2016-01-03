@@ -41,7 +41,6 @@ public class MonteCarloAIPlayer implements Player {
     /**
      * ある候補手についての試行結果を保持するためのクラスです。<br>
      * 
-     * @since 1.0.0
      * @author nmby
      */
     private static class Record {

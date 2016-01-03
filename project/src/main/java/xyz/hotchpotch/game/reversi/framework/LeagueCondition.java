@@ -36,7 +36,6 @@ public class LeagueCondition implements Condition<League>, Serializable {
      * {@link LeagueCondition} のシリアライゼーションプロキシです。<br>
      * 
      * @serial include
-     * @since 1.0.0
      * @author nmby
      */
     private static class SerializationProxy implements Serializable {

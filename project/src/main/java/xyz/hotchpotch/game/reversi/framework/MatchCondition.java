@@ -36,7 +36,6 @@ public class MatchCondition implements Condition<Match>, Serializable {
      * {@link MatchCondition} のシリアライゼーションプロキシです。<br>
      * 
      * @serial include
-     * @since 1.0.0
      * @author nmby
      */
     private static class SerializationProxy implements Serializable {

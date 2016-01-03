@@ -33,7 +33,6 @@ public class GameCondition implements Condition<Game>, Serializable {
      * {@link GameCondition} のシリアライゼーションプロキシです。<br>
      * 
      * @serial include
-     * @since 1.0.0
      * @author nmby
      */
     private static class SerializationProxy implements Serializable {

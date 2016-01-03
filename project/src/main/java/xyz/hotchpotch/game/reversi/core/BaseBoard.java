@@ -12,7 +12,6 @@ import java.util.Objects;
  * 同期化が必要な場合は、本クラスが提供するすべてのメソッドをサブクラスでオーバーライドして同期化するか、
  * {@code Board} を直接実装するようにしてください。<br>
  * 
- * @since 1.0.0
  * @author nmby
  */
 // このクラスを Serializable にしてみようかとも思ったが、

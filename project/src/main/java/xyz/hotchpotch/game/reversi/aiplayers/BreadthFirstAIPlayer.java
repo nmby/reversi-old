@@ -262,7 +262,6 @@ public class BreadthFirstAIPlayer implements Player {
     /**
      * 探索ツリーを構成するノードです。<br>
      * 
-     * @since 1.0.0
      * @author nmby
      */
     private class Node {

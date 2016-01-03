@@ -35,7 +35,6 @@ public class DepthFirstAIPlayer implements Player {
     /**
      * 試行時間切れを表す例外です。<br>
      * 
-     * @since 1.0.0
      * @author nmby
      */
     private static class TimeUpException extends RuntimeException {
