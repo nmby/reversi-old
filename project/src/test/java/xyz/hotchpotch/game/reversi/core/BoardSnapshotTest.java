@@ -14,8 +14,8 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import xyz.hotchpotch.jutaime.serializable.experimental.FailToDeserializeException;
-import xyz.hotchpotch.jutaime.serializable.experimental.TestUtil;
+import xyz.hotchpotch.jutaime.serializable.FailToDeserializeException;
+import xyz.hotchpotch.jutaime.serializable.STUtil;
 
 public class BoardSnapshotTest {
     
@@ -72,8 +72,8 @@ public class BoardSnapshotTest {
         Board original = StrictBoard.initializedBoard();
         Board snapshot = BoardSnapshot.of(original);
         
-        assertThat(TestUtil.writeAndRead(snapshot), instanceOf(BoardSnapshot.class));
-        assertThat(TestUtil.writeAndRead(snapshot).toStringInLine(),
+        assertThat(STUtil.writeAndRead(snapshot), instanceOf(BoardSnapshot.class));
+        assertThat(STUtil.writeAndRead(snapshot).toStringInLine(),
                 is("・・・・・・・・・・・・・・・・・・・・・・・・・・・○●・・・・・・●○・・・・・・・・・・・・・・・・・・・・・・・・・・・"));
     }
     
@@ -87,28 +87,28 @@ public class BoardSnapshotTest {
         Board pseude02 = new PseudeBoardSnapshot(original, null);
         
         // PseudeBoardSnapshot のバイト配列を改竄して BoardSnapshot にデシリアライズできることの確認（テスト方法の妥当性確認）
-        assertThat(TestUtil.writeModifyAndRead(
+        assertThat(STUtil.writeModifyAndRead(
                 pseude01,
-                bytes -> TestUtil.replace(
+                bytes -> STUtil.replace(
                         bytes,
-                        TestUtil.bytes(PseudeBoardSnapshot.class.getName()),
-                        TestUtil.bytes(BoardSnapshot.class.getName()))),
+                        STUtil.bytes(PseudeBoardSnapshot.class.getName()),
+                        STUtil.bytes(BoardSnapshot.class.getName()))),
                 instanceOf(BoardSnapshot.class));
-        assertThat(((Board) TestUtil.writeModifyAndRead(
+        assertThat(((Board) STUtil.writeModifyAndRead(
                 pseude01,
-                bytes -> TestUtil.replace(
+                bytes -> STUtil.replace(
                         bytes,
-                        TestUtil.bytes(PseudeBoardSnapshot.class.getName()),
-                        TestUtil.bytes(BoardSnapshot.class.getName())))).toStringInLine(),
+                        STUtil.bytes(PseudeBoardSnapshot.class.getName()),
+                        STUtil.bytes(BoardSnapshot.class.getName())))).toStringInLine(),
                 is("●○・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・"));
                 
         // map==null に改竄されている場合はデシリアライズしないことの確認（テスト本番）
-        assertThat(of(() -> TestUtil.writeModifyAndRead(
+        assertThat(of(() -> STUtil.writeModifyAndRead(
                 pseude02,
-                bytes -> TestUtil.replace(
+                bytes -> STUtil.replace(
                         bytes,
-                        TestUtil.bytes(PseudeBoardSnapshot.class.getName()),
-                        TestUtil.bytes(BoardSnapshot.class.getName())))),
+                        STUtil.bytes(PseudeBoardSnapshot.class.getName()),
+                        STUtil.bytes(BoardSnapshot.class.getName())))),
                 raise(FailToDeserializeException.class)
                         .rootCause(InvalidObjectException.class, "map cannot be null."));
     }

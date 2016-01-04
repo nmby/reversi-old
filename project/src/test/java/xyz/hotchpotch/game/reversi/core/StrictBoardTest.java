@@ -10,8 +10,8 @@ import java.io.Serializable;
 
 import org.junit.Test;
 
-import xyz.hotchpotch.jutaime.serializable.experimental.FailToDeserializeException;
-import xyz.hotchpotch.jutaime.serializable.experimental.TestUtil;
+import xyz.hotchpotch.jutaime.serializable.FailToDeserializeException;
+import xyz.hotchpotch.jutaime.serializable.STUtil;
 
 public class StrictBoardTest {
     
@@ -281,14 +281,14 @@ public class StrictBoardTest {
         Board board = StrictBoard.initializedBoard();
         assertThat(board.toStringInLine(), is("・・・・・・・・・・・・・・・・・・・・・・・・・・・○●・・・・・・●○・・・・・・・・・・・・・・・・・・・・・・・・・・・"));
         
-        Board board2 = TestUtil.writeAndRead(board);
+        Board board2 = STUtil.writeAndRead(board);
         assertThat(board2, instanceOf(StrictBoard.class));
         assertThat(board2.toStringInLine(), is("・・・・・・・・・・・・・・・・・・・・・・・・・・・○●・・・・・・●○・・・・・・・・・・・・・・・・・・・・・・・・・・・"));
         
         board2.apply(Move.of(Color.BLACK, Point.of("c4")));
         assertThat(board2.toStringInLine(), is("・・・・・・・・・・・・・・・・・・・・・・・・・・●●●・・・・・・●○・・・・・・・・・・・・・・・・・・・・・・・・・・・"));
         
-        Board board3 = TestUtil.writeAndRead(board2);
+        Board board3 = STUtil.writeAndRead(board2);
         
         assertThat(board3, instanceOf(StrictBoard.class));
         assertThat(board3.toStringInLine(), is("・・・・・・・・・・・・・・・・・・・・・・・・・・●●●・・・・・・●○・・・・・・・・・・・・・・・・・・・・・・・・・・・"));
@@ -304,12 +304,12 @@ public class StrictBoardTest {
         board.apply(Move.of(Color.BLACK, Point.of("c4")));
         assertThat(board.toStringInLine(), is("・・・・・・・・・・・・・・・・・・・・・・・・・・●●●・・・・・・●○・・・・・・・・・・・・・・・・・・・・・・・・・・・"));
         
-        byte[] bytes = TestUtil.replace(
-               TestUtil.write(board),
-               TestUtil.bytes(Point.of("c4")),
-               TestUtil.bytes(Point.of("a1")));
+        byte[] bytes = STUtil.replace(
+               STUtil.write(board),
+               STUtil.bytes(Point.of("c4")),
+               STUtil.bytes(Point.of("a1")));
         
-        assertThat(of(() -> TestUtil.read(bytes)),
+        assertThat(of(() -> STUtil.read(bytes)),
                 raiseExact(FailToDeserializeException.class)
                 .rootCause(InvalidObjectException.class, "許可されない手が指定されました。move=[● : a1], board=・・・・・・・・・・・・・・・・・・・・・・・・・・・○●・・・・・・●○・・・・・・・・・・・・・・・・・・・・・・・・・・・"));
     }
@@ -317,12 +317,12 @@ public class StrictBoardTest {
     @Test
     public void testSerializable3() {
         // serialization proxy を迂回できないことの確認
-        byte[] bytes = TestUtil.replace(
-                TestUtil.write(new DummyBoard()),
-                TestUtil.bytes(DummyBoard.class.getName()),
-                TestUtil.bytes(StrictBoard.class.getName()));
+        byte[] bytes = STUtil.replace(
+                STUtil.write(new DummyBoard()),
+                STUtil.bytes(DummyBoard.class.getName()),
+                STUtil.bytes(StrictBoard.class.getName()));
         
-        assertThat(of(() -> TestUtil.read(bytes)),
+        assertThat(of(() -> STUtil.read(bytes)),
                 raiseExact(FailToDeserializeException.class)
                 .rootCause(InvalidObjectException.class, "Proxy required"));
     }

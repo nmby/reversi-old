@@ -2,7 +2,7 @@ package xyz.hotchpotch.game.reversi.core;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
-import static xyz.hotchpotch.jutaime.serializable.experimental.TestUtil.*;
+import static xyz.hotchpotch.jutaime.serializable.STUtil.*;
 import static xyz.hotchpotch.jutaime.throwable.RaiseMatchers.*;
 import static xyz.hotchpotch.jutaime.throwable.Testee.*;
 
@@ -15,8 +15,7 @@ import java.util.stream.IntStream;
 
 import org.junit.Test;
 
-import xyz.hotchpotch.jutaime.serializable.experimental.FailToDeserializeException;
-import xyz.hotchpotch.jutaime.serializable.experimental.TestUtil;
+import xyz.hotchpotch.jutaime.serializable.FailToDeserializeException;
 
 public class PointTest {
     
@@ -213,13 +212,13 @@ public class PointTest {
         int len = bytes.length;
         byte[] modified = Arrays.copyOf(bytes, len);
         
-        byte[] iBytes = TestUtil.bytes(i);
+        byte[] iBytes = bytes(i);
         modified[len - 8] = iBytes[0];
         modified[len - 7] = iBytes[1];
         modified[len - 6] = iBytes[2];
         modified[len - 5] = iBytes[3];
         
-        byte[] jBytes = TestUtil.bytes(j);
+        byte[] jBytes = bytes(j);
         modified[len - 4] = jBytes[0];
         modified[len - 3] = jBytes[1];
         modified[len - 2] = jBytes[2];

@@ -2,7 +2,7 @@ package xyz.hotchpotch.game.reversi.core;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
-import static xyz.hotchpotch.jutaime.serializable.experimental.TestUtil.*;
+import static xyz.hotchpotch.jutaime.serializable.STUtil.*;
 import static xyz.hotchpotch.jutaime.throwable.RaiseMatchers.*;
 import static xyz.hotchpotch.jutaime.throwable.Testee.*;
 
@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 import org.junit.Test;
 
-import xyz.hotchpotch.jutaime.serializable.experimental.FailToDeserializeException;
+import xyz.hotchpotch.jutaime.serializable.FailToDeserializeException;
 
 public class MoveTest {
     
