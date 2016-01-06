@@ -21,6 +21,7 @@ AIプレーヤーを自作することも簡単です。
 ## 更新履歴
 #### Version 2.0.0 (2016/01/xx)
 * ベースパッケージを xyz.hotchpotch.game.reversi から xyz.hotchpotch.reversi に変更
+* 非推奨パッケージを削除
   
 #### Version 1.1.0 (2016/01/02)
 * ユーティリティパッケージの構成を変更
