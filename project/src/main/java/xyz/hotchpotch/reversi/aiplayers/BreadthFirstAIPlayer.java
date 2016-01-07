@@ -141,8 +141,7 @@ public class BreadthFirstAIPlayer implements Player {
             // キューの中に残っている不要になったノードを削除する。
             Iterator<Node> itr = queue.iterator();
             while (itr.hasNext()) {
-                Node node = itr.next();
-                if (!node.isAlive()) {
+                if (!itr.next().isAlive()) {
                     itr.remove();
                 }
             }
@@ -170,8 +169,7 @@ public class BreadthFirstAIPlayer implements Player {
         Instant deadline = start.plusMillis(millisForThisTurn - margin1);
         
         while (!queue.isEmpty() && Instant.now().isBefore(deadline)) {
-            Node node = queue.poll();
-            node.calc();
+            queue.poll().calc();
         }
         
         if (debug) {

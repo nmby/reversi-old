@@ -120,7 +120,7 @@ public class MonteCarloAIPlayer implements Player {
         
         long millisForThisTurn = millisForThisTurn(board, givenMillisPerTurn, remainingMillisInGame);
         if (millisForThisTurn < margin2) {
-            // 残り時間が少ない場合はシミュレーションを行わずにランダムに返す。
+            // 費やせる時間が少ない場合はシミュレーションを行わずにランダムに返す。
             return proxy.decide(board, color, 0, 0);
         }
         
@@ -137,7 +137,7 @@ public class MonteCarloAIPlayer implements Player {
             System.out.println();
         }
         
-        // 得られた結果の中から最もスコアの高いものを選ぶ。
+        // 得られた結果の中から最もスコアの高い候補箇所を選ぶ。
         return Collections.max(records, comparator).candidate;
     }
     
@@ -159,10 +159,6 @@ public class MonteCarloAIPlayer implements Player {
         
         for (Point candidate : candidates) {
             records.put(candidate, new Record(color, candidate));
-            
-            // 後続の simulateOneGame の中の処理で
-            // new LightweightBoard(Board) ではなく new LightweightBoard(LightweightBoard) が選ばれるように
-            // 敢えて LightweightBoard 型の参照で受けている。
             LightweightBoard nextBoard = new LightweightBoard(board);
             nextBoard.apply(Move.of(color, candidate));
             nextBoards.put(candidate, nextBoard);
@@ -173,14 +169,11 @@ public class MonteCarloAIPlayer implements Player {
         // ここでは分かり易さとコードの堅牢さを優先し、シングルスレッドでの順次処理として実装する。
         do {
             
+            // 候補箇所ごとに以降のゲームをシミュレートし、結果を積算する。
             for (Point candidate : candidates) {
-                
-                // 本来はある程度の回数まとめてシミュレーションを行った方がオーバーヘッドを減らせるのだが、
-                // ここでは簡略さを優先することにする。
                 Color winner = simulateOneGame(nextBoards.get(candidate), color.opposite());
                 records.get(candidate).increment(winner);
             }
-            
         } while (Instant.now().isBefore(deadline));
         
         return records.values();
@@ -238,7 +231,7 @@ public class MonteCarloAIPlayer implements Player {
             weight = 1.0f;
         }
         
-        long millisPerTurn = (long) ((float) (remainingMillisInGame - margin1) * weight) / myTurns;
-        return Long.min(millisPerTurn, givenMillisPerTurn - margin1);
+        long millisForThisTurn = (long) ((float) (remainingMillisInGame - margin1) * weight) / myTurns;
+        return Long.min(millisForThisTurn, givenMillisPerTurn - margin1);
     }
 }

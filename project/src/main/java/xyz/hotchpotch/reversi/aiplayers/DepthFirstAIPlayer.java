@@ -20,8 +20,10 @@ import xyz.hotchpotch.reversi.framework.Player;
  *   <caption>指定可能なオプションパラメータ</caption>
  *   <tr><th>キー</th><th>型</th><th>内容</th><th>デフォルト値</th></tr>
  *   <tr><td>{@code seed}</td><td>{@code long}</td><td>乱数ジェネレータのシード値</td><td>（なし）</td></tr>
+ *   <tr><td>{@code skip}</td><td>{@code int}</td><td>ゲーム序盤で探索を行わない自ターン数</td><td>{@code 12}</td></tr>
+ *   <tr><td>{@code rounds}</td><td>{@code int}</td><td>最低何手に一回、探索を試みるか</td><td>{@code 3}</td></tr>
  *   <tr><td>{@code margin1}</td><td>{@code long}</td><td>探索を実施する最少の残り持ち時間（ミリ秒）</td><td>{@code 100}</td></tr>
- *   <tr><td>{@code rounds}</td><td>{@code int}</td><td>ゲームの序盤において、何手に一回、探索を試みるか</td><td>{@code 3}</td></tr>
+ *   <tr><td>{@code weight}</td><td>{@code float}</td><td>ゲーム終盤よりも中盤に時間を費やすためのウェイト</td><td>{@code 3.5}</td></tr>
  *   <tr><td>{@code debug}</td><td>{@code boolean}</td><td>デバッグ出力の有無</td><td>{@code false}</td></tr>
  * </table>
  * 
@@ -45,10 +47,12 @@ public class DepthFirstAIPlayer implements Player {
     private final Player proxy;
     private final long margin1;
     private final int rounds;
+    private final float weight;
     private final boolean debug;
     
     private int searchableTurns = Point.HEIGHT * Point.WIDTH;
-    private int round = 0;
+    private int round = -1;
+    private int skip;
     private Instant deadline;
     
     /**
@@ -61,8 +65,10 @@ public class DepthFirstAIPlayer implements Player {
         proxy = new RandomAIPlayer(null, gameCondition);
         
         // 動作制御用パラメータの取得
-        margin1 = AIPlayerUtil.getLongParameter(gameCondition, "margin1").filter(v -> 0 < v).orElse(100L);
+        skip = AIPlayerUtil.getIntParameter(gameCondition, "skip").filter(v -> 0 <= v).orElse(12);
         rounds = AIPlayerUtil.getIntParameter(gameCondition, "rounds").filter(v -> 0 < v).orElse(3);
+        margin1 = AIPlayerUtil.getLongParameter(gameCondition, "margin1").filter(v -> 0 < v).orElse(100L);
+        weight = AIPlayerUtil.getFloatParameter(gameCondition, "weight").filter(v -> 1.0f <= v).orElse(3.5f);
         debug = AIPlayerUtil.getBooleanParameter(gameCondition, "debug").orElse(false);
     }
     
@@ -74,6 +80,10 @@ public class DepthFirstAIPlayer implements Player {
      */
     @Override
     public Point decide(Board board, Color color, long givenMillisPerTurn, long remainingMillisInGame) {
+        if (0 < skip) {
+            skip--;
+            return proxy.decide(board, color, 0, 0);
+        }
         round++;
         round %= rounds;
         
@@ -88,19 +98,20 @@ public class DepthFirstAIPlayer implements Player {
             return candidates[0];
         }
         
-        int blankCells = (int) Point.stream().filter(p -> board.colorAt(p) == null).count();
-        int myTurns = (blankCells + 1) / 2;
-        long millisForThisTurn = Long.min(givenMillisPerTurn, remainingMillisInGame / myTurns);
-        
-        if (millisForThisTurn < margin1) {
-            // 残り時間が少ない場合は探索を行わずにランダムに返す。
-            return proxy.decide(board, color, 0, 0);
-        }
-        
         // 前回の探索で読み切れた深さよりも現時点での残りターン数の方が 2 以上多い場合は、
         // 今回もどうせ読み切れずに時間切れとなり時間の無駄なので、探索を行わずにランダムに返す。
         // 但し、rounds 回に 1 回は探索を行う。
+        int blankCells = (int) Point.stream().filter(p -> board.colorAt(p) == null).count();
         if (searchableTurns + 1 < blankCells && 0 < round) {
+            return proxy.decide(board, color, 0, 0);
+        }
+        
+        int myTurns = (blankCells + 1) / 2;
+        long millisForThisTurn = Long.min(givenMillisPerTurn, (long) (weight * remainingMillisInGame / myTurns));
+        System.out.print(String.format("%-4d  ", millisForThisTurn));
+        
+        // 残り時間が少ない場合は探索を行わずにランダムに返す。
+        if (millisForThisTurn < margin1) {
             return proxy.decide(board, color, 0, 0);
         }
         
@@ -114,7 +125,7 @@ public class DepthFirstAIPlayer implements Player {
         
         Point selected;
         try {
-            selected = searchDeeply(board, color, candidates);
+            selected = searchCertainPoint(board, color, candidates);
             if (debug) {
                 System.out.println(String.format("残り %d 手を読み切りました。", searchableTurns));
             }
@@ -127,14 +138,14 @@ public class DepthFirstAIPlayer implements Player {
         return selected;
     }
     
-    private Point searchDeeply(Board board, Color color, Point[] candidates) {
+    private Point searchCertainPoint(Board board, Color color, Point[] candidates) {
         int remainingTurns = (int) Point.stream().filter(p -> board.colorAt(p) == null).count() - 1;
         Point drawable = null;
         
         for (Point candidate : candidates) {
             LightweightBoard nextBoard = new LightweightBoard(board);
             nextBoard.apply(Move.of(color, candidate));
-            Color winner = searchWinner(nextBoard, color.opposite(), remainingTurns);
+            Color winner = searchWinnerDeeply(nextBoard, color.opposite(), remainingTurns);
             
             if (winner == color) {
                 if (debug) {
@@ -160,55 +171,48 @@ public class DepthFirstAIPlayer implements Player {
      * @param remainingTurns 空のマスの数（どの程度の深さまで読めたかの記録に使用）
      * @return 勝者の色
      */
-    private Color searchWinner(LightweightBoard board, Color currColor, int remainingTurns) {
+    private Color searchWinnerDeeply(LightweightBoard board, Color currColor, int remainingTurns) {
         // 時間切れの場合は諦める
         if (Instant.now().isAfter(deadline)) {
             throw new TimeUpException();
         }
         
-        if (!Rule.isGameOngoing(board)) {
-            // このメソッド内で結果を返す際は、何手先まで読めたのかを記録する。（high-water mark）
-            if (searchableTurns < remainingTurns) {
-                searchableTurns = remainingTurns;
-            }
-            return Rule.winner(board);
-        }
+        Color winner;
+        Point[] availables = Point.stream()
+                .filter(p -> Rule.canPutAt(board, currColor, p))
+                .toArray(Point[]::new);
         
-        Point[] availables = Point.stream().filter(p -> Rule.canPutAt(board, currColor, p)).toArray(Point[]::new);
-        
-        if (availables.length == 0) {
-            Color winner = searchWinner(board, currColor.opposite(), remainingTurns);
-            if (searchableTurns < remainingTurns) {
-                searchableTurns = remainingTurns;
-            }
-            return winner;
+        if (availables.length == 0 && !Rule.canPut(board, currColor.opposite())) {
+            winner = Rule.winner(board);
+            
+        } else if (availables.length == 0) {
+            winner = searchWinnerDeeply(board, currColor.opposite(), remainingTurns);
+            
         } else if (availables.length == 1) {
             board.apply(Move.of(currColor, availables[0]));
-            Color winner = searchWinner(board, currColor.opposite(), remainingTurns - 1);
-            if (searchableTurns < remainingTurns) {
-                searchableTurns = remainingTurns;
+            winner = searchWinnerDeeply(board, currColor.opposite(), remainingTurns - 1);
+            
+        } else {
+            winner = currColor.opposite();
+            for (Point p : availables) {
+                LightweightBoard nextBoard = new LightweightBoard(board);
+                nextBoard.apply(Move.of(currColor, p));
+                Color tmp = searchWinnerDeeply(nextBoard, currColor.opposite(), remainingTurns - 1);
+                
+                if (tmp == currColor) {
+                    winner = currColor;
+                    break;
+                    
+                } else if (tmp == null) {
+                    winner = null;
+                }
             }
-            return winner;
         }
         
-        boolean drawable = false;
-        for (Point p : availables) {
-            LightweightBoard nextBoard = new LightweightBoard(board);
-            nextBoard.apply(Move.of(currColor, p));
-            Color winner = searchWinner(nextBoard, currColor.opposite(), remainingTurns - 1);
-            
-            if (winner == currColor) {
-                if (searchableTurns < remainingTurns) {
-                    searchableTurns = remainingTurns;
-                }
-                return currColor;
-            } else if (winner == null) {
-                drawable = true;
-            }
-        }
+        // 終了から何手前まで読めたのかを記録する。（high-water mark）
         if (searchableTurns < remainingTurns) {
             searchableTurns = remainingTurns;
         }
-        return drawable ? null : currColor.opposite();
+        return winner;
     }
 }
