@@ -1,6 +1,5 @@
-xyz.hotchpotch.game.reversi.aiplayers
-xyz.hotchpotch.game.reversi.core
-xyz.hotchpotch.game.reversi.framework
-xyz.hotchpotch.game.reversi.framework.console
-xyz.hotchpotch.util
+xyz.hotchpotch.reversi.aiplayers
+xyz.hotchpotch.reversi.core
+xyz.hotchpotch.reversi.framework
+xyz.hotchpotch.reversi.framework.console
 xyz.hotchpotch.util.console
