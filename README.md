@@ -11,15 +11,15 @@
 * [MonteCarloAIPlayer](https://github.com/nmby/reversi/blob/master/project/src/main/java/xyz/hotchpotch/reversi/aiplayers/MonteCarloAIPlayer.java) ： モンテカルロ・シミュレーションにより最善手を選択するAIプレーヤーです。  
 
 AIプレーヤーを自作することも簡単です。
-[Player インタフェース](http://nmby.github.io/reversi/api-docs/xyz/hotchpotch/reversi/framework/Player.html) を実装し、
-[Player#decide メソッド](http://nmby.github.io/reversi/api-docs/xyz/hotchpotch/reversi/framework/Player.html#decide-xyz.hotchpotch.reversi.core.Board-xyz.hotchpotch.reversi.core.Color-long-long-) をオーバーライドするだけです。  
+[Player インタフェース](http://reversi.hotchpotch.xyz/docs/api/index.html?xyz/hotchpotch/reversi/framework/Player.html) を実装し、
+[Player#decide メソッド](http://reversi.hotchpotch.xyz/docs/api/xyz/hotchpotch/reversi/framework/Player.html#decide-xyz.hotchpotch.reversi.core.Board-xyz.hotchpotch.reversi.core.Color-long-long-) をオーバーライドするだけです。  
 自作したAIプレーヤーと標準AIプレーヤーを対戦させることもできます。  
   
 詳細は [Qiita内の紹介ページ](http://qiita.com/nmby/items/bd44e28d937108fa3eb0)
-および [javadoc](http://nmby.github.io/reversi/api-docs/index.html) を参照してください。  
+および [javadoc](http://reversi.hotchpotch.xyz/docs/api/index.html) を参照してください。  
   
 ## 更新履歴
-#### Version 2.0.0 (2016/01/xx)
+#### Version 2.0.0 (2016/01/08)
 * ベースパッケージを xyz.hotchpotch.game.reversi から xyz.hotchpotch.reversi に変更
 * 非推奨パッケージを削除
   
