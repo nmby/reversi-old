@@ -10,7 +10,7 @@ import java.util.Objects;
  * リバーシゲームにおける手を表す不変クラスです。<br>
  * <ul>
  *   <li>{@code Move.color} ： 手を指したプレーヤーの色を表します。</li>
- *   <li>{@code Move.point} ： 指定された駒の位置を表します。{@code null} の場合はパスを表します。</li>
+ *   <li>{@code Move.point} ： 指定された石の位置を表します。{@code null} の場合はパスを表します。</li>
  * </ul>
  * <br>
  * {@code Move} は値ベースのクラスです。
@@ -29,7 +29,7 @@ public class Move implements Serializable {
      * 指定された手を表す {@code Move} オブジェクトを返します。<br>
      * 
      * @param color 手を指したプレーヤーの色
-     * @param point 指定された駒の位置（パスの場合は {@code null}）
+     * @param point 指定された石の位置（パスの場合は {@code null}）
      * @return Move オブジェクト
      * @throws NullPointerException {@code color} が {@code null} の場合
      */
@@ -45,7 +45,7 @@ public class Move implements Serializable {
      *     Move.of(color, null);
      * </pre>
      * 
-     * @param color 駒の色
+     * @param color 石の色
      * @return Move オブジェクト
      * @throws NullPointerException {@code color} が {@code null} の場合
      */
@@ -64,7 +64,7 @@ public class Move implements Serializable {
     /** 手を指したプレーヤーの色 */
     public final Color color;
     
-    /** 指定された駒の位置（パスの場合は {@code null}） */
+    /** 指定された石の位置（パスの場合は {@code null}） */
     public final Point point;
     
     private Move(Color color, Point point) {

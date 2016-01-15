@@ -11,7 +11,7 @@ import xyz.hotchpotch.reversi.framework.GameCondition;
 import xyz.hotchpotch.reversi.framework.Player;
 
 /**
- * その位置に自分の駒を置けるか否かも考えず、既存の駒に隣接する空きセルの中からランダムに手を選ぶ
+ * その位置に自分の石を置けるか否かも考えず、既存の石に隣接する空きセルの中からランダムに手を選ぶ
  * {@link Player} の実装です。<br>
  * 早晩、ルール違反で敗退することでしょう。<br>
  * <br>
@@ -36,7 +36,7 @@ public class CrazyAIPlayer implements Player {
     /**
      * このクラスのインスタンスを生成します。<br>
      * 
-     * @param color このプレーヤーの駒の色
+     * @param color このプレーヤーの石の色
      * @param gameCondition ゲーム実施条件
      */
     public CrazyAIPlayer(Color color, GameCondition gameCondition) {
@@ -48,7 +48,7 @@ public class CrazyAIPlayer implements Player {
     /**
      * {@inheritDoc}
      * <br>
-     * この実装は、駒を置ける位置か否かを考慮せず、既存の駒に隣接する空きセルの中からランダムに手を選びます。<br>
+     * この実装は、石を置ける位置か否かを考慮せず、既存の石に隣接する空きセルの中からランダムに手を選びます。<br>
      * 早晩、ルール違反で敗退することでしょう。<br>
      */
     @Override

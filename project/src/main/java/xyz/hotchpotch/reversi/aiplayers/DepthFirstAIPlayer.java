@@ -58,7 +58,7 @@ public class DepthFirstAIPlayer implements Player {
     /**
      * このクラスのインスタンスを生成します。<br>
      * 
-     * @param color このプレーヤーの駒の色
+     * @param color このプレーヤーの石の色
      * @param gameCondition ゲーム実施条件
      */
     public DepthFirstAIPlayer(Color color, GameCondition gameCondition) {
@@ -164,7 +164,7 @@ public class DepthFirstAIPlayer implements Player {
     
     /**
      * 深さ優先でゲーム木の末端まで再帰的に探索し、黒白それぞれが必勝手を指した場合の勝者を返す。<br>
-     * 但し、必勝手の探索においては勝ち負けのみを考慮し、駒数の差は考慮しない。<br>
+     * 但し、必勝手の探索においては勝ち負けのみを考慮し、石数の差は考慮しない。<br>
      * 
      * @param board リバーシ盤
      * @param currColor 現在の手番

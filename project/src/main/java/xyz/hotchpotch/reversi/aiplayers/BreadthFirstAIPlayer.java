@@ -44,14 +44,14 @@ public class BreadthFirstAIPlayer implements Player {
     
     // [static members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
-    /** 自身と相手の駒の数の差に応じてリバーシ盤を評価する評価関数です。 */
+    /** 自身と相手の石の数の差に応じてリバーシ盤を評価する評価関数です。 */
     private static final ToIntBiFunction<LightweightBoard, Color> evaluator1 = (b, c) -> {
         int mine = (int) Point.parallelStream().filter(p -> b.colors[p.ordinal()] == c).count();
         int his = (int) Point.parallelStream().filter(p -> b.colors[p.ordinal()] == c.opposite()).count();
         return mine - his;
     };
     
-    /** 自身と相手の駒を置ける位置の数の差に応じてリバーシ盤を評価する評価関数です。 */
+    /** 自身と相手の石を置ける位置の数の差に応じてリバーシ盤を評価する評価関数です。 */
     private static final ToIntBiFunction<LightweightBoard, Color> evaluator2 = (b, c) -> {
         int mine = (int) Point.parallelStream().filter(p -> Rule.canPutAt(b, c, p)).count();
         int his = (int) Point.parallelStream().filter(p -> Rule.canPutAt(b, c.opposite(), p)).count();
@@ -88,7 +88,7 @@ public class BreadthFirstAIPlayer implements Player {
     /**
      * このクラスのインスタンスを生成します。<br>
      * 
-     * @param color このプレーヤーの駒の色
+     * @param color このプレーヤーの石の色
      * @param gameCondition ゲーム実施条件
      */
     public BreadthFirstAIPlayer(Color color, GameCondition gameCondition) {

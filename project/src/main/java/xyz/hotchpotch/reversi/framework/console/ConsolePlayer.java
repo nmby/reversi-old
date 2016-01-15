@@ -39,7 +39,7 @@ public class ConsolePlayer implements Player {
     /**
      * {@code ConsolePlayer} のインスタンスを生成します。<br>
      * 
-     * @param color このプレーヤーの駒の色
+     * @param color このプレーヤーの石の色
      * @param gameCondition ゲーム実施条件
      */
     public ConsolePlayer(Color color, GameCondition gameCondition) {

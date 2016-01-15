@@ -34,7 +34,7 @@ public class RandomAIPlayer implements Player {
     /**
      * このクラスのインスタンスを生成します。<br>
      * 
-     * @param color このプレーヤーの駒の色
+     * @param color このプレーヤーの石の色
      * @param gameCondition ゲーム実施条件
      */
     public RandomAIPlayer(Color color, GameCondition gameCondition) {
@@ -46,7 +46,7 @@ public class RandomAIPlayer implements Player {
     /**
      * {@inheritDoc}
      * <br>
-     * この実装は、駒を置ける位置の中からランダムに手を選びます。<br>
+     * この実装は、石を置ける位置の中からランダムに手を選びます。<br>
      */
     @Override
     public Point decide(Board board, Color color, long givenMillisPerTurn, long remainingMillisInGame) {

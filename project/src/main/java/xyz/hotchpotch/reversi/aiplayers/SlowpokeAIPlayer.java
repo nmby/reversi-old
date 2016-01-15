@@ -37,7 +37,7 @@ public class SlowpokeAIPlayer implements Player {
     /**
      * このクラスのインスタンスを生成します。<br>
      * 
-     * @param color このプレーヤーの駒の色
+     * @param color このプレーヤーの石の色
      * @param gameCondition ゲーム実施条件
      */
     public SlowpokeAIPlayer(Color color, GameCondition gameCondition) {
@@ -61,7 +61,7 @@ public class SlowpokeAIPlayer implements Player {
     /**
      * {@inheritDoc}
      * <br>
-     * この実装は、駒を置ける位置の中からランダムに手を選びます。ただし、のろまです。<br>
+     * この実装は、石を置ける位置の中からランダムに手を選びます。ただし、のろまです。<br>
      * 早晩、時間切れで敗退することでしょう。<br>
      */
     @Override

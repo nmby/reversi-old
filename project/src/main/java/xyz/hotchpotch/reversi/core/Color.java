@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.stream.Stream;
 
 /**
- * 駒の色を表す列挙型です。<br>
+ * 石の色を表す列挙型です。<br>
  * 
  * @since 2.0.0
  * @author nmby

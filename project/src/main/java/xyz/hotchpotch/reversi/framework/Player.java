@@ -17,7 +17,7 @@ import xyz.hotchpotch.reversi.core.Point;
  * </ol>
  * ゲーム実行フレームワークは、ゲーム開始時に {@code Player.}{@link #getPlayerInstance(Class, Color, GameCondition)}
  * を使用して {@code Player} 実装クラスのインスタンスを生成します。<br>
- * 1. のコンストラクタでは、そのプレーヤーの駒の色と、制限時間等のゲーム実施条件が
+ * 1. のコンストラクタでは、そのプレーヤーの石の色と、制限時間等のゲーム実施条件が
  * ゲーム実行フレームワークから {@code Player} 実装クラスに伝えられます。
  * {@code Player} 実装クラスはこれらの情報を自身の戦略に役立ててもよいですし、単に無視しても構いません。<br>
  * <br>
@@ -47,7 +47,7 @@ public interface Player {
      * インスタンス化できた場合はそのインスタンスを返し、できなかった場合は例外をスローします。<br>
      * 
      * @param playerClass インスタンス化する {@code Player} 実装クラス
-     * @param color インスタンス化するプレーヤーの駒の色
+     * @param color インスタンス化するプレーヤーの石の色
      * @param gameCondition ゲーム実施条件
      * @return {@code Player} 実装クラスのインスタンス
      * @throws NullPointerException {@code playerClass}, {@code color}, {@code gameCondition} のいずれかが
@@ -89,16 +89,16 @@ public interface Player {
     /**
      * プレーヤーが自身の手を指定するためのメソッドです。<br>
      * このプレーヤーの番になるたびに、ゲーム実行フレームワークからこのメソッドが呼ばれます。<br>
-     * {@code Player} 実装クラスは正しい手（駒を打つ位置）を返さなければなりません。
+     * {@code Player} 実装クラスは正しい手（石を打つ位置）を返さなければなりません。
      * 指せる手がない場合は、{@code null} を返すことによりパスを宣言しなければなりません。<br>
      * ルール違反の手を返した場合、制限時間をオーバーした場合、実行時例外を発生させた場合は
      * いずれもこのプレーヤーの負けとなります。<br>
      * 
      * @param board 現在のリバーシ盤（このリバーシ盤に対する更新操作は行えません）
-     * @param color このプレーヤーの駒の色（同じゲーム中、毎回同じ値が渡されます）
+     * @param color このプレーヤーの石の色（同じゲーム中、毎回同じ値が渡されます）
      * @param givenMillisPerTurn 一手ごとの制限時間（ミリ秒）（同じゲーム中、毎回同じ値が渡されます）
      * @param remainingMillisInGame ゲーム内での残り持ち時間（ミリ秒）（自身の消費に応じて徐々に減っていきます）
-     * @return 駒を打つ位置（パスの場合は {@code null}）
+     * @return 石を打つ位置（パスの場合は {@code null}）
      */
     public Point decide(Board board, Color color, long givenMillisPerTurn, long remainingMillisInGame);
     

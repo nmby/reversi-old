@@ -87,7 +87,7 @@ public class MonteCarloAIPlayer implements Player {
     /**
      * このクラスのインスタンスを生成します。<br>
      * 
-     * @param color このプレーヤーの駒の色
+     * @param color このプレーヤーの石の色
      * @param gameCondition ゲーム実施条件
      */
     public MonteCarloAIPlayer(Color color, GameCondition gameCondition) {
@@ -146,7 +146,7 @@ public class MonteCarloAIPlayer implements Player {
      * 候補箇所それぞれに対する結果を返す。<br>
      * 
      * @param board 現在のリバーシ盤
-     * @param color 自身の駒の色
+     * @param color 自身の石の色
      * @param candidates 今回のターンで置ける場所（候補箇所）
      * @param deadline シミュレーション終了時刻
      * @return 候補箇所ごとの結果が格納された {@code Set}
