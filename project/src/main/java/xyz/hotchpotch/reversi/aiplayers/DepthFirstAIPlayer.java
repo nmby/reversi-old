@@ -108,7 +108,6 @@ public class DepthFirstAIPlayer implements Player {
         
         int myTurns = (blankCells + 1) / 2;
         long millisForThisTurn = Long.min(givenMillisPerTurn, (long) (weight * remainingMillisInGame / myTurns));
-        System.out.print(String.format("%-4d  ", millisForThisTurn));
         
         // 残り時間が少ない場合は探索を行わずにランダムに返す。
         if (millisForThisTurn < margin1) {
