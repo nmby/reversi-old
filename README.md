@@ -15,7 +15,7 @@ AIプレーヤーを自作することも簡単です。
 [Player#decide メソッド](http://reversi.hotchpotch.xyz/docs/api/xyz/hotchpotch/reversi/framework/Player.html#decide-xyz.hotchpotch.reversi.core.Board-xyz.hotchpotch.reversi.core.Color-long-long-) をオーバーライドするだけです。  
 自作したAIプレーヤーと標準AIプレーヤーを対戦させることもできます。  
   
-詳細は [Qiita内の紹介ページ](http://qiita.com/nmby/items/bd44e28d937108fa3eb0)
+詳細は [こちらの紹介サイト](http://reversi.hotchpotch.xyz/)
 および [javadoc](http://reversi.hotchpotch.xyz/docs/api/index.html) を参照してください。  
   
 ## 更新履歴
