@@ -47,6 +47,7 @@ public class ConsoleScanner<T> implements Supplier<T> {
     // [static members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
     private static final String BR = System.lineSeparator();
+    private static final long SLEEP_MILLIS = 100;
     
     /**
      * {@link ConsoleScanner} オブジェクトを構築するためのビルダーです。
@@ -439,7 +440,7 @@ public class ConsoleScanner<T> implements Supplier<T> {
                 // スレッド間の割り込み制御だとか入出力ストリーム処理だとかが理解できていない... orz
                 // TODO: 要お勉強
                 while (!reader.ready()) {
-                    Thread.sleep(100);
+                    Thread.sleep(SLEEP_MILLIS);
                 }
                 str = reader.readLine();
                 if (Thread.currentThread().isInterrupted()) {
