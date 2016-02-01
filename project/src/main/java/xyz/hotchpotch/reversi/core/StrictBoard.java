@@ -80,10 +80,15 @@ public class StrictBoard extends BaseBoard implements Serializable {
     private transient final List<Move> moves;
     
     private StrictBoard() {
-        map.put(Point.of(3, 4), Color.BLACK);
-        map.put(Point.of(4, 3), Color.BLACK);
-        map.put(Point.of(3, 3), Color.WHITE);
-        map.put(Point.of(4, 4), Color.WHITE);
+        assert 2 <= Point.HEIGHT;
+        assert 2 <= Point.WIDTH;
+        
+        int i = (Point.HEIGHT - 1) / 2;
+        int j = (Point.WIDTH - 1) / 2;
+        map.put(Point.of(i + 0, j + 1), Color.BLACK);
+        map.put(Point.of(i + 1, j + 0), Color.BLACK);
+        map.put(Point.of(i + 0, j + 0), Color.WHITE);
+        map.put(Point.of(i + 1, j + 1), Color.WHITE);
         next = Color.BLACK;
         moves = new ArrayList<>();
     }
