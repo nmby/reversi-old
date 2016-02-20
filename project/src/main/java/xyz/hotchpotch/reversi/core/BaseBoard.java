@@ -92,9 +92,6 @@ import java.util.Objects;
      */
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
         if (o instanceof Board) {
             return Board.equals(this, (Board) o);
         }

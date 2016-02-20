@@ -26,7 +26,7 @@ public interface Board {
      * @see Objects#equals(Object, Object)
      */
     public static boolean equals(Board board1, Board board2) {
-        if (board1 == null && board2 == null) {
+        if (board1 == board2) {
             return true;
         }
         if (board1 == null || board2 == null) {
