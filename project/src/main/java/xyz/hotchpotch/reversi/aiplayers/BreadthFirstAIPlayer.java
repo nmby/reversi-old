@@ -65,6 +65,7 @@ public class BreadthFirstAIPlayer implements Player {
     };
     
     /** ゲームの序盤～中盤は {@link #evaluator2}、終盤は {@link #evaluator1} により評価を行う評価関数です。 */
+    @SuppressWarnings("unused")
     private static final ToIntBiFunction<LightweightBoard, Color> evaluator4 = (b, c) -> {
         int blankCells = (int) Arrays.stream(b.colors).filter(color -> color == null).count();
         if (blankCells <= 10) {
@@ -72,6 +73,16 @@ public class BreadthFirstAIPlayer implements Player {
         } else {
             return evaluator2.applyAsInt(b, c);
         }
+    };
+    
+    /**
+     * {@link #evaluator1} と {@link #evaluator2} の合算により評価を行う評価関数です。
+     * ゲームが進むにつれて、{@link #evaluator2} から {@link #evaluator1} に線形に評価のウェイトを移します。
+     */
+    private static final ToIntBiFunction<LightweightBoard, Color> evaluator5 = (b, c) -> {
+        int blankCells = (int) Arrays.stream(b.colors).filter(color -> color == null).count();
+        int filledCells = Point.HEIGHT * Point.WIDTH - blankCells;
+        return evaluator2.applyAsInt(b, c) * blankCells * 10 + evaluator1.applyAsInt(b, c) * filledCells;
     };
     
     // [instance members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -106,7 +117,7 @@ public class BreadthFirstAIPlayer implements Player {
                         return null;
                     }
                 });
-        this.evaluator = evaluator.isPresent() ? evaluator.get() : evaluator4;
+        this.evaluator = evaluator.isPresent() ? evaluator.get() : evaluator5;
         Optional<Long> seed = AIPlayerUtil.getLongParameter(gameCondition, "seed");
         random = seed.isPresent() ? new Random(seed.get()) : new Random();
         margin1 = AIPlayerUtil.getLongParameter(gameCondition, "margin1").filter(v -> 0 < v).orElse(50L);
@@ -286,7 +297,7 @@ public class BreadthFirstAIPlayer implements Player {
             this.board = board;
             this.color = color;
             this.parent = parent;
-            score = evaluator.applyAsInt(board, color);
+            score = evaluator.applyAsInt(board, myColor);
         }
         
         /**
@@ -346,9 +357,9 @@ public class BreadthFirstAIPlayer implements Player {
                         .orElseThrow(AssertionError::new);
             }
             
-            // スコアが変わる場合は親ノードへも再計算を要求する。
             if (score != newScore) {
                 score = newScore;
+                // スコアが変わる場合は親ノードへも再計算を要求する。
                 if (parent != null) {
                     parent.reCalc();
                 }
@@ -365,6 +376,7 @@ public class BreadthFirstAIPlayer implements Player {
             assert Rule.isGameOngoing(board);
             assert next != null;
             
+            // 可能な手のうち、最高のスコアを示す手を抽出する。
             Point[] bestPoints = next.entrySet().stream()
                     .filter(e -> e.getValue().score == score)
                     .map(Map.Entry::getKey)
@@ -372,6 +384,7 @@ public class BreadthFirstAIPlayer implements Player {
                     
             assert 0 < bestPoints.length;
             
+            // 最高スコアを示す手が複数ある場合は、その中からランダムに選ぶ。
             return bestPoints[random.nextInt(bestPoints.length)];
         }
         
