@@ -19,6 +19,9 @@ AIプレーヤーを自作することも簡単です。
 および [javadoc](http://reversi.hotchpotch.xyz/docs/api/index.html) を参照してください。  
   
 ## 更新履歴
+##### Version 2.0.2 (2016/03/16)
+* BreadthFirstAIPlayer のロジック誤りを修正、評価関数を変更
+
 ##### Version 2.0.1 (2016/01/26)
 * 消し忘れデバッグ用コードの削除
 * ドキュメント等の微修正
