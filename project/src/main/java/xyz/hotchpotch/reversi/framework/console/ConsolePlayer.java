@@ -23,7 +23,7 @@ import xyz.hotchpotch.util.console.ConsoleScanner;
  * @since 2.0.0
  * @author nmby
  */
-public class ConsolePlayer implements Player {
+public class ConsolePlayer implements Player, NeedsUserInput {
     
     // [static members] ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
