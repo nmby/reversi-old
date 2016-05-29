@@ -31,9 +31,14 @@ public class ConsoleLeague implements ConsolePlayable<League> {
      * @param leagueCondition リーグ実施条件
      * @return リーグ実行クラス
      * @throws NullPointerException {@code leagueCondition} が {@code null} の場合
+     * @throws IllegalArgumentException {@code leagueCondition.playerClasses} に {@link NeedsUserInput} 実装クラスが含まれる場合
      */
     public static ConsoleLeague of(LeagueCondition leagueCondition) {
-        return new ConsoleLeague(Objects.requireNonNull(leagueCondition));
+        Objects.requireNonNull(leagueCondition);
+        if (leagueCondition.playerClasses.stream().anyMatch(NeedsUserInput.class::isAssignableFrom)) {
+            throw new IllegalArgumentException(String.format("%s 実装クラスは指定できません。", NeedsUserInput.class.getSimpleName()));
+        }
+        return new ConsoleLeague(leagueCondition);
     }
     
     /**
@@ -46,7 +51,7 @@ public class ConsoleLeague implements ConsolePlayable<League> {
     }
     
     private static LeagueCondition arrangeLeagueCondition() {
-        List<Class<? extends Player>> players = CommonUtil.arrangePlayerClassList();
+        List<Class<? extends Player>> players = CommonUtil.arrangePlayerClassList(false);
         long givenMillisPerTurn = CommonUtil.arrangeGivenMillisPerTurn();
         long givenMillisInGame = CommonUtil.arrangeGivenMillisInGame();
         int times = CommonUtil.arrangeTimes();

@@ -172,6 +172,7 @@ import xyz.hotchpotch.util.console.ConsoleScanner;
         }
     }
     
+    @Deprecated
     /*package*/ static List<Class<? extends Player>> arrangePlayerClassList() {
         List<Class<? extends Player>> playerClasses = new ArrayList<>(playerClasses());
         Set<Integer> selected = new TreeSet<>();
@@ -205,6 +206,66 @@ import xyz.hotchpotch.util.console.ConsoleScanner;
                 }
             } else if (idx == 0) {
                 Class<? extends Player> customPlayer = arrangeCustomPlayerClass();
+                playerClasses.add(customPlayer);
+                selected.add(playerClasses.size() - 1);
+            } else {
+                if (selected.contains(idx - 1)) {
+                    selected.remove(idx - 1);
+                } else {
+                    selected.add(idx - 1);
+                }
+            }
+        }
+        
+        List<Class<? extends Player>> selectedPlayers = new ArrayList<>();
+        for (int idx : selected) {
+            selectedPlayers.add(playerClasses.get(idx));
+        }
+        return selectedPlayers;
+    }
+    
+    /**
+     * 標準入出力で複数のプレーヤークラスの選択を促して選択結果を取得し、選択されたプレーヤークラスのリストを返します。<br>
+     * 
+     * @param allowUserInput {@link NeedsUserInput} を実装するプレーヤークラスの選択を許可する場合は {@code true}
+     * @return 選択されたプレーヤークラスのリスト
+     */
+    /*package*/ static List<Class<? extends Player>> arrangePlayerClassList(boolean allowUserInput) {
+        List<Class<? extends Player>> playerClasses = new ArrayList<>(playerClasses());
+        if (!allowUserInput) {
+            playerClasses.removeIf(NeedsUserInput.class::isAssignableFrom);
+        }
+        Set<Integer> selected = new TreeSet<>();
+        
+        while (true) {
+            StringBuilder prompt = new StringBuilder();
+            prompt.append("選択するプレーヤーを番号で指定してください。選択済みのものを再度指定した場合は、選択を解除します。").append(BR)
+                    .append("選択を終了する場合は -1 を入力してください。").append(BR);
+                    
+            for (int i = 0; i < playerClasses.size(); i++) {
+                prompt.append(String.format("\t%s[%d] %s",
+                        selected.contains(i) ? "★選択済み " : "",
+                        i + 1,
+                        playerClasses.get(i).getName())).append(BR);
+            }
+            prompt.append(String.format("\t[0] その他（自作クラス）")).append(BR);
+            prompt.append("> ");
+            
+            ConsoleScanner<Integer> scIdx = ConsoleScanner
+                    .intBuilder(-1, playerClasses.size())
+                    .prompt(prompt.toString())
+                    .build();
+            int idx = scIdx.get();
+            
+            if (idx == -1) {
+                if (2 <= selected.size()) {
+                    break;
+                } else {
+                    System.out.println("2つ以上のプレーヤーを選択してください。");
+                    System.out.println();
+                }
+            } else if (idx == 0) {
+                Class<? extends Player> customPlayer = arrangeCustomPlayerClass(allowUserInput);
                 playerClasses.add(customPlayer);
                 selected.add(playerClasses.size() - 1);
             } else {
