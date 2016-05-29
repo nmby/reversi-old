@@ -44,6 +44,7 @@ import xyz.hotchpotch.util.console.ConsoleScanner;
                 CrazyAIPlayer.class);
     }
     
+    @Deprecated
     /*package*/ static Class<? extends Player> arrangePlayerClass(String str) {
         assert str != null;
         
@@ -68,6 +69,41 @@ import xyz.hotchpotch.util.console.ConsoleScanner;
         }
     }
     
+    /**
+     * 標準入出力でプレーヤークラスの選択を促して選択結果を取得し、選択されたプレーヤークラスを返します。<br>
+     * 
+     * @param str プレーヤーの選択を促す際に表示する、プレーヤーの呼称。{@code "黒のプレーヤー"}、{@code "Player-A"}　など。
+     * @param allowUserInput {@link NeedsUserInput} を実装するプレーヤークラスを選択肢に含める場合は {@code true}
+     * @return 選択されたプレーヤークラス
+     */
+    /*package*/ static Class<? extends Player> arrangePlayerClass(String str, boolean allowUserInput) {
+        assert str != null;
+        
+        List<Class<? extends Player>> playerClasses = new ArrayList<>(playerClasses());
+        if (!allowUserInput) {
+            playerClasses.removeIf(NeedsUserInput.class::isAssignableFrom);
+        }
+        StringBuilder prompt = new StringBuilder();
+        prompt.append(String.format("%sを番号で選択してください。", str)).append(BR);
+        for (int i = 0; i < playerClasses.size(); i++) {
+            prompt.append(String.format("\t%d : %s", i + 1, playerClasses.get(i).getName())).append(BR);
+        }
+        prompt.append(String.format("\t0 : その他（自作クラス）")).append(BR);
+        prompt.append("> ");
+        
+        ConsoleScanner<Integer> scIdx = ConsoleScanner
+                .intBuilder(0, playerClasses.size())
+                .prompt(prompt.toString())
+                .build();
+        int idx = scIdx.get();
+        if (0 < idx) {
+            return playerClasses.get(idx - 1);
+        } else {
+            return arrangeCustomPlayerClass(allowUserInput);
+        }
+    }
+    
+    @Deprecated
     private static Class<? extends Player> arrangeCustomPlayerClass() {
         Predicate<String> judge = s -> {
             try {
@@ -93,6 +129,47 @@ import xyz.hotchpotch.util.console.ConsoleScanner;
         ConsoleScanner<Class<? extends Player>> scPlayerClass = ConsoleScanner
                 .builder(judge, converter, prompt, complaint).build();
         return scPlayerClass.get();
+    }
+    
+    /**
+     * 標準入出力で任意のプレーヤークラスの指定を促して指定結果を取得し、指定されたプレーヤークラスを返します。<br>
+     * 
+     * @param allowUserInput {@link NeedsUserInput} を実装するプレーヤークラスの選択を許可する場合は {@code true}
+     * @return 選択されたプレーヤークラス
+     */
+    private static Class<? extends Player> arrangeCustomPlayerClass(boolean allowUserInput) {
+        Predicate<String> judge = s -> {
+            try {
+                @SuppressWarnings({ "unchecked", "unused" })
+                Class<? extends Player> playerClass = (Class<? extends Player>) Class.forName(s);
+                return true;
+            } catch (ClassNotFoundException | ClassCastException e) {
+                return false;
+            }
+        };
+        Function<String, Class<? extends Player>> converter = s -> {
+            try {
+                @SuppressWarnings("unchecked")
+                Class<? extends Player> playerClass = (Class<? extends Player>) Class.forName(s);
+                return playerClass;
+            } catch (ClassNotFoundException e) {
+                throw new AssertionError(e);
+            }
+        };
+        String prompt = "プレーヤークラスの完全修飾クラス名を指定してください（例：jp.co.hoge.MyAIPlayer）" + BR + "> ";
+        String complaint = String.format(
+                "クラスが見つからないか、%s を implements していません。", Player.class.getName()) + BR;
+        ConsoleScanner<Class<? extends Player>> scPlayerClass = ConsoleScanner
+                .builder(judge, converter, prompt, complaint).build();
+                
+        while (true) {
+            Class<? extends Player> playerClass = scPlayerClass.get();
+            if (allowUserInput || !NeedsUserInput.class.isAssignableFrom(playerClass)) {
+                return playerClass;
+            } else {
+                System.out.println(String.format("%s を implements するクラスは指定できません。", NeedsUserInput.class.getSimpleName()));
+            }
+        }
     }
     
     /*package*/ static List<Class<? extends Player>> arrangePlayerClassList() {

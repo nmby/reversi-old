@@ -32,9 +32,16 @@ public class ConsoleMatch implements ConsolePlayable<Match> {
      * @param matchCondition マッチ実施条件
      * @return マッチ実行クラス
      * @throws NullPointerException {@code matchCondition} が {@code null} の場合
+     * @throws IllegalArgumentException {@code matchCondition.playerClasses} に {@link NeedsUserInput} 実装クラスが含まれる場合
      */
     public static ConsoleMatch of(MatchCondition matchCondition) {
-        return new ConsoleMatch(Objects.requireNonNull(matchCondition));
+        Objects.requireNonNull(matchCondition);
+        if (NeedsUserInput.class.isAssignableFrom(matchCondition.playerClasses.get(Entrant.A))
+                || NeedsUserInput.class.isAssignableFrom(matchCondition.playerClasses.get(Entrant.B))) {
+                
+            throw new IllegalArgumentException(String.format("%s 実装クラスは指定できません。", NeedsUserInput.class.getSimpleName()));
+        }
+        return new ConsoleMatch(matchCondition);
     }
     
     /**
@@ -47,8 +54,8 @@ public class ConsoleMatch implements ConsolePlayable<Match> {
     }
     
     private static MatchCondition arrangeMatchCondition() {
-        Class<? extends Player> playerA = CommonUtil.arrangePlayerClass("プレーヤー" + Entrant.A);
-        Class<? extends Player> playerB = CommonUtil.arrangePlayerClass("プレーヤー" + Entrant.B);
+        Class<? extends Player> playerA = CommonUtil.arrangePlayerClass("プレーヤー" + Entrant.A, false);
+        Class<? extends Player> playerB = CommonUtil.arrangePlayerClass("プレーヤー" + Entrant.B, false);
         long givenMillisPerTurn = CommonUtil.arrangeGivenMillisPerTurn();
         long givenMillisInGame = CommonUtil.arrangeGivenMillisInGame();
         int times = CommonUtil.arrangeTimes();
