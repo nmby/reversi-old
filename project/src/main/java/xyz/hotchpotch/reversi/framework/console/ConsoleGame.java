@@ -62,8 +62,8 @@ public class ConsoleGame implements ConsolePlayable<Game> {
     }
     
     private static GameCondition arrangeGameCondition() {
-        Class<? extends Player> playerBlack = CommonUtil.arrangePlayerClass(Color.BLACK + "のプレーヤー");
-        Class<? extends Player> playerWhite = CommonUtil.arrangePlayerClass(Color.WHITE + "のプレーヤー");
+        Class<? extends Player> playerBlack = CommonUtil.arrangePlayerClass(Color.BLACK + "のプレーヤー", true);
+        Class<? extends Player> playerWhite = CommonUtil.arrangePlayerClass(Color.WHITE + "のプレーヤー", true);
         long givenMillisPerTurn = CommonUtil.arrangeGivenMillisPerTurn();
         long givenMillisInGame = CommonUtil.arrangeGivenMillisInGame();
         
@@ -92,11 +92,18 @@ public class ConsoleGame implements ConsolePlayable<Game> {
         
         this.gameCondition = gameCondition;
         
-        Level level = CommonUtil.getParameter(
-                gameCondition,
-                "print.level",
-                Level::valueOf,
-                Level.GAME);
+        Level level;
+        if (NeedsUserInput.class.isAssignableFrom(gameCondition.playerClasses.get(Color.BLACK))
+                || NeedsUserInput.class.isAssignableFrom(gameCondition.playerClasses.get(Color.WHITE))) {
+                
+            level = Level.GAME;
+        } else {
+            level = CommonUtil.getParameter(
+                    gameCondition,
+                    "print.level",
+                    Level::valueOf,
+                    Level.GAME);
+        }
         printer = ConsolePrinter.of(level);
         auto = CommonUtil.getParameter(gameCondition, "auto", Boolean::valueOf, false);
     }
