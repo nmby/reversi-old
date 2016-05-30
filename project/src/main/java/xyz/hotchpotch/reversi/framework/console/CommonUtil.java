@@ -44,31 +44,6 @@ import xyz.hotchpotch.util.console.ConsoleScanner;
                 CrazyAIPlayer.class);
     }
     
-    @Deprecated
-    /*package*/ static Class<? extends Player> arrangePlayerClass(String str) {
-        assert str != null;
-        
-        List<Class<? extends Player>> playerClasses = playerClasses();
-        StringBuilder prompt = new StringBuilder();
-        prompt.append(String.format("%sを番号で選択してください。", str)).append(BR);
-        for (int i = 0; i < playerClasses.size(); i++) {
-            prompt.append(String.format("\t%d : %s", i + 1, playerClasses.get(i).getName())).append(BR);
-        }
-        prompt.append(String.format("\t0 : その他（自作クラス）")).append(BR);
-        prompt.append("> ");
-        
-        ConsoleScanner<Integer> scIdx = ConsoleScanner
-                .intBuilder(0, playerClasses.size())
-                .prompt(prompt.toString())
-                .build();
-        int idx = scIdx.get();
-        if (0 < idx) {
-            return playerClasses.get(idx - 1);
-        } else {
-            return arrangeCustomPlayerClass();
-        }
-    }
-    
     /**
      * 標準入出力でプレーヤークラスの選択を促して選択結果を取得し、選択されたプレーヤークラスを返します。<br>
      * 
@@ -101,34 +76,6 @@ import xyz.hotchpotch.util.console.ConsoleScanner;
         } else {
             return arrangeCustomPlayerClass(allowUserInput);
         }
-    }
-    
-    @Deprecated
-    private static Class<? extends Player> arrangeCustomPlayerClass() {
-        Predicate<String> judge = s -> {
-            try {
-                @SuppressWarnings({ "unchecked", "unused" })
-                Class<? extends Player> playerClass = (Class<? extends Player>) Class.forName(s);
-                return true;
-            } catch (ClassNotFoundException | ClassCastException e) {
-                return false;
-            }
-        };
-        Function<String, Class<? extends Player>> converter = s -> {
-            try {
-                @SuppressWarnings("unchecked")
-                Class<? extends Player> playerClass = (Class<? extends Player>) Class.forName(s);
-                return playerClass;
-            } catch (ClassNotFoundException e) {
-                throw new AssertionError(e);
-            }
-        };
-        String prompt = "プレーヤークラスの完全修飾クラス名を指定してください（例：jp.co.hoge.MyAIPlayer）" + BR + "> ";
-        String complaint = String.format(
-                "クラスが見つからないか、%s を implements していません。", Player.class.getName()) + BR;
-        ConsoleScanner<Class<? extends Player>> scPlayerClass = ConsoleScanner
-                .builder(judge, converter, prompt, complaint).build();
-        return scPlayerClass.get();
     }
     
     /**
@@ -170,58 +117,6 @@ import xyz.hotchpotch.util.console.ConsoleScanner;
                 System.out.println(String.format("%s を implements するクラスは指定できません。", NeedsUserInput.class.getSimpleName()));
             }
         }
-    }
-    
-    @Deprecated
-    /*package*/ static List<Class<? extends Player>> arrangePlayerClassList() {
-        List<Class<? extends Player>> playerClasses = new ArrayList<>(playerClasses());
-        Set<Integer> selected = new TreeSet<>();
-        
-        while (true) {
-            StringBuilder prompt = new StringBuilder();
-            prompt.append("選択するプレーヤーを番号で指定してください。選択済みのものを再度指定した場合は、選択を解除します。").append(BR)
-                    .append("選択を終了する場合は -1 を入力してください。").append(BR);
-                    
-            for (int i = 0; i < playerClasses.size(); i++) {
-                prompt.append(String.format("\t%s[%d] %s",
-                        selected.contains(i) ? "★選択済み " : "",
-                        i + 1,
-                        playerClasses.get(i).getName())).append(BR);
-            }
-            prompt.append(String.format("\t[0] その他（自作クラス）")).append(BR);
-            prompt.append("> ");
-            
-            ConsoleScanner<Integer> scIdx = ConsoleScanner
-                    .intBuilder(-1, playerClasses.size())
-                    .prompt(prompt.toString())
-                    .build();
-            int idx = scIdx.get();
-            
-            if (idx == -1) {
-                if (2 <= selected.size()) {
-                    break;
-                } else {
-                    System.out.println("2つ以上のプレーヤーを選択してください。");
-                    System.out.println();
-                }
-            } else if (idx == 0) {
-                Class<? extends Player> customPlayer = arrangeCustomPlayerClass();
-                playerClasses.add(customPlayer);
-                selected.add(playerClasses.size() - 1);
-            } else {
-                if (selected.contains(idx - 1)) {
-                    selected.remove(idx - 1);
-                } else {
-                    selected.add(idx - 1);
-                }
-            }
-        }
-        
-        List<Class<? extends Player>> selectedPlayers = new ArrayList<>();
-        for (int idx : selected) {
-            selectedPlayers.add(playerClasses.get(idx));
-        }
-        return selectedPlayers;
     }
     
     /**
